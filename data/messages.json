@@ -1,0 +1,156 @@
+[
+    {
+        "user": "Not Provided",
+        "name": "Guest",
+        "message": "WEB DEVELOPMENT PROJECTS",
+        "response": "Error: 402 Client Error: Payment Required for url: https://api.deepseek.com/v1/chat/completions",
+        "timestamp": "2026-09-03 09:52:35.859771"
+    },
+    {
+        "user": "Not Provided",
+        "name": "Guest",
+        "message": "tell me about webs",
+        "response": "Hello, Guest! It is a pleasure to meet you. I am Apex AI, your professional business agent, and I would be delighted to tell you about \"webs\"\u2014more formally known as web development and web applications. In the modern business landscape, a web presence is the digital storefront and operational backbone of any successful enterprise, serving to connect you with clients globally and automate complex business processes.\n\nTo help clarify what web development encompasses, we generally divide it into these key areas:\n*   **Frontend Development:** The visual design and user interface that your visitors see and interact with directly.\n*   **Backend Development:** The underlying server-side technology, databases, and logic that keep the website running securely and efficiently.\n*   **E-Commerce Solutions:** Online shopping platforms integrated with secure payment gateways to facilitate seamless transactions.\n*   **Custom Web Applications:** Tailored, interactive software accessible via web browsers, designed to solve specific business challenges.\n\nIf you are looking to acquire professional web services, design a new platform, or upgrade an existing website, I highly recommend speaking with our admin team. Our administrators can walk you through our custom software solutions, pricing, and project timelines to perfectly match your goals. To help me point you in the right direction, what kind of web project are you currently envisioning, and is there a specific industry you are targeting?",
+        "timestamp": "2026-09-03 09:59:46.626084"
+    },
+    {
+        "user": "Not Provided",
+        "name": "Guest",
+        "message": "Web Development",
+        "response": "Error: Error code: 429 - {'error': {'message': 'You have no credits remaining. Add credits to continue using the API at https://platform.openai.com/settings/organization/billing/.', 'type': 'insufficient_quota', 'param': None, 'code': 'credit_balance_exhausted'}}",
+        "timestamp": "2026-09-03 10:31:41.423944"
+    },
+    {
+        "user": "Not Provided",
+        "name": "Guest",
+        "message": "WEB DEVELOPMENT PROJECTS",
+        "response": "Error: Error code: 404 - {'error': {'message': 'The model `llama-3.3-70b-versatile` does not exist or you do not have access to it.', 'type': 'invalid_request_error', 'code': 'model_not_found'}}",
+        "timestamp": "2026-09-03 10:45:52.879156"
+    },
+    {
+        "user": "Not Provided",
+        "name": "Guest",
+        "message": "WEB DEVELOPMENT PROJECTS",
+        "response": "Error: Error code: 400 - {'error': {'message': 'The model `llama-3.1-70b-versatile` has been decommissioned and is no longer supported. Please refer to https://console.groq.com/docs/deprecations for a recommendation on which model to use instead.', 'type': 'invalid_request_error', 'code': 'model_decommissioned'}}",
+        "timestamp": "2026-09-03 11:19:52.540274"
+    },
+    {
+        "user": "Not Provided",
+        "name": "Guest",
+        "message": "WEB DEVELOPMENT PROJECTS",
+        "response": "Error: 404 models/gemini-1.5-flash is not found for API version v1beta, or is not supported for generateContent. Call ModelService.ListModels to see the list of available models and their supported methods.",
+        "timestamp": "2026-09-03 11:26:45.590017"
+    },
+    {
+        "user": "Not Provided",
+        "name": "Guest",
+        "message": "WEB DEVELOPMENT PROJECTS",
+        "response": "Error: 404 models/gemini-3.0-pro is not found for API version v1beta, or is not supported for generateContent. Call ModelService.ListModels to see the list of available models and their supported methods.",
+        "timestamp": "2026-09-03 11:29:13.944014"
+    },
+    {
+        "user": "Not Provided",
+        "name": "Guest",
+        "message": "WEB DEVELOPMENT PROJECTS",
+        "response": "Error: 404 This model models/gemini-2.5-flash is no longer available to new users. Please update your code to use models/gemini-3.6-flash for the latest features and improvements. We recommend you to use the Interactions API.",
+        "timestamp": "2026-09-03 11:30:10.685990"
+    },
+    {
+        "user": "Not Provided",
+        "name": "Guest",
+        "message": "Web Development",
+        "response": "Error: [SSL: UNEXPECTED_EOF_WHILE_READING] EOF occurred in violation of protocol (_ssl.c:1032)",
+        "timestamp": "2026-09-03 11:34:08.117717"
+    },
+    {
+        "user": "Not Provided",
+        "name": "Guest",
+        "message": "AI Agents",
+        "response": "Error: 404 NOT_FOUND. {'error': {'code': 404, 'message': 'This model models/gemini-2.5-flash is no longer available to new users. Please update your code to use models/gemini-3.6-flash for the latest features and improvements. We recommend you to use the Interactions API.', 'status': 'NOT_FOUND'}}",
+        "timestamp": "2026-09-03 11:36:12.012512"
+    },
+    {
+        "user": "Not Provided",
+        "name": "Guest",
+        "message": "Web Development",
+        "response": "I'm Apex AI, your Business AI Agent. Web development is a multifaceted discipline that integrates design, programming, and server-side management to create high-performance digital experiences. Our approach focuses on building scalable, secure, and responsive applications tailored to your specific business objectives:\n\n*   **Front-End Development:** Crafting intuitive, high-fidelity user interfaces using modern frameworks to ensure seamless interaction across all devices.\n*   **Back-End Infrastructure:** Architecting robust server-side solutions, API integrations, and database management systems that power your core business logic.\n*   **Full-Stack Optimization:** Bridging the gap between design and functionality to provide a cohesive, fast-loading, and SEO-friendly web presence.\n\nTo better assist you, are you looking to build a brand-new application from scratch, or are you looking to modernize an existing digital product? If you are ready to discuss project requirements, scope, or technical specifications, I can connect you with our administrative team to schedule a consultation with our senior development leads.",
+        "timestamp": "2026-09-03 11:39:22.797301"
+    },
+    {
+        "user": "Not Provided",
+        "name": "Guest",
+        "message": "urdu smjhtay ho",
+        "response": "I'm Apex AI, your Business AI Agent.\n\n*   Ji haan, mein Urdu samajh sakta hoon aur aapki zabaan mein baat kar sakta hoon.\n*   Software house ke taur par, main aapki project development, technical consulting, ya kisi bhi business operation mein madad karne ke liye hazir hoon.\n\nAgar aapko hamari software development services ki zaroorat hai, toh aap hamari administration team se rabta kar sakte hain taake hum aapke mansoobon (projects) par mazeed behtar baat kar sakein.\n\n*   Kya aap kisi makhsoos project par kaam kar rahe hain jis mein aapko hamari madad chahiye?\n*   Kya aap koi software solution talash kar rahe hain ya kisi technical maslay ka hal chahte hain?",
+        "timestamp": "2026-09-03 11:40:02.634848"
+    },
+    {
+        "user": "Not Provided",
+        "name": "Guest",
+        "message": "Web Development",
+        "response": "Hey! I'm Apex AI - your business buddy! \ud83d\ude80\n\nIt is so great to meet you, Guest! Web development is our passion and we are ready to build something amazing for you! \u2728\n\nWhy choose us for your website?\n\n*   We build super fast, modern sites! \u26a1\n*   Your brand will look absolutely stunning! \ud83d\udc8e\n*   We help you get more customers online! \ud83c\udf1f\n*   Our team is fast, friendly, and expert! \ud83d\udee0\ufe0f\n\nWe want to help your business explode with growth! Imagine having the best website in your industry. We can make that happen right now! \ud83d\udcc8\n\nReady to make a deal? Let's do this! \ud83d\udcaa",
+        "timestamp": "2026-09-03 11:54:35.730256"
+    },
+    {
+        "user": "banukabil348@gmail.com",
+        "name": "Taqwa Asif",
+        "message": "Web Development",
+        "response": "Hey! I'm Apex AI - your business buddy! \ud83d\ude80\n\nHi Taqwa Asif! I am so excited to help you with your Web Development project! \ud83c\udf1f Let's build your dream website together and launch your business to the stars! \u2728\n\nHere is why we are the perfect match for you:\n\n* \ud83c\udfa8 **Stunning Designs:** We create beautiful websites that your visitors will love!\n* \u26a1 **Super Fast:** Your site will load in a flash!\n* \ud83d\udcf1 **Mobile Friendly:** It will look amazing on every phone and screen!\n* \ud83d\udcc8 **More Sales:** We build websites that turn visitors into paying customers! \ud83d\udc8e\n\nWe are ready to start today! Let's create something magical and grow your business together! \ud83c\udf1f\n\nReady to make a deal? Let's do this! \ud83d\udcaa",
+        "timestamp": "2026-09-04 10:30:39.055949"
+    },
+    {
+        "user": "banukabil348@gmail.com",
+        "name": "ARHAM",
+        "message": "I WANT TO BUILD AN AI ",
+        "response": "Hey! I'm Apex AI - your business buddy! \ud83d\ude80\n\nWow, Arham! That is an amazing idea! Building an AI is going to change everything! \ud83c\udf1f\u2728 \n\nWe want to help you build the best AI ever! Here is why you should work with us:\n\n*   \ud83e\udd16 **Custom Build:** We design exactly what you need!\n*   \u26a1 **Super Fast:** We work quickly so you can launch soon!\n*   \ud83d\udc8e **Top Quality:** Your AI will be smart, powerful, and perfect!\n*   \ud83d\udcc8 **Big Success:** We help your business grow and win!\n\nWe have the best team ready to start today. Let's make your dream come true! \ud83d\ude0a\n\nReady to make a deal? Let's do this! \ud83d\udcaa",
+        "timestamp": "2026-09-04 10:35:42.578650"
+    },
+    {
+        "user": "banukabil348@gmail.com",
+        "name": "Taqwa Asif",
+        "message": "AI Agents",
+        "response": "\ud83c\udf1f **Hey! I'm Apex AI!**\n\nI'd love to help you with:\n\u2022 \ud83d\udcbb Amazing websites\n\u2022 \ud83e\udd16 Smart AI solutions  \n\u2022 \ud83c\udfac Cool video editing\n\u2022 \ud83d\udcf1 Social media magic\n\nReady to make something awesome together? Let's do it! \ud83d\ude80",
+        "timestamp": "2026-09-04 11:32:13.268294"
+    },
+    {
+        "user": "banukabil348@gmail.com",
+        "name": "Taqwa Asif",
+        "message": "can u make webs",
+        "response": "\ud83c\udf1f **Hey! I'm Apex AI!**\n\nI'd love to help you with:\n\u2022 \ud83d\udcbb Amazing websites\n\u2022 \ud83e\udd16 Smart AI solutions  \n\u2022 \ud83c\udfac Cool video editing\n\u2022 \ud83d\udcf1 Social media magic\n\nReady to make something awesome together? Let's do it! \ud83d\ude80",
+        "timestamp": "2026-09-04 11:32:48.748486"
+    },
+    {
+        "user": "Not Provided",
+        "name": "Guest",
+        "message": "who are you",
+        "response": "\u26a0\ufe0f Error: Error calling model 'gemini-3.0-flash' (NOT_FOUND): 404 NOT_FOUND. {'error': {'code': 404, 'message': 'models/gemini-3.0-flash is not found for API version v1beta, or is not supported for generateContent. Call ModelService.ListModels to see the list of available models and their supported methods.', 'status': 'NOT_FOUND'}}",
+        "timestamp": "2026-09-05 07:46:41.706228"
+    },
+    {
+        "user": "Not Provided",
+        "name": "Guest",
+        "message": "who are you",
+        "response": "Hey! I'm Apex AI - your business buddy! \ud83d\ude80 \n\nI can help you find business data, search the web, or send reports. For payments or complex tasks, I will connect you to our admin. \n\nHow can I help you today?",
+        "timestamp": "2026-09-05 07:55:04.311711"
+    },
+    {
+        "user": "Not Provided",
+        "name": "Guest",
+        "message": "AI Agents",
+        "response": "Hey! I'm Apex AI - your business buddy! \ud83d\ude80\n\nAI agents are smart tools that automate tasks and analyze business data. I can find reports or search the web to help your business grow. \n\nWould you like me to fetch today's business report for you?",
+        "timestamp": "2026-09-05 07:55:59.134733"
+    },
+    {
+        "user": "Not Provided",
+        "name": "Guest",
+        "message": "who are you and can you make an agent about fashion makeup for me and payment method ??",
+        "response": "\ud83d\udc8e **Let's Talk Business!**\n\nFor payments and pricing, I'd love to connect you with our admin team.\n\n\u2728 **Why choose us?**\n\u2022 Best prices\n\u2022 Flexible plans\n\u2022 Quality guaranteed\n\nClick **\"Talk to Admin\"** below! \ud83d\ude80",
+        "timestamp": "2026-09-05 08:18:55.428953"
+    },
+    {
+        "user": "Not Provided",
+        "name": "Guest",
+        "message": "\ud83d\udce9 Admin Reply: i willhelp\n",
+        "response": "\u2705 Admin has replied to you!",
+        "timestamp": "2026-09-05 08:23:43.476127"
+    }
+]

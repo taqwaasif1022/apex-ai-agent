@@ -1,0 +1,31 @@
+# Environment Variables (API Keys - Private!)
+.env
+*.env
+*.env.local
+
+# Python Cache
+__pycache__/
+*.pyc
+*.pyo
+*.pyd
+.Python
+
+# Local Run Files
+run.bat
+*.bat
+
+# Temporary / Log Files
+*.log
+*.tmp
+
+# OS Files
+.DS_Store
+Thumbs.db
+
+# IDE Files
+.vscode/
+.idea/
+
+# Backup Files
+*.bak
+*.backup

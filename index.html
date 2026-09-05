@@ -1,0 +1,214 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Apex AI & Software Solutions Enterprise</title>
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" rel="stylesheet">
+    <style>
+        * { box-sizing: border-box; margin: 0; padding: 0; }
+        body { font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; background-color: #0b0f19; color: #f1f5f9; line-height: 1.6; }
+        
+        nav { display: flex; justify-content: space-between; align-items: center; padding: 18px 50px; background: rgba(15, 23, 42, 0.95); backdrop-filter: blur(12px); border-bottom: 1px solid #1e293b; position: sticky; top: 0; z-index: 100; }
+        .logo { font-size: 1.5rem; font-weight: 800; background: linear-gradient(90deg, #38bdf8, #818cf8, #c084fc); -webkit-background-clip: text; -webkit-text-fill-color: transparent; display: flex; align-items: center; gap: 10px; }
+        
+        .auth-container { display: flex; align-items: center; gap: 15px; }
+        .auth-btn { background: linear-gradient(135deg, #0284c7, #2563eb); color: #fff; padding: 10px 22px; border-radius: 20px; text-decoration: none; font-weight: 600; cursor: pointer; border: none; font-size: 0.95rem; }
+        .user-profile-badge { display: none; align-items: center; gap: 12px; background: #1e293b; border: 1px solid #38bdf8; padding: 6px 16px; border-radius: 30px; }
+        .user-avatar { width: 36px; height: 36px; background: linear-gradient(135deg, #38bdf8, #818cf8); border-radius: 50%; display: flex; justify-content: center; align-items: center; font-weight: bold; color: #fff; font-size: 1rem; }
+        .user-details { display: flex; flex-direction: column; text-align: left; }
+        .user-name { font-size: 0.9rem; font-weight: 700; color: #f8fafc; }
+        .user-email { font-size: 0.75rem; color: #94a3b8; }
+        .logout-btn { background: #dc2626; color: #fff; padding: 4px 12px; border-radius: 12px; border: none; cursor: pointer; font-size: 0.7rem; font-weight: 600; margin-left: 8px; transition: 0.3s; }
+        .logout-btn:hover { background: #b91c1c; transform: scale(1.05); }
+        
+        .hero { text-align: center; padding: 80px 20px 50px; background: radial-gradient(circle at top, #1e1b4b 0%, #0b0f19 75%); }
+        .hero h1 { font-size: 3.2rem; font-weight: 800; margin-bottom: 18px; background: linear-gradient(90deg, #38bdf8, #818cf8, #e0e7ff); -webkit-background-clip: text; -webkit-text-fill-color: transparent; }
+        .hero p { font-size: 1.2rem; color: #94a3b8; max-width: 750px; margin: 0 auto 30px; }
+        .consult-btn { display: inline-block; background: linear-gradient(135deg, #2563eb, #7c3aed); color: #ffffff; padding: 15px 36px; font-size: 1.1rem; font-weight: 700; text-decoration: none; border-radius: 30px; box-shadow: 0 0 25px rgba(99, 102, 241, 0.5); cursor: pointer; border: none; }
+        
+        .services-section { padding: 50px 20px; max-width: 1200px; margin: 0 auto; }
+        .section-title { text-align: center; font-size: 2.2rem; margin-bottom: 40px; background: linear-gradient(90deg, #38bdf8, #c084fc); -webkit-background-clip: text; -webkit-text-fill-color: transparent; }
+        .grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 25px; }
+        @media (max-width: 900px) { .grid { grid-template-columns: repeat(1, 1fr); } }
+        .card { background: #1e293b; border: 1px solid #334155; border-radius: 20px; padding: 22px; text-align: center; }
+        .card img { width: 100%; height: 170px; object-fit: cover; border-radius: 12px; margin-bottom: 15px; border: 1px solid #334155; }
+        .card h3 { font-size: 1.25rem; color: #f8fafc; margin-bottom: 8px; }
+        .card p { color: #94a3b8; font-size: 0.9rem; }
+        
+        .agent-container { display: none; max-width: 1150px; margin: 50px auto; padding: 0 20px 80px; }
+        .iframe-wrapper { width: 100%; height: 700px; border-radius: 24px; overflow: hidden; border: 2px solid #311b92; box-shadow: 0 20px 60px rgba(0,0,0,0.8); }
+        iframe { width: 100%; height: 100%; border: none; }
+        
+        .modal { display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(11, 15, 25, 0.88); backdrop-filter: blur(8px); justify-content: center; align-items: center; z-index: 1000; }
+        .modal-content { background: #1e293b; border: 1px solid #6366f1; border-radius: 20px; padding: 35px; width: 100%; max-width: 450px; }
+        .modal-content h2 { font-size: 1.8rem; margin-bottom: 15px; color: #38bdf8; text-align: center; }
+        .form-group { margin-bottom: 14px; text-align: left; }
+        .form-group label { display: block; font-size: 0.85rem; color: #cbd5e1; margin-bottom: 5px; }
+        .form-group input, .form-group textarea { width: 100%; padding: 12px; background: #0f172a; border: 1px solid #334155; border-radius: 8px; color: #fff; font-size: 1rem; }
+        .btn-submit { width: 100%; background: linear-gradient(135deg, #0284c7, #6366f1); color: #fff; padding: 12px; border-radius: 8px; border: none; font-size: 1rem; font-weight: 700; cursor: pointer; margin-top: 10px; }
+        .close-btn { background: #334155; color: #fff; padding: 6px 14px; border-radius: 8px; border: none; cursor: pointer; float: right; }
+    </style>
+</head>
+<body>
+    <nav>
+        <div class="logo"><i class="fa-solid fa-sparkles"></i> Apex AI Solutions</div>
+        <div class="auth-container">
+            <button class="auth-btn" id="signin-btn" onclick="openModal()"><i class="fa-brands fa-google"></i> Sign In / Register</button>
+            <div class="user-profile-badge" id="profile-badge">
+                <div class="user-avatar" id="avatar-initial">U</div>
+                <div class="user-details">
+                    <span class="user-name" id="badge-username">User</span>
+                    <span class="user-email" id="badge-email">user@gmail.com</span>
+                </div>
+                <button class="logout-btn" onclick="logoutUser()">Logout</button>
+            </div>
+        </div>
+    </nav>
+
+    <section class="hero">
+        <h1>Building Next-Gen Digital Products</h1>
+        <p>Enterprise Web Platforms, AI Agents, Custom Chatbots, Video Editing, and Social Automation.</p>
+        <button class="consult-btn" onclick="openModal()"><i class="fa-solid fa-comments"></i> Consult AI Agent Now</button>
+    </section>
+
+    <!-- ENTERPRISE CAPABILITIES -->
+    <section class="services-section">
+        <h2 class="section-title">Enterprise Capabilities</h2>
+        <div class="grid">
+            <!-- Box 1 -->
+            <div class="card">
+                <img src="https://images.unsplash.com/photo-1498050108023-c5249f4df085?auto=format&fit=crop&w=600&q=80" alt="Web Development">
+                <h3>Web & Software Dev</h3>
+                <p>Full-stack web applications, SaaS platforms, and enterprise software solutions.</p>
+            </div>
+            <!-- Box 2 -->
+            <div class="card">
+                <img src="https://images.unsplash.com/photo-1531746020798-e6953c6e8e04?auto=format&fit=crop&w=600&q=80" alt="Smart Chatbot Systems">
+                <h3>Smart Chatbot Systems</h3>
+                <p>Conversational bots for automated customer acquisition and support.</p>
+            </div>
+            <!-- Box 3 -->
+            <div class="card">
+                <img src="https://images.unsplash.com/photo-1574717024653-61fd2cf4d44d?auto=format&fit=crop&w=600&q=80" alt="AI Video Editing">
+                <h3>AI Video Editing</h3>
+                <p>Automated video rendering, clipping, subtitling, and short-form creation.</p>
+            </div>
+            <!-- Box 4 -->
+            <div class="card">
+                <img src="https://images.unsplash.com/photo-1611162617213-7d7a39e9b1d7?auto=format&fit=crop&w=600&q=80" alt="Social Media Automation">
+                <h3>Social Media Automation</h3>
+                <p>Automated Facebook/Instagram scheduling, graphic design, and posts.</p>
+            </div>
+            <!-- Box 5 -->
+            <div class="card">
+                <img src="https://images.unsplash.com/photo-1451187580459-43490279c0fa?auto=format&fit=crop&w=600&q=80" alt="Cloud Infrastructure">
+                <h3>Cloud Infrastructure</h3>
+                <p>Enterprise cloud deployment, backend APIs, and database integration.</p>
+            </div>
+            <!-- Box 6: Human-Robot AI Interaction -->
+            <div class="card">
+                <img src="https://images.pexels.com/photos/8386440/pexels-photo-8386440.jpeg?auto=compress&cs=tinysrgb&w=600" alt="Autonomous AI Agents">
+                <h3>Autonomous AI Agents</h3>
+                <p>Intelligent autonomous workflows, task automation, custom LLM integration, and multi-agent systems.</p>
+            </div>
+        </div>
+    </section>
+
+    <!-- Active Workspace -->
+    <section id="agent-workspace" class="agent-container">
+        <h2 class="section-title">Active Workspace</h2>
+        <div class="iframe-wrapper">
+            <iframe id="agent-iframe" src="" title="AI Workspace"></iframe>
+        </div>
+    </section>
+
+    <!-- Modal -->
+    <div class="modal" id="authModal">
+        <div class="modal-content">
+            <button class="close-btn" onclick="closeModal('authModal')">×</button>
+            <h2>Sign In / Create Account</h2>
+            <p style="color: #94a3b8; font-size: 0.9rem; text-align: center; margin-bottom: 20px;">Sign in to access your interactive AI Agent Workspace.</p>
+            <form onsubmit="saveUserProfile(event)">
+                <div class="form-group">
+                    <label>Username / Name *</label>
+                    <input type="text" id="modal-user" placeholder="e.g. TAQWA" required>
+                </div>
+                <div class="form-group">
+                    <label>Gmail / Email *</label>
+                    <input type="email" id="modal-email" placeholder="name@gmail.com" required>
+                </div>
+                <div class="form-group">
+                    <label>Age *</label>
+                    <input type="number" id="modal-age" placeholder="22" required>
+                </div>
+                <div class="form-group">
+                    <label>Country *</label>
+                    <input type="text" id="modal-country" placeholder="e.g. Pakistan" required>
+                </div>
+                <button type="submit" class="btn-submit">Launch AI Workspace</button>
+            </form>
+        </div>
+    </div>
+
+    <script>
+        let currentUser = {};
+
+        window.onload = function() {
+            const savedUser = localStorage.getItem('apex_user');
+            if (savedUser) {
+                const user = JSON.parse(savedUser);
+                currentUser = user;
+                
+                document.getElementById('signin-btn').style.display = 'none';
+                
+                const badge = document.getElementById('profile-badge');
+                badge.style.display = 'flex';
+                document.getElementById('avatar-initial').innerText = user.user.charAt(0).toUpperCase();
+                document.getElementById('badge-username').innerText = user.user;
+                document.getElementById('badge-email').innerText = user.email;
+                
+                const workspaceSection = document.getElementById('agent-workspace');
+                const iframe = document.getElementById('agent-iframe');
+                iframe.src = `http://localhost:8501/?username=${encodeURIComponent(user.user)}&email=${encodeURIComponent(user.email)}&age=${encodeURIComponent(user.age)}&country=${encodeURIComponent(user.country)}`;
+                workspaceSection.style.display = 'block';
+            }
+        };
+
+        function openModal() { document.getElementById('authModal').style.display = 'flex'; }
+        function closeModal(id) { document.getElementById(id).style.display = 'none'; }
+
+        function saveUserProfile(e) {
+            e.preventDefault();
+            currentUser = {
+                user: document.getElementById('modal-user').value,
+                email: document.getElementById('modal-email').value,
+                age: document.getElementById('modal-age').value,
+                country: document.getElementById('modal-country').value
+            };
+
+            localStorage.setItem('apex_user', JSON.stringify(currentUser));
+
+            closeModal('authModal');
+            document.getElementById('signin-btn').style.display = 'none';
+            
+            const badge = document.getElementById('profile-badge');
+            badge.style.display = 'flex';
+            document.getElementById('avatar-initial').innerText = currentUser.user.charAt(0).toUpperCase();
+            document.getElementById('badge-username').innerText = currentUser.user;
+            document.getElementById('badge-email').innerText = currentUser.email;
+
+            const workspaceSection = document.getElementById('agent-workspace');
+            const iframe = document.getElementById('agent-iframe');
+            iframe.src = `http://localhost:8501/?username=${encodeURIComponent(currentUser.user)}&email=${encodeURIComponent(currentUser.email)}&age=${encodeURIComponent(currentUser.age)}&country=${encodeURIComponent(currentUser.country)}`;
+            workspaceSection.style.display = 'block';
+            workspaceSection.scrollIntoView({behavior: 'smooth'});
+        }
+
+        function logoutUser() {
+            localStorage.removeItem('apex_user');
+            location.reload();
+        }
+    </script>
+</body>
+</html>

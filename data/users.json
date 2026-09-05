@@ -1,0 +1,18 @@
+[
+    {
+        "name": "Guest",
+        "email": "Not Provided",
+        "age": "N/A",
+        "country": "N/A",
+        "signup_time": "2026-09-05 08:18:55.484940",
+        "status": "pending"
+    },
+    {
+        "name": "Taqwa Asif",
+        "email": "banukabil348@gmail.com",
+        "age": "19",
+        "country": "Pakistan",
+        "signup_time": "2026-09-04 11:32:48.791886",
+        "status": "pending"
+    }
+]

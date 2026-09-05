@@ -1,0 +1,16 @@
+[
+    {
+        "sender": "user",
+        "user_name": "Taqwa Asif",
+        "user_email": "banukabil348@gmail.com",
+        "message": "tell me about payment \n\n",
+        "timestamp": "2026-09-05 08:20:55.538769"
+    },
+    {
+        "sender": "admin",
+        "user_name": "Guest",
+        "user_email": "Not Provided",
+        "message": "i willhelp\n",
+        "timestamp": "2026-09-05 08:23:43.472051"
+    }
+]
