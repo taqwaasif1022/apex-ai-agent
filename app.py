@@ -1,6 +1,6 @@
 # ============================================
 # 📁 app.py - APEX AI AGENT (FINAL)
-# TAQWA's Final Project - STREAMLIT CLOUD READY
+# TAQWA's Final Project - ALL FIXES
 # ============================================
 
 import os
@@ -130,7 +130,6 @@ def get_user_messages(email):
     return user_msgs
 
 def clear_all_history():
-    """Clear all history data"""
     with open('data/messages.json', 'w') as f:
         json.dump([], f, indent=4)
     with open('data/admin_chat_history.json', 'w') as f:
@@ -329,18 +328,10 @@ langchain_agent = create_agent(
     system_prompt="""You are Apex AI - a professional, friendly Business Agent.
 
 IMPORTANT RULES:
-1. ALWAYS start with: "Hey! I'm Apex AI - your business buddy! 🚀"
-2. Introduce yourself briefly ONLY on first message
-3. Ask what they want to build
-4. If they ask about payment, say admin will help
-5. Keep it short (max 50 words)
-
-ABOUT TOOLS:
-- Use "internet_search" when user asks about latest news
-- Use "get_report_data" when user asks for report, data, or summary
-- Use "send_report_email" when user says to send/email the report
-
-Give short, clear, professional answers.
+1. ONLY introduce yourself when user asks "who are you"
+2. For off-topic questions (birthday, weather, etc.), say "I only answer business-related questions"
+3. For payment, suggest admin
+4. Keep it short (max 50 words)
 """
 )
 
@@ -375,7 +366,7 @@ def run_langchain_agent(user_input):
         return f"⚠️ Error: {str(e)}"
 
 # ============================================
-# 🤖 AI AGENT CLASS
+# 🤖 AI AGENT CLASS - FIXED
 # ============================================
 
 class AIAgent:
@@ -388,22 +379,26 @@ class AIAgent:
         self.memory.append({"role": "user", "content": user_input})
         lower_input = user_input.lower()
 
+        # ✅ FIXED: Off-topic questions - Birthday, Weather, etc.
         off_topic = ["weather", "birthday", "song", "movie", "recipe", "joke", "funny", "love", "relationship"]
         if any(word in lower_input for word in off_topic):
             return {
-                "reply": "🌟 I'm Apex AI - Your Business Partner!\n\nI specialize in:\n• 💻 Web Development\n• 🤖 AI Agents\n• 🎬 Video Editing\n• 📱 Automation\n\nHow can I help with your business? 😊",
+                "reply": "🌟 I'm Apex AI - Your Business Partner!\n\nI only answer business-related questions like:\n• 💻 Web Development\n• 🤖 AI Agents\n• 🎬 Video Editing\n• 📱 Automation\n\nHow can I help with your business? 😊",
                 "should_connect": False
             }
 
+        # ✅ FIXED: Payment - Admin link
         if "payment" in lower_input or "pay" in lower_input:
             return {
-                "reply": "💎 **Payment & Pricing:**\n\nFor payment details, I'll connect you with our admin team.\n\n✨ Why choose us?\n• Best prices\n• Flexible plans\n• Quality guaranteed\n\nClick **Talk to Admin** below! 🚀",
+                "reply": "💎 **Payment & Pricing:**\n\nFor payment details, I'll connect you with our admin team.\n\n📞 **Talk to Admin:** http://localhost:8501/?admin=true\n\nOr click **Talk to Admin** button above! 🚀",
                 "should_connect": True
             }
 
-        if "who are you" in lower_input or "who is" in lower_input:
+        # ✅ FIXED: Identity - Sirf "who are you" par intro
+        if "who are you" in lower_input or "who is" in lower_input or "introduce" in lower_input:
+            self.intro_given = True
             return {
-                "reply": "🌟 I'm Apex AI - your business buddy! 🚀\n\nI'm a professional Business AI Agent designed to help you with:\n• 💻 Web Development\n• 🤖 Custom AI Agents\n• 🎬 Video Editing\n• 📱 Automation\n\nTell me what you want to build! 😊",
+                "reply": "🌟 **Hey! I'm Apex AI - your business buddy!** 🚀\n\nI'm a professional Business AI Agent designed to help you with:\n• 💻 Web Development\n• 🤖 Custom AI Agents\n• 🎬 Video Editing\n• 📱 Automation\n\nTell me what you want to build! 😊",
                 "should_connect": False
             }
 
@@ -419,12 +414,7 @@ class AIAgent:
             except Exception:
                 pass
 
-        if not self.intro_given:
-            intro = "Hey! I'm Apex AI - your business buddy! 🚀\n\n"
-            self.intro_given = True
-        else:
-            intro = ""
-
+        # ✅ FIXED: Direct answers - no intro unless asked
         prompt = f"""
 You are Apex AI - a friendly, professional Business Agent.
 
@@ -432,7 +422,7 @@ USER: {user_input}
 NAME: {self.user_info.get('name', 'Friend')}
 
 RULES:
-1. {'Start with: "Hey! I\'m Apex AI - your business buddy! 🚀"' if not self.intro_given else 'DO NOT introduce yourself again - user already knows you'}
+1. DO NOT introduce yourself unless user asked "who are you"
 2. Give a DIRECT, TO-THE-POINT answer
 3. Use 1-2 emojis maximum
 4. Keep it short (max 40 words)
@@ -446,14 +436,12 @@ Response (max 40 words):
         
         if reply:
             reply = reply.replace('Gemini', 'Apex AI').replace('Google', 'Apex AI')
-            if intro and not reply.startswith(intro):
-                reply = intro + reply
             self.memory.append({"role": "assistant", "content": reply})
             should_connect = any(word in reply.lower() for word in ["admin", "talk", "connect"])
             return {"reply": reply, "should_connect": should_connect}
         else:
             return {
-                "reply": "🌟 Hey! I'm Apex AI!\n\nI'd love to help with:\n• 💻 Web Development\n• 🤖 AI Agents\n• 🎬 Video Editing\n• 📱 Automation\n\nWhat can I do for you today? 😊",
+                "reply": "I can help with business solutions! What would you like to build today? 😊",
                 "should_connect": True
             }
 
@@ -466,12 +454,12 @@ Response (max 40 words):
         ]
 
 # ============================================
-# 🎨 UI - FORCE DARK THEME (STREAMLIT CLOUD)
+# 🎨 UI - FORCE DARK THEME
 # ============================================
 
 st.markdown("""
 <style>
-    /* ✅ FORCE DARK THEME ON STREAMLIT CLOUD */
+    /* ✅ FORCE DARK THEME */
     .stApp {
         background: radial-gradient(circle at top, #1e1b4b 0%, #0b0f19 80%) !important;
         color: #f8fafc !important;
@@ -496,6 +484,7 @@ st.markdown("""
         box-shadow: 0 0 30px rgba(56, 189, 248, 0.1) !important;
     }
     
+    /* ✅ CHAT CONTAINER - Fixed */
     .chat-container {
         background: rgba(15, 23, 42, 0.6) !important;
         border: 2px solid #6366f1 !important;
@@ -520,10 +509,6 @@ st.markdown("""
         animation: slideIn 0.3s ease !important;
     }
     
-    .user-msg b {
-        color: #93c5fd !important;
-    }
-    
     .bot-msg {
         background: linear-gradient(135deg, #1a1a4e, #7c3aed) !important;
         border-left: 4px solid #a78bfa !important;
@@ -536,24 +521,7 @@ st.markdown("""
         animation: slideIn 0.3s ease !important;
     }
     
-    .bot-msg b {
-        color: #c4b5fd !important;
-    }
-    
-    .bot-msg ul {
-        padding-left: 20px !important;
-    }
-    
-    .bot-msg li {
-        list-style-type: none !important;
-    }
-    
-    .bot-msg li::before {
-        content: "✨ " !important;
-        color: #a78bfa !important;
-    }
-    
-    /* ✅ FORCE BUTTONS DARK */
+    /* ✅ BUTTONS - FIXED WHITE BOX */
     .stButton button {
         background: linear-gradient(135deg, #1e293b, #334155) !important;
         color: #f8fafc !important;
@@ -573,7 +541,7 @@ st.markdown("""
         border-color: #a78bfa !important;
     }
     
-    /* ✅ TALK TO ADMIN BUTTON */
+    /* ✅ TALK TO ADMIN - PINK */
     .stButton button[data-testid="baseButton-secondary"] {
         background: linear-gradient(135deg, #f472b6, #ec4899) !important;
         border: none !important;
@@ -581,12 +549,7 @@ st.markdown("""
         color: white !important;
     }
     
-    .stButton button[data-testid="baseButton-secondary"]:hover {
-        background: linear-gradient(135deg, #ec4899, #db2777) !important;
-        box-shadow: 0 4px 30px rgba(244, 114, 182, 0.6) !important;
-    }
-    
-    /* ✅ NOTIFY ADMIN BUTTON */
+    /* ✅ NOTIFY ADMIN - GOLD */
     .stButton button[data-testid="baseButton-primary"] {
         background: linear-gradient(135deg, #f59e0b, #d97706) !important;
         border: none !important;
@@ -594,10 +557,17 @@ st.markdown("""
         color: white !important;
     }
     
-    .stButton button[data-testid="baseButton-primary"]:hover {
-        background: linear-gradient(135deg, #d97706, #b45309) !important;
-        box-shadow: 0 4px 30px rgba(245, 158, 11, 0.5) !important;
-        transform: translateY(-2px) !important;
+    /* ✅ SEND BUTTON - FIXED */
+    .stButton button[data-testid="baseButton-formSubmit"] {
+        background: linear-gradient(135deg, #2563eb, #7c3aed) !important;
+        border: none !important;
+        box-shadow: 0 4px 20px rgba(99, 102, 241, 0.4) !important;
+        color: white !important;
+    }
+    
+    .stButton button[data-testid="baseButton-formSubmit"]:hover {
+        background: linear-gradient(135deg, #1d4ed8, #6d28d9) !important;
+        box-shadow: 0 4px 30px rgba(99, 102, 241, 0.6) !important;
     }
     
     .admin-chat-box {
@@ -606,18 +576,6 @@ st.markdown("""
         border-radius: 20px !important;
         padding: 25px !important;
         box-shadow: 0 0 50px rgba(244, 114, 182, 0.3) !important;
-    }
-    
-    .admin-chat-box .stButton button {
-        background: linear-gradient(135deg, #f472b6, #ec4899) !important;
-        color: white !important;
-        border: none !important;
-        box-shadow: 0 4px 20px rgba(244, 114, 182, 0.4) !important;
-    }
-    
-    .admin-chat-box .stButton button:hover {
-        background: linear-gradient(135deg, #ec4899, #db2777) !important;
-        box-shadow: 0 4px 30px rgba(244, 114, 182, 0.6) !important;
     }
     
     .admin-reply-box {
@@ -639,10 +597,6 @@ st.markdown("""
         animation: slideIn 0.3s ease !important;
     }
     
-    .admin-user-msg b {
-        color: #f9a8d4 !important;
-    }
-    
     .admin-reply-msg {
         background: linear-gradient(135deg, #1a3a2e, #10b981) !important;
         border-left: 4px solid #34d399 !important;
@@ -654,16 +608,11 @@ st.markdown("""
         animation: slideIn 0.3s ease !important;
     }
     
-    .admin-reply-msg b {
-        color: #6ee7b7 !important;
-    }
-    
     @keyframes slideIn {
         from { opacity: 0; transform: translateY(15px) scale(0.98); }
         to { opacity: 1; transform: translateY(0) scale(1); }
     }
     
-    /* ✅ INPUT FIELDS */
     .stTextInput input {
         background: rgba(30, 41, 59, 0.8) !important;
         border: 2px solid #6366f1 !important;
@@ -691,7 +640,6 @@ st.markdown("""
         box-shadow: 0 0 25px rgba(99, 102, 241, 0.3) !important;
     }
     
-    /* ✅ HIDE STREAMLIT DEFAULT ELEMENTS */
     #MainMenu {visibility: hidden !important;}
     footer {visibility: hidden !important;}
     header {visibility: hidden !important;}
@@ -757,7 +705,6 @@ if is_admin_mode:
         
         st.markdown("---")
         
-        # Admin Chat History
         st.subheader("💬 Admin Chat History")
         
         if admin_chat_history:
@@ -771,7 +718,6 @@ if is_admin_mode:
         
         st.markdown("---")
         
-        # Report Generator
         st.subheader("📊 Agent Report Generator")
         col1, col2 = st.columns(2)
         with col1:
@@ -789,7 +735,6 @@ if is_admin_mode:
         
         tab1, tab2, tab3 = st.tabs(["👥 Users", "💬 Messages & Reply", "📧 Sent Replies"])
         
-        # Users Tab
         with tab1:
             for user in users:
                 with st.expander(f"📌 {user['name']} - {user['email']}"):
@@ -802,11 +747,9 @@ if is_admin_mode:
                         st.success("✅ Status updated!")
                         st.rerun()
         
-        # Messages Tab
         with tab2:
             st.subheader("💬 Messages - Reply to Users")
             
-            # ✅ CLEAR ALL HISTORY BUTTON
             col1, col2 = st.columns([3, 1])
             with col2:
                 if st.button("🗑️ Clear All History", use_container_width=True):
@@ -879,7 +822,6 @@ if is_admin_mode:
             else:
                 st.info("No messages yet")
         
-        # Replies History Tab
         with tab3:
             st.subheader("📧 Admin Reply History")
             if admin_replies:
@@ -900,7 +842,6 @@ if is_admin_mode:
 # 👤 USER VIEW
 # ============================================
 
-# Load user's chat history
 user_history = []
 if user_email != "Not Provided":
     user_history = get_user_messages(user_email)
@@ -922,7 +863,6 @@ if "agent" not in st.session_state:
 if "show_admin_chat" not in st.session_state:
     st.session_state.show_admin_chat = False
 
-# Header
 st.markdown("""
 <div style="text-align: center; padding: 20px 0;">
     <div class="gradient-header">Apex AI Business Agent</div>
@@ -930,11 +870,9 @@ st.markdown("""
 </div>
 """, unsafe_allow_html=True)
 
-# User Profile Card
 col1, col2, col3 = st.columns([2, 1, 1])
 
 with col1:
-    # ✅ Fix for guest users
     if user_email == "Not Provided" or user_name == "Guest":
         display_name = "Guest User"
         display_email = "Not Signed In"
@@ -977,7 +915,6 @@ with col3:
         st.success("✅ Admin notified!")
         st.balloons()
 
-# Admin Chat Box
 if st.session_state.show_admin_chat:
     st.markdown("""
     <div class="admin-chat-box">
@@ -1020,7 +957,7 @@ if st.session_state.show_admin_chat:
 
 st.markdown("---")
 
-# Chat Display + Clear Chat
+# ✅ CHAT DISPLAY - ONLY AGENT CHAT
 col1, col2 = st.columns([3, 1])
 with col1:
     st.markdown("### 💬 Chat with Apex AI")
@@ -1049,7 +986,7 @@ with st.container():
     
     st.markdown('</div>', unsafe_allow_html=True)
 
-# Quick Topics
+# ✅ QUICK TOPICS - FIXED
 st.markdown("### ⚡ Quick Topics")
 qcols = st.columns(4)
 quick_topics = st.session_state.agent.get_quick_topics()
@@ -1061,7 +998,7 @@ for idx, col in enumerate(qcols):
         if st.button(f"{icons[idx]}{quick_topics[idx]}", key=f"topic_{idx}", use_container_width=True):
             selected_topic = quick_topics[idx]
 
-# Chat Input
+# ✅ CHAT INPUT - FIXED
 st.markdown("### 💬 Type your message")
 
 with st.form(key="chat_form", clear_on_submit=True):
@@ -1101,7 +1038,6 @@ with st.form(key="chat_form", clear_on_submit=True):
                     is_new_user = (existing is None)
                     
                     if is_new_user:
-                        # ✅ Welcome email to USER
                         send_gmail_notification(
                             user_email,
                             "🎉 Welcome to Apex AI Solutions!",
@@ -1123,7 +1059,6 @@ with st.form(key="chat_form", clear_on_submit=True):
                             """
                         )
                         
-                        # ✅ Admin notification
                         send_gmail_notification(
                             GMAIL_EMAIL,
                             f"🔔 New User Sign-In: {user_name}",
