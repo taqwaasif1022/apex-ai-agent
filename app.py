@@ -1,7 +1,14 @@
 # ============================================
-# 📁 app.py - APEX AI AGENT (FINAL)
-# TAQWA's Final Project - FIXED INTRO
+# 📁 app.py - APEX AI BUSINESS AGENT
+# 🏢 Professional AI Agent for Business Solutions
+# 👩‍💻 Developer: TAQWA
+# 📅 Version: 1.0.0
 # ============================================
+
+"""
+Apex AI Business Agent - A professional AI agent that helps businesses with 
+web development, AI solutions, video editing, and automation.
+"""
 
 import os
 import json
@@ -9,6 +16,7 @@ import datetime
 import smtplib
 from email.mime.text import MIMEText
 from email.mime.multipart import MIMEMultipart
+
 import streamlit as st
 from dotenv import load_dotenv
 import pandas as pd
@@ -19,18 +27,39 @@ from langchain.agents import create_agent
 from langchain.tools import tool
 from langchain_google_genai import ChatGoogleGenerativeAI
 
-st.set_page_config(page_title="Apex AI Agent", page_icon="🤖", layout="wide")
+# ============================================
+# 📌 STREAMLIT PAGE CONFIGURATION
+# ============================================
+
+st.set_page_config(
+    page_title="Apex AI Business Agent",
+    page_icon="🤖",
+    layout="wide",
+    initial_sidebar_state="collapsed"
+)
 
 load_dotenv()
 
 # ============================================
-# 📧 GMAIL SETUP
+# 📧 GMAIL EMAIL CONFIGURATION
 # ============================================
 
 GMAIL_EMAIL = os.getenv("GMAIL_EMAIL", "banukabil348@gmail.com")
 GMAIL_PASSWORD = os.getenv("GMAIL_PASSWORD", "your_app_password")
 
-def send_gmail_notification(to_email, subject, body):
+
+def send_gmail_notification(to_email: str, subject: str, body: str) -> bool:
+    """
+    Send an email notification using Gmail SMTP.
+    
+    Args:
+        to_email (str): Recipient email address
+        subject (str): Email subject line
+        body (str): Email body content
+    
+    Returns:
+        bool: True if email sent successfully, False otherwise
+    """
     try:
         msg = MIMEMultipart()
         msg['From'] = GMAIL_EMAIL
@@ -48,11 +77,13 @@ def send_gmail_notification(to_email, subject, body):
         print(f"Email error: {e}")
         return False
 
+
 # ============================================
-# 📁 DATA HANDLING
+# 📁 DATA STORAGE FUNCTIONS
 # ============================================
 
-def load_users():
+def load_users() -> list:
+    """Load all registered users from JSON file."""
     try:
         os.makedirs('data', exist_ok=True)
         with open('data/users.json', 'r') as f:
@@ -60,7 +91,9 @@ def load_users():
     except Exception:
         return []
 
-def save_user(user_data):
+
+def save_user(user_data: dict) -> None:
+    """Save or update user data in JSON file."""
     users = load_users()
     for i, u in enumerate(users):
         if u['email'] == user_data['email']:
@@ -72,7 +105,9 @@ def save_user(user_data):
     with open('data/users.json', 'w') as f:
         json.dump(users, f, indent=4)
 
-def load_messages():
+
+def load_messages() -> list:
+    """Load all chat messages from JSON file."""
     try:
         os.makedirs('data', exist_ok=True)
         with open('data/messages.json', 'r') as f:
@@ -80,13 +115,17 @@ def load_messages():
     except Exception:
         return []
 
-def save_message(msg_data):
+
+def save_message(msg_data: dict) -> None:
+    """Save a chat message to JSON file."""
     messages = load_messages()
     messages.append(msg_data)
     with open('data/messages.json', 'w') as f:
         json.dump(messages, f, indent=4)
 
-def load_admin_replies():
+
+def load_admin_replies() -> list:
+    """Load all admin replies from JSON file."""
     try:
         os.makedirs('data', exist_ok=True)
         with open('data/admin_replies.json', 'r') as f:
@@ -94,13 +133,17 @@ def load_admin_replies():
     except Exception:
         return []
 
-def save_admin_reply(reply_data):
+
+def save_admin_reply(reply_data: dict) -> None:
+    """Save an admin reply to JSON file."""
     replies = load_admin_replies()
     replies.append(reply_data)
     with open('data/admin_replies.json', 'w') as f:
         json.dump(replies, f, indent=4)
 
-def load_admin_chat_history():
+
+def load_admin_chat_history() -> list:
+    """Load admin-user chat history from JSON file."""
     try:
         os.makedirs('data', exist_ok=True)
         with open('data/admin_chat_history.json', 'r') as f:
@@ -108,29 +151,32 @@ def load_admin_chat_history():
     except Exception:
         return []
 
-def save_admin_chat_history(chat_data):
+
+def save_admin_chat_history(chat_data: dict) -> None:
+    """Save admin-user chat to JSON file."""
     history = load_admin_chat_history()
     history.append(chat_data)
     with open('data/admin_chat_history.json', 'w') as f:
         json.dump(history, f, indent=4)
 
-def get_user_by_email(email):
+
+def get_user_by_email(email: str) -> dict:
+    """Retrieve user data by email address."""
     users = load_users()
     for user in users:
         if user['email'] == email:
             return user
     return None
 
-def get_user_messages(email):
+
+def get_user_messages(email: str) -> list:
+    """Retrieve all messages for a specific user."""
     messages = load_messages()
-    user_msgs = []
-    for msg in messages:
-        if msg.get('user') == email:
-            user_msgs.append(msg)
-    return user_msgs
+    return [msg for msg in messages if msg.get('user') == email]
+
 
 # ============================================
-# 🤖 GEMINI SETUP
+# 🤖 GEMINI AI CONFIGURATION
 # ============================================
 
 gemini_key = os.getenv("GEMINI_API_KEY") or os.getenv("GOOGLE_API_KEY")
@@ -141,7 +187,17 @@ if not gemini_key:
 
 client = genai.Client(api_key=gemini_key)
 
-def generate_ai_response(prompt):
+
+def generate_ai_response(prompt: str) -> str:
+    """
+    Generate AI response using Google Gemini models.
+    
+    Args:
+        prompt (str): User input prompt
+    
+    Returns:
+        str: AI generated response
+    """
     models_to_try = [
         "gemini-3.6-flash",
         "gemini-3.5-flash",
@@ -163,13 +219,24 @@ def generate_ai_response(prompt):
             
     return None
 
+
 # ============================================
-# 🔍 TAVILY SEARCH
+# 🔍 TAVILY SEARCH API
 # ============================================
 
 TAVILY_API_KEY = os.getenv("TAVILY_API_KEY")
 
-def search_internet(query):
+
+def search_internet(query: str) -> str:
+    """
+    Search the internet using Tavily API.
+    
+    Args:
+        query (str): Search query
+    
+    Returns:
+        str: Search results
+    """
     if not TAVILY_API_KEY:
         return "Tavily API key not configured."
     
@@ -194,17 +261,23 @@ def search_internet(query):
     except Exception as e:
         return f"Search error: {e}"
 
+
 # ============================================
-# 📊 REPORT FUNCTIONS
+# 📊 REPORT GENERATION FUNCTIONS
 # ============================================
 
-def get_todays_report_data():
+def get_todays_report_data() -> pd.DataFrame:
+    """
+    Generate today's report data including users and messages.
+    
+    Returns:
+        pd.DataFrame: Report data
+    """
     try:
         users = load_users()
         messages = load_messages()
         
         today = datetime.datetime.now().strftime("%Y-%m-%d")
-        today_users = [u for u in users if u.get('signup_time', '').startswith(today)]
         today_messages = [m for m in messages if m.get('timestamp', '').startswith(today)]
         
         data = []
@@ -222,7 +295,14 @@ def get_todays_report_data():
     except Exception:
         return pd.DataFrame([{"User": "Error", "Message": "Data load issue", "Time": "-"}])
 
-def send_daily_report():
+
+def send_daily_report() -> str:
+    """
+    Send daily report email to admin.
+    
+    Returns:
+        str: Status message
+    """
     try:
         df = get_todays_report_data()
         table_html = df.to_html(index=False, border=0)
@@ -265,14 +345,16 @@ def send_daily_report():
     except Exception as e:
         return f"❌ Error: {str(e)}"
 
+
 # ============================================
-# 🧠 LANGCHAIN v1 AGENT TOOLS
+# 🧠 LANGCHAIN AGENT TOOLS
 # ============================================
 
 @tool
 def internet_search(query: str) -> str:
     """Search the internet for current information, news, or latest updates."""
     return search_internet(query)
+
 
 @tool
 def get_report_data(query: str) -> str:
@@ -293,13 +375,15 @@ def get_report_data(query: str) -> str:
         f"📝 Recent Messages:\n{df.to_string(index=False)}"
     )
 
+
 @tool
 def send_report_email(query: str) -> str:
     """Send the daily report to admin email."""
     return send_daily_report()
 
+
 # ============================================
-# 🧠 LANGCHAIN AGENT
+# 🧠 LANGCHAIN AGENT SETUP
 # ============================================
 
 langchain_model = ChatGoogleGenerativeAI(
@@ -329,7 +413,9 @@ Give short, clear, professional answers.
 """
 )
 
-def run_langchain_agent(user_input):
+
+def run_langchain_agent(user_input: str) -> str:
+    """Execute the LangChain agent with user input."""
     try:
         result = langchain_agent.invoke({
             "messages": [{"role": "user", "content": user_input}]
@@ -359,20 +445,33 @@ def run_langchain_agent(user_input):
     except Exception as e:
         return f"⚠️ Error: {str(e)}"
 
+
 # ============================================
-# 🤖 AI AGENT CLASS - FIXED INTRO
+# 🤖 AI AGENT CLASS
 # ============================================
 
 class AIAgent:
+    """Main AI Agent class that handles user interactions."""
+    
     def __init__(self):
         self.memory = []
         self.user_info = {}
-        self.intro_given = False  # ✅ Pehli baar intro diya ya nahi
+        self.intro_given = False
 
-    def think(self, user_input):
+    def think(self, user_input: str) -> dict:
+        """
+        Process user input and generate a response.
+        
+        Args:
+            user_input (str): User's message
+            
+        Returns:
+            dict: Contains 'reply' and 'should_connect' flag
+        """
         self.memory.append({"role": "user", "content": user_input})
         lower_input = user_input.lower()
 
+        # Off-topic questions
         off_topic = ["weather", "birthday", "song", "movie", "recipe", "joke", "funny", "love", "relationship"]
         if any(word in lower_input for word in off_topic):
             return {
@@ -380,18 +479,21 @@ class AIAgent:
                 "should_connect": False
             }
 
+        # Payment inquiries
         if "payment" in lower_input or "pay" in lower_input:
             return {
                 "reply": "💎 **Payment & Pricing:**\n\nFor payment details, I'll connect you with our admin team.\n\n✨ **Why choose us?**\n• Best prices\n• Flexible plans\n• Quality guaranteed\n\nClick **Talk to Admin** below! 🚀",
                 "should_connect": True
             }
 
+        # Identity questions
         if "who are you" in lower_input or "who is" in lower_input:
             return {
                 "reply": "🌟 **I'm Apex AI - your business buddy!** 🚀\n\nI'm a professional Business AI Agent designed to help you with:\n• 💻 Web Development\n• 🤖 Custom AI Agents\n• 🎬 Video Editing\n• 📱 Automation\n\nTell me what you want to build, and I'll guide you! 😊",
                 "should_connect": False
             }
 
+        # Agent commands
         agent_keywords = ["report", "data", "summary", "send", "email", "search", "find", "latest", "news"]
         
         if any(word in lower_input for word in agent_keywords):
@@ -401,10 +503,10 @@ class AIAgent:
                 self.memory.append({"role": "assistant", "content": reply})
                 should_connect = any(word in reply.lower() for word in ["admin", "talk", "connect"])
                 return {"reply": reply, "should_connect": should_connect}
-            except Exception as e:
+            except Exception:
                 pass
 
-        # ✅ FIXED: Sirf pehli baar intro de, phir to-the-point
+        # Standard response with intro control
         if not self.intro_given:
             intro = "Hey! I'm Apex AI - your business buddy! 🚀\n\n"
             self.intro_given = True
@@ -443,7 +545,8 @@ Response (max 40 words):
                 "should_connect": True
             }
 
-    def get_quick_topics(self):
+    def get_quick_topics(self) -> list:
+        """Return quick topic suggestions for users."""
         return [
             "Web Development",
             "AI Agents", 
@@ -451,17 +554,20 @@ Response (max 40 words):
             "Automation"
         ]
 
+
 # ============================================
-# 🎨 UI - CUSTOM CSS
+# 🎨 UI STYLING
 # ============================================
 
 st.markdown("""
 <style>
+    /* Main App Background */
     .stApp {
         background: radial-gradient(circle at top, #1e1b4b 0%, #0b0f19 80%);
         color: #f8fafc;
     }
     
+    /* Header Gradient */
     .gradient-header {
         font-size: 2.5rem;
         font-weight: 800;
@@ -472,6 +578,7 @@ st.markdown("""
         padding: 10px 0;
     }
     
+    /* User Card */
     .user-card {
         background: rgba(30, 41, 59, 0.8);
         border: 1px solid #38bdf8;
@@ -481,6 +588,7 @@ st.markdown("""
         box-shadow: 0 0 30px rgba(56, 189, 248, 0.1);
     }
     
+    /* Chat Container */
     .chat-container {
         background: rgba(15, 23, 42, 0.6);
         border: 2px solid #6366f1;
@@ -493,6 +601,7 @@ st.markdown("""
         margin-bottom: 15px;
     }
     
+    /* User Messages - Blue Theme */
     .user-msg {
         background: linear-gradient(135deg, #1e3a5f, #2563eb);
         border-left: 4px solid #60a5fa;
@@ -504,10 +613,7 @@ st.markdown("""
         animation: slideIn 0.3s ease;
     }
     
-    .user-msg b {
-        color: #93c5fd;
-    }
-    
+    /* Agent Messages - Purple Theme */
     .bot-msg {
         background: linear-gradient(135deg, #1a1a4e, #7c3aed);
         border-left: 4px solid #a78bfa;
@@ -520,23 +626,7 @@ st.markdown("""
         animation: slideIn 0.3s ease;
     }
     
-    .bot-msg b {
-        color: #c4b5fd;
-    }
-    
-    .bot-msg ul {
-        padding-left: 20px;
-    }
-    
-    .bot-msg li {
-        list-style-type: none;
-    }
-    
-    .bot-msg li::before {
-        content: "✨ ";
-        color: #a78bfa;
-    }
-    
+    /* Admin Messages - Pink Theme */
     .admin-user-msg {
         background: linear-gradient(135deg, #4a1a2e, #db2777);
         border-left: 4px solid #f472b6;
@@ -548,10 +638,7 @@ st.markdown("""
         animation: slideIn 0.3s ease;
     }
     
-    .admin-user-msg b {
-        color: #f9a8d4;
-    }
-    
+    /* Admin Replies - Green Theme */
     .admin-reply-msg {
         background: linear-gradient(135deg, #1a3a2e, #10b981);
         border-left: 4px solid #34d399;
@@ -563,15 +650,13 @@ st.markdown("""
         animation: slideIn 0.3s ease;
     }
     
-    .admin-reply-msg b {
-        color: #6ee7b7;
-    }
-    
+    /* Animation */
     @keyframes slideIn {
         from { opacity: 0; transform: translateY(15px) scale(0.98); }
         to { opacity: 1; transform: translateY(0) scale(1); }
     }
     
+    /* Admin Chat Box */
     .admin-chat-box {
         background: linear-gradient(135deg, #fdf2f8, #fce7f3);
         border: 3px solid #f472b6;
@@ -588,10 +673,12 @@ st.markdown("""
         margin: 10px 0;
     }
     
+    /* Hide Streamlit Default Elements */
     #MainMenu {visibility: hidden;}
     footer {visibility: hidden;}
     header {visibility: hidden;}
     
+    /* Input Fields */
     .stTextInput input {
         background: rgba(30, 41, 59, 0.8) !important;
         border: 2px solid #6366f1 !important;
@@ -621,8 +708,9 @@ st.markdown("""
 </style>
 """, unsafe_allow_html=True)
 
+
 # ============================================
-# 👤 MAIN APP
+# 📌 MAIN APPLICATION
 # ============================================
 
 query_params = st.query_params
@@ -633,6 +721,7 @@ user_name = query_params.get("username", "Guest")
 user_age = query_params.get("age", "N/A")
 user_country = query_params.get("country", "N/A")
 
+# Auto-login for existing users
 if user_email != "Not Provided":
     existing_user = get_user_by_email(user_email)
     if existing_user:
@@ -640,8 +729,9 @@ if user_email != "Not Provided":
         user_age = existing_user.get('age', user_age)
         user_country = existing_user.get('country', user_country)
 
+
 # ============================================
-# 👨‍💼 ADMIN VIEW
+# 👨‍💼 ADMIN PANEL
 # ============================================
 
 if is_admin_mode:
@@ -673,13 +763,15 @@ if is_admin_mode:
         admin_replies = load_admin_replies()
         admin_chat_history = load_admin_chat_history()
         
+        # Statistics
         col1, col2, col3 = st.columns(3)
-        with col1: st.metric("👥 Users", len(users))
+        with col1: st.metric("👥 Total Users", len(users))
         with col2: st.metric("⏳ Pending", len([u for u in users if u.get('status') == 'pending']))
         with col3: st.metric("💬 Messages", len(messages))
         
         st.markdown("---")
         
+        # Admin Chat History
         st.subheader("💬 Admin Chat History")
         
         if admin_chat_history:
@@ -693,6 +785,7 @@ if is_admin_mode:
         
         st.markdown("---")
         
+        # Report Generator
         st.subheader("📊 Agent Report Generator")
         col1, col2 = st.columns(2)
         with col1:
@@ -710,6 +803,7 @@ if is_admin_mode:
         
         tab1, tab2, tab3 = st.tabs(["👥 Users", "💬 Messages & Reply", "📧 Sent Replies"])
         
+        # Users Tab
         with tab1:
             for user in users:
                 with st.expander(f"📌 {user['name']} - {user['email']}"):
@@ -722,6 +816,7 @@ if is_admin_mode:
                         st.success("✅ Status updated!")
                         st.rerun()
         
+        # Messages Tab
         with tab2:
             st.subheader("💬 Messages - Reply to Users")
             
@@ -787,6 +882,7 @@ if is_admin_mode:
             else:
                 st.info("No messages yet")
         
+        # Replies History Tab
         with tab3:
             st.subheader("📧 Admin Reply History")
             if admin_replies:
@@ -802,6 +898,7 @@ if is_admin_mode:
                 st.info("No replies sent yet")
     
     st.stop()
+
 
 # ============================================
 # 👤 USER VIEW
@@ -820,10 +917,16 @@ if "chat_history" not in st.session_state:
 
 if "agent" not in st.session_state:
     st.session_state.agent = AIAgent()
-    st.session_state.agent.user_info = {"name": user_name, "email": user_email, "age": user_age, "country": user_country}
+    st.session_state.agent.user_info = {
+        "name": user_name,
+        "email": user_email,
+        "age": user_age,
+        "country": user_country
+    }
 if "show_admin_chat" not in st.session_state:
     st.session_state.show_admin_chat = False
 
+# Header
 st.markdown("""
 <div style="text-align: center; padding: 20px 0;">
     <div class="gradient-header">Apex AI Business Agent</div>
@@ -831,6 +934,7 @@ st.markdown("""
 </div>
 """, unsafe_allow_html=True)
 
+# User Profile Card
 col1, col2, col3 = st.columns([2, 1, 1])
 
 with col1:
@@ -865,6 +969,7 @@ with col3:
         st.success("✅ Admin notified!")
         st.balloons()
 
+# Admin Chat Box
 if st.session_state.show_admin_chat:
     st.markdown("""
     <div class="admin-chat-box">
@@ -907,6 +1012,7 @@ if st.session_state.show_admin_chat:
 
 st.markdown("---")
 
+# Chat Display
 st.markdown("### 💬 Chat with Apex AI")
 
 with st.container():
@@ -926,6 +1032,7 @@ with st.container():
     
     st.markdown('</div>', unsafe_allow_html=True)
 
+# Quick Topics
 st.markdown("### ⚡ Quick Topics")
 qcols = st.columns(4)
 quick_topics = st.session_state.agent.get_quick_topics()
@@ -937,6 +1044,7 @@ for idx, col in enumerate(qcols):
         if st.button(f"{icons[idx]}{quick_topics[idx]}", key=f"topic_{idx}", use_container_width=True):
             selected_topic = quick_topics[idx]
 
+# Chat Input
 st.markdown("### 💬 Type your message")
 
 with st.form(key="chat_form", clear_on_submit=True):
@@ -971,11 +1079,13 @@ with st.form(key="chat_form", clear_on_submit=True):
                     "timestamp": str(datetime.datetime.now())
                 })
                 
+                # Check if new user
                 if user_email != "Not Provided":
                     existing = get_user_by_email(user_email)
                     is_new_user = (existing is None)
                     
                     if is_new_user:
+                        # ✅ Welcome email to USER
                         send_gmail_notification(
                             user_email,
                             "🎉 Welcome to Apex AI Solutions!",
@@ -997,6 +1107,7 @@ with st.form(key="chat_form", clear_on_submit=True):
                             """
                         )
                         
+                        # ✅ Admin notification
                         send_gmail_notification(
                             GMAIL_EMAIL,
                             f"🔔 New User Sign-In: {user_name}",
@@ -1037,6 +1148,7 @@ with st.form(key="chat_form", clear_on_submit=True):
                 st.error(f"❌ Error: {e}")
                 st.info("💡 Make sure all secrets are set in Streamlit Cloud")
 
+# Footer
 st.markdown("---")
 st.markdown("""
 <div style="text-align: center; color: #64748b; padding: 10px;">
