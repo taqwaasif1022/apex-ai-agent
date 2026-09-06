@@ -1,6 +1,6 @@
 # ============================================
 # 📁 app.py - APEX AI AGENT (FINAL)
-# TAQWA's Final Project - ALL FIXES
+# TAQWA's Final Project - STREAMLIT CLOUD READY
 # ============================================
 
 import os
@@ -19,6 +19,7 @@ from langchain.agents import create_agent
 from langchain.tools import tool
 from langchain_google_genai import ChatGoogleGenerativeAI
 
+# ✅ FORCE DEPLOY - v2.0
 st.set_page_config(page_title="Apex AI Agent", page_icon="🤖", layout="wide")
 
 load_dotenv()
@@ -329,7 +330,7 @@ langchain_agent = create_agent(
 
 IMPORTANT RULES:
 1. ONLY introduce yourself when user asks "who are you"
-2. For off-topic questions (birthday, weather, etc.), say "I only answer business-related questions"
+2. For off-topic questions, say "I only answer business-related questions"
 3. For payment, suggest admin
 4. Keep it short (max 50 words)
 """
@@ -366,7 +367,7 @@ def run_langchain_agent(user_input):
         return f"⚠️ Error: {str(e)}"
 
 # ============================================
-# 🤖 AI AGENT CLASS - FIXED
+# 🤖 AI AGENT CLASS
 # ============================================
 
 class AIAgent:
@@ -379,7 +380,7 @@ class AIAgent:
         self.memory.append({"role": "user", "content": user_input})
         lower_input = user_input.lower()
 
-        # ✅ FIXED: Off-topic questions - Birthday, Weather, etc.
+        # Off-topic questions
         off_topic = ["weather", "birthday", "song", "movie", "recipe", "joke", "funny", "love", "relationship"]
         if any(word in lower_input for word in off_topic):
             return {
@@ -387,16 +388,15 @@ class AIAgent:
                 "should_connect": False
             }
 
-        # ✅ FIXED: Payment - Admin link
+        # Payment
         if "payment" in lower_input or "pay" in lower_input:
             return {
                 "reply": "💎 **Payment & Pricing:**\n\nFor payment details, I'll connect you with our admin team.\n\n📞 **Talk to Admin:** http://localhost:8501/?admin=true\n\nOr click **Talk to Admin** button above! 🚀",
                 "should_connect": True
             }
 
-        # ✅ FIXED: Identity - Sirf "who are you" par intro
+        # Identity
         if "who are you" in lower_input or "who is" in lower_input or "introduce" in lower_input:
-            self.intro_given = True
             return {
                 "reply": "🌟 **Hey! I'm Apex AI - your business buddy!** 🚀\n\nI'm a professional Business AI Agent designed to help you with:\n• 💻 Web Development\n• 🤖 Custom AI Agents\n• 🎬 Video Editing\n• 📱 Automation\n\nTell me what you want to build! 😊",
                 "should_connect": False
@@ -414,7 +414,6 @@ class AIAgent:
             except Exception:
                 pass
 
-        # ✅ FIXED: Direct answers - no intro unless asked
         prompt = f"""
 You are Apex AI - a friendly, professional Business Agent.
 
@@ -454,12 +453,12 @@ Response (max 40 words):
         ]
 
 # ============================================
-# 🎨 UI - FORCE DARK THEME
+# 🎨 UI - FORCE DARK THEME (STREAMLIT CLOUD)
 # ============================================
 
 st.markdown("""
 <style>
-    /* ✅ FORCE DARK THEME */
+    /* ✅ FORCE DARK THEME - STREAMLIT CLOUD */
     .stApp {
         background: radial-gradient(circle at top, #1e1b4b 0%, #0b0f19 80%) !important;
         color: #f8fafc !important;
@@ -484,7 +483,6 @@ st.markdown("""
         box-shadow: 0 0 30px rgba(56, 189, 248, 0.1) !important;
     }
     
-    /* ✅ CHAT CONTAINER - Fixed */
     .chat-container {
         background: rgba(15, 23, 42, 0.6) !important;
         border: 2px solid #6366f1 !important;
@@ -521,71 +519,6 @@ st.markdown("""
         animation: slideIn 0.3s ease !important;
     }
     
-    /* ✅ BUTTONS - FIXED WHITE BOX */
-    .stButton button {
-        background: linear-gradient(135deg, #1e293b, #334155) !important;
-        color: #f8fafc !important;
-        border: 1px solid #38bdf8 !important;
-        border-radius: 30px !important;
-        padding: 10px 20px !important;
-        font-weight: 600 !important;
-        width: 100% !important;
-        box-shadow: 0 2px 10px rgba(0,0,0,0.3) !important;
-        transition: all 0.3s ease !important;
-    }
-    
-    .stButton button:hover {
-        background: linear-gradient(135deg, #2563eb, #7c3aed) !important;
-        box-shadow: 0 0 30px rgba(99, 102, 241, 0.3) !important;
-        transform: translateY(-2px) !important;
-        border-color: #a78bfa !important;
-    }
-    
-    /* ✅ TALK TO ADMIN - PINK */
-    .stButton button[data-testid="baseButton-secondary"] {
-        background: linear-gradient(135deg, #f472b6, #ec4899) !important;
-        border: none !important;
-        box-shadow: 0 4px 20px rgba(244, 114, 182, 0.4) !important;
-        color: white !important;
-    }
-    
-    /* ✅ NOTIFY ADMIN - GOLD */
-    .stButton button[data-testid="baseButton-primary"] {
-        background: linear-gradient(135deg, #f59e0b, #d97706) !important;
-        border: none !important;
-        box-shadow: 0 4px 20px rgba(245, 158, 11, 0.3) !important;
-        color: white !important;
-    }
-    
-    /* ✅ SEND BUTTON - FIXED */
-    .stButton button[data-testid="baseButton-formSubmit"] {
-        background: linear-gradient(135deg, #2563eb, #7c3aed) !important;
-        border: none !important;
-        box-shadow: 0 4px 20px rgba(99, 102, 241, 0.4) !important;
-        color: white !important;
-    }
-    
-    .stButton button[data-testid="baseButton-formSubmit"]:hover {
-        background: linear-gradient(135deg, #1d4ed8, #6d28d9) !important;
-        box-shadow: 0 4px 30px rgba(99, 102, 241, 0.6) !important;
-    }
-    
-    .admin-chat-box {
-        background: linear-gradient(135deg, #fdf2f8, #fce7f3) !important;
-        border: 3px solid #f472b6 !important;
-        border-radius: 20px !important;
-        padding: 25px !important;
-        box-shadow: 0 0 50px rgba(244, 114, 182, 0.3) !important;
-    }
-    
-    .admin-reply-box {
-        background: rgba(30, 41, 59, 0.5) !important;
-        border: 1px solid #c084fc !important;
-        border-radius: 12px !important;
-        padding: 15px !important;
-        margin: 10px 0 !important;
-    }
-    
     .admin-user-msg {
         background: linear-gradient(135deg, #4a1a2e, #db2777) !important;
         border-left: 4px solid #f472b6 !important;
@@ -606,6 +539,82 @@ st.markdown("""
         box-shadow: 0 4px 20px rgba(16, 185, 129, 0.3) !important;
         color: #ecfdf5 !important;
         animation: slideIn 0.3s ease !important;
+    }
+    
+    .admin-chat-box {
+        background: linear-gradient(135deg, #fdf2f8, #fce7f3) !important;
+        border: 3px solid #f472b6 !important;
+        border-radius: 20px !important;
+        padding: 25px !important;
+        box-shadow: 0 0 50px rgba(244, 114, 182, 0.3) !important;
+    }
+    
+    .admin-reply-box {
+        background: rgba(30, 41, 59, 0.5) !important;
+        border: 1px solid #c084fc !important;
+        border-radius: 12px !important;
+        padding: 15px !important;
+        margin: 10px 0 !important;
+    }
+    
+    /* ✅ ALL BUTTONS - FIXED */
+    .stButton button {
+        background: linear-gradient(135deg, #1e293b, #334155) !important;
+        color: #f8fafc !important;
+        border: 1px solid #38bdf8 !important;
+        border-radius: 30px !important;
+        padding: 10px 20px !important;
+        font-weight: 600 !important;
+        width: 100% !important;
+        box-shadow: 0 2px 10px rgba(0,0,0,0.3) !important;
+        transition: all 0.3s ease !important;
+    }
+    
+    .stButton button:hover {
+        background: linear-gradient(135deg, #2563eb, #7c3aed) !important;
+        box-shadow: 0 0 30px rgba(99, 102, 241, 0.3) !important;
+        transform: translateY(-2px) !important;
+        border-color: #a78bfa !important;
+    }
+    
+    /* TALK TO ADMIN */
+    .stButton button[data-testid="baseButton-secondary"] {
+        background: linear-gradient(135deg, #f472b6, #ec4899) !important;
+        border: none !important;
+        box-shadow: 0 4px 20px rgba(244, 114, 182, 0.4) !important;
+        color: white !important;
+    }
+    
+    .stButton button[data-testid="baseButton-secondary"]:hover {
+        background: linear-gradient(135deg, #ec4899, #db2777) !important;
+        box-shadow: 0 4px 30px rgba(244, 114, 182, 0.6) !important;
+    }
+    
+    /* NOTIFY ADMIN */
+    .stButton button[data-testid="baseButton-primary"] {
+        background: linear-gradient(135deg, #f59e0b, #d97706) !important;
+        border: none !important;
+        box-shadow: 0 4px 20px rgba(245, 158, 11, 0.3) !important;
+        color: white !important;
+    }
+    
+    .stButton button[data-testid="baseButton-primary"]:hover {
+        background: linear-gradient(135deg, #d97706, #b45309) !important;
+        box-shadow: 0 4px 30px rgba(245, 158, 11, 0.5) !important;
+        transform: translateY(-2px) !important;
+    }
+    
+    /* SEND BUTTON */
+    .stButton button[data-testid="baseButton-formSubmit"] {
+        background: linear-gradient(135deg, #2563eb, #7c3aed) !important;
+        border: none !important;
+        box-shadow: 0 4px 20px rgba(99, 102, 241, 0.4) !important;
+        color: white !important;
+    }
+    
+    .stButton button[data-testid="baseButton-formSubmit"]:hover {
+        background: linear-gradient(135deg, #1d4ed8, #6d28d9) !important;
+        box-shadow: 0 4px 30px rgba(99, 102, 241, 0.6) !important;
     }
     
     @keyframes slideIn {
@@ -957,7 +966,6 @@ if st.session_state.show_admin_chat:
 
 st.markdown("---")
 
-# ✅ CHAT DISPLAY - ONLY AGENT CHAT
 col1, col2 = st.columns([3, 1])
 with col1:
     st.markdown("### 💬 Chat with Apex AI")
@@ -986,7 +994,6 @@ with st.container():
     
     st.markdown('</div>', unsafe_allow_html=True)
 
-# ✅ QUICK TOPICS - FIXED
 st.markdown("### ⚡ Quick Topics")
 qcols = st.columns(4)
 quick_topics = st.session_state.agent.get_quick_topics()
@@ -998,7 +1005,6 @@ for idx, col in enumerate(qcols):
         if st.button(f"{icons[idx]}{quick_topics[idx]}", key=f"topic_{idx}", use_container_width=True):
             selected_topic = quick_topics[idx]
 
-# ✅ CHAT INPUT - FIXED
 st.markdown("### 💬 Type your message")
 
 with st.form(key="chat_form", clear_on_submit=True):
@@ -1099,7 +1105,6 @@ with st.form(key="chat_form", clear_on_submit=True):
                 st.error(f"❌ Error: {e}")
                 st.info("💡 Make sure all secrets are set in Streamlit Cloud")
 
-# Footer
 st.markdown("---")
 st.markdown("""
 <div style="text-align: center; color: #64748b; padding: 10px;">

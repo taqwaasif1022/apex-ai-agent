@@ -20,7 +20,6 @@
         .sidebar { width: 360px; background: var(--panel-bg); border-right: 1px solid var(--border-color); padding: 20px; overflow-y: auto; }
         .chat-area { flex: 1; display: flex; flex-direction: column; background: #0b1120; }
         
-        /* ✅ Admin Header */
         .admin-header {
             display: flex;
             justify-content: space-between;
@@ -29,14 +28,8 @@
             background: var(--panel-bg);
             border-bottom: 1px solid var(--border-color);
         }
+        .admin-header h2 { margin: 0; color: var(--accent-gold); font-size: 18px; }
         
-        .admin-header h2 {
-            margin: 0;
-            color: var(--accent-gold);
-            font-size: 18px;
-        }
-        
-        /* ✅ Clear History Button */
         .clear-history-btn {
             background: #dc2626;
             color: white;
@@ -48,11 +41,7 @@
             transition: all 0.3s ease;
             font-size: 12px;
         }
-        
-        .clear-history-btn:hover {
-            background: #b91c1c;
-            transform: scale(1.05);
-        }
+        .clear-history-btn:hover { background: #b91c1c; transform: scale(1.05); }
         
         .client-card { padding: 14px; background: var(--card-bg); border-radius: 10px; margin-bottom: 12px; cursor: pointer; border: 1.5px solid var(--border-color); transition: 0.2s; }
         .client-card.active { border-color: var(--accent-green); background: rgba(16, 185, 129, 0.12); }
@@ -70,7 +59,6 @@
         .input-bar button { background: var(--accent-green); border: none; color: #000; font-weight: 700; padding: 12px 20px; border-radius: 8px; cursor: pointer; transition: all 0.3s ease; }
         .input-bar button:hover { transform: scale(1.05); box-shadow: 0 0 20px rgba(16, 185, 129, 0.3); }
         
-        /* ✅ Responsive */
         @media (max-width: 768px) {
             body { flex-direction: column; }
             .sidebar { width: 100%; border-right: none; border-bottom: 1px solid var(--border-color); max-height: 40vh; }
@@ -87,7 +75,6 @@
     <div class="chat-area">
         <div class="admin-header">
             <h3 style="margin: 0; color: var(--accent-green);" id="clientHeader">Select a client to view full history</h3>
-            <!-- ✅ CLEAR HISTORY BUTTON -->
             <button class="clear-history-btn" onclick="clearAllHistory()">🗑️ Clear All History</button>
         </div>
         <div class="messages" id="msgBox"></div>
@@ -168,7 +155,6 @@
             box.scrollTop = box.scrollHeight;
         }
 
-        // ✅ CLEAR ALL HISTORY FUNCTION
         function clearAllHistory() {
             if (confirm('Are you sure you want to clear all history? This cannot be undone!')) {
                 socket.emit('clear_all_history');
@@ -177,7 +163,6 @@
             }
         }
 
-        // ✅ Listen for clear history response
         socket.on('history_cleared', () => {
             document.getElementById('msgBox').innerHTML = '';
         });
