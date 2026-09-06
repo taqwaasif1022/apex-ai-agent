@@ -1,6 +1,6 @@
 # ============================================
 # 📁 app.py - APEX AI AGENT (FINAL)
-# TAQWA's Final Project - NO ERRORS
+# TAQWA's Final Project - ALL FIXES
 # ============================================
 
 import os
@@ -27,7 +27,7 @@ load_dotenv()
 # 📧 GMAIL SETUP
 # ============================================
 
-GMAIL_EMAIL = os.getenv("GMAIL_EMAIL", "your_email@gmail.com")
+GMAIL_EMAIL = os.getenv("GMAIL_EMAIL", "banukabil348@gmail.com")
 GMAIL_PASSWORD = os.getenv("GMAIL_PASSWORD", "your_app_password")
 
 def send_gmail_notification(to_email, subject, body):
@@ -621,6 +621,7 @@ user_name = query_params.get("username", "Guest")
 user_age = query_params.get("age", "N/A")
 user_country = query_params.get("country", "N/A")
 
+# ✅ AUTO-LOGIN: Existing user ko auto login
 if user_email != "Not Provided":
     existing_user = get_user_by_email(user_email)
     if existing_user:
@@ -792,7 +793,7 @@ if is_admin_mode:
     st.stop()
 
 # ============================================
-# 👤 USER VIEW - WITH HISTORY
+# 👤 USER VIEW - WITH AUTO-LOGIN
 # ============================================
 
 # Load user's chat history
@@ -959,15 +960,52 @@ with st.form(key="chat_form", clear_on_submit=True):
                     "timestamp": str(datetime.datetime.now())
                 })
                 
+                # ✅ CHECK IF USER IS NEW (Pehli baar)
                 if user_email != "Not Provided":
                     existing = get_user_by_email(user_email)
-                    if not existing:
+                    is_new_user = (existing is None)
+                    
+                    if is_new_user:
+                        # ✅ Welcome email to user (Sirf pehli baar)
                         send_gmail_notification(
                             user_email,
                             "🎉 Welcome to Apex AI Solutions!",
-                            f"🌟 Hi {user_name}!\n\nWelcome to Apex AI Solutions! 🚀\n\nBest,\nApex AI Team"
+                            f"""
+                            🌟 Hi {user_name}!
+                            
+                            Welcome to Apex AI Solutions! 🚀
+                            
+                            ✨ We can help you with:
+                            • 💻 Web Development
+                            • 🤖 AI Agents
+                            • 🎬 Video Editing  
+                            • 📱 Automation
+                            
+                            Let's make something amazing! 💪
+                            
+                            Best,
+                            Apex AI Team
+                            """
                         )
+                        
+                        # ✅ Admin notification (Sirf pehli baar new user)
+                        send_gmail_notification(
+                            GMAIL_EMAIL,
+                            f"🔔 New User Sign-In: {user_name}",
+                            f"""
+                            New user signed in!
+                            
+                            Name: {user_name}
+                            Email: {user_email}
+                            Age: {user_age}
+                            Country: {user_country}
+                            Time: {datetime.datetime.now()}
+                            """
+                        )
+                        
+                        st.toast("🎉 Welcome email sent!", icon="🎉")
                 
+                # ✅ Save user (existing update ya new insert)
                 save_user({
                     "name": user_name,
                     "email": user_email,
@@ -990,6 +1028,7 @@ with st.form(key="chat_form", clear_on_submit=True):
                 
             except Exception as e:
                 st.error(f"❌ Error: {e}")
+                st.info("💡 Make sure all secrets are set in Streamlit Cloud")
 
 st.markdown("---")
 st.markdown("""
