@@ -1,6 +1,6 @@
 # ============================================
 # 📁 app.py - APEX AI AGENT (FINAL)
-# TAQWA's Final Project - ALL FIXES
+# TAQWA's Final Project - FIXED INTRO
 # ============================================
 
 import os
@@ -360,13 +360,14 @@ def run_langchain_agent(user_input):
         return f"⚠️ Error: {str(e)}"
 
 # ============================================
-# 🤖 AI AGENT CLASS
+# 🤖 AI AGENT CLASS - FIXED INTRO
 # ============================================
 
 class AIAgent:
     def __init__(self):
         self.memory = []
         self.user_info = {}
+        self.intro_given = False  # ✅ Pehli baar intro diya ya nahi
 
     def think(self, user_input):
         self.memory.append({"role": "user", "content": user_input})
@@ -381,13 +382,13 @@ class AIAgent:
 
         if "payment" in lower_input or "pay" in lower_input:
             return {
-                "reply": "🌟 **Hey! I'm Apex AI - your business buddy!** 🚀\n\nI'd love to help you build your project!\n\nFor payment details, I'll connect you with our admin team. 💎",
+                "reply": "💎 **Payment & Pricing:**\n\nFor payment details, I'll connect you with our admin team.\n\n✨ **Why choose us?**\n• Best prices\n• Flexible plans\n• Quality guaranteed\n\nClick **Talk to Admin** below! 🚀",
                 "should_connect": True
             }
 
         if "who are you" in lower_input or "who is" in lower_input:
             return {
-                "reply": "🌟 **Hey! I'm Apex AI - your business buddy!** 🚀\n\nI'm a professional Business AI Agent designed to help you with:\n• 💻 Web Development\n• 🤖 Custom AI Agents\n• 🎬 Video Editing\n• 📱 Automation\n\nTell me what you want to build, and I'll guide you! 😊",
+                "reply": "🌟 **I'm Apex AI - your business buddy!** 🚀\n\nI'm a professional Business AI Agent designed to help you with:\n• 💻 Web Development\n• 🤖 Custom AI Agents\n• 🎬 Video Editing\n• 📱 Automation\n\nTell me what you want to build, and I'll guide you! 😊",
                 "should_connect": False
             }
 
@@ -403,31 +404,42 @@ class AIAgent:
             except Exception as e:
                 pass
 
+        # ✅ FIXED: Sirf pehli baar intro de, phir to-the-point
+        if not self.intro_given:
+            intro = "Hey! I'm Apex AI - your business buddy! 🚀\n\n"
+            self.intro_given = True
+        else:
+            intro = ""
+
         prompt = f"""
-You are Apex AI - a friendly, enthusiastic Business Agent.
+You are Apex AI - a friendly, professional Business Agent.
 
 USER: {user_input}
 NAME: {self.user_info.get('name', 'Friend')}
 
 RULES:
-1. Start with: "Hey! I'm Apex AI - your business buddy! 🚀"
-2. Introduce yourself briefly
-3. Ask what they want to build
-4. Keep it short (max 50 words)
+1. {'Start with: "Hey! I\'m Apex AI - your business buddy! 🚀"' if not self.intro_given else 'DO NOT introduce yourself again - user already knows you'}
+2. Give a DIRECT, TO-THE-POINT answer
+3. Use 1-2 emojis maximum
+4. Keep it short (max 40 words)
+5. Ask ONE follow-up question
+6. For payments, suggest admin
 
-Response:
+Response (max 40 words):
 """
         
         reply = generate_ai_response(prompt)
         
         if reply:
             reply = reply.replace('Gemini', 'Apex AI').replace('Google', 'Apex AI')
+            if intro and not reply.startswith(intro):
+                reply = intro + reply
             self.memory.append({"role": "assistant", "content": reply})
             should_connect = any(word in reply.lower() for word in ["admin", "talk", "connect"])
             return {"reply": reply, "should_connect": should_connect}
         else:
             return {
-                "reply": "🌟 **Hey! I'm Apex AI - your business buddy!** 🚀\n\nI can help you build amazing AI solutions!\n\nWhat would you like to build today? 😊",
+                "reply": "🌟 **Hey! I'm Apex AI!**\n\nI'd love to help with:\n• 💻 Web Development\n• 🤖 AI Agents\n• 🎬 Video Editing\n• 📱 Automation\n\nWhat can I do for you today? 😊",
                 "should_connect": True
             }
 
@@ -621,7 +633,6 @@ user_name = query_params.get("username", "Guest")
 user_age = query_params.get("age", "N/A")
 user_country = query_params.get("country", "N/A")
 
-# ✅ AUTO-LOGIN: Existing user ko auto login
 if user_email != "Not Provided":
     existing_user = get_user_by_email(user_email)
     if existing_user:
@@ -793,7 +804,7 @@ if is_admin_mode:
     st.stop()
 
 # ============================================
-# 👤 USER VIEW - WITH AUTO-LOGIN
+# 👤 USER VIEW
 # ============================================
 
 # Load user's chat history
@@ -960,13 +971,11 @@ with st.form(key="chat_form", clear_on_submit=True):
                     "timestamp": str(datetime.datetime.now())
                 })
                 
-                # ✅ CHECK IF USER IS NEW (Pehli baar)
                 if user_email != "Not Provided":
                     existing = get_user_by_email(user_email)
                     is_new_user = (existing is None)
                     
                     if is_new_user:
-                        # ✅ Welcome email to user (Sirf pehli baar)
                         send_gmail_notification(
                             user_email,
                             "🎉 Welcome to Apex AI Solutions!",
@@ -988,7 +997,6 @@ with st.form(key="chat_form", clear_on_submit=True):
                             """
                         )
                         
-                        # ✅ Admin notification (Sirf pehli baar new user)
                         send_gmail_notification(
                             GMAIL_EMAIL,
                             f"🔔 New User Sign-In: {user_name}",
@@ -1005,7 +1013,6 @@ with st.form(key="chat_form", clear_on_submit=True):
                         
                         st.toast("🎉 Welcome email sent!", icon="🎉")
                 
-                # ✅ Save user (existing update ya new insert)
                 save_user({
                     "name": user_name,
                     "email": user_email,
