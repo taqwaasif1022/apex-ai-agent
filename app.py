@@ -1,6 +1,6 @@
 # ============================================
 # 📁 app.py - APEX AI AGENT (FINAL)
-# TAQWA's Final Project - ALL FIXES
+# TAQWA's Final Project - STREAMLIT CLOUD READY
 # ============================================
 
 import os
@@ -129,8 +129,16 @@ def get_user_messages(email):
             user_msgs.append(msg)
     return user_msgs
 
+def clear_all_history():
+    """Clear all history data"""
+    with open('data/messages.json', 'w') as f:
+        json.dump([], f, indent=4)
+    with open('data/admin_chat_history.json', 'w') as f:
+        json.dump([], f, indent=4)
+    with open('data/admin_replies.json', 'w') as f:
+        json.dump([], f, indent=4)
+
 def clear_user_history(email):
-    """Clear all messages for a specific user"""
     messages = load_messages()
     user_msgs = [msg for msg in messages if msg.get('user') != email]
     with open('data/messages.json', 'w') as f:
@@ -367,20 +375,19 @@ def run_langchain_agent(user_input):
         return f"⚠️ Error: {str(e)}"
 
 # ============================================
-# 🤖 AI AGENT CLASS - FIXED
+# 🤖 AI AGENT CLASS
 # ============================================
 
 class AIAgent:
     def __init__(self):
         self.memory = []
         self.user_info = {}
-        self.intro_given = False  # ✅ Sirf pehli baar intro
+        self.intro_given = False
 
     def think(self, user_input):
         self.memory.append({"role": "user", "content": user_input})
         lower_input = user_input.lower()
 
-        # Off-topic check
         off_topic = ["weather", "birthday", "song", "movie", "recipe", "joke", "funny", "love", "relationship"]
         if any(word in lower_input for word in off_topic):
             return {
@@ -388,21 +395,18 @@ class AIAgent:
                 "should_connect": False
             }
 
-        # Payment check
         if "payment" in lower_input or "pay" in lower_input:
             return {
                 "reply": "💎 **Payment & Pricing:**\n\nFor payment details, I'll connect you with our admin team.\n\n✨ Why choose us?\n• Best prices\n• Flexible plans\n• Quality guaranteed\n\nClick **Talk to Admin** below! 🚀",
                 "should_connect": True
             }
 
-        # Identity questions
         if "who are you" in lower_input or "who is" in lower_input:
             return {
                 "reply": "🌟 I'm Apex AI - your business buddy! 🚀\n\nI'm a professional Business AI Agent designed to help you with:\n• 💻 Web Development\n• 🤖 Custom AI Agents\n• 🎬 Video Editing\n• 📱 Automation\n\nTell me what you want to build! 😊",
                 "should_connect": False
             }
 
-        # Agent commands
         agent_keywords = ["report", "data", "summary", "send", "email", "search", "find", "latest", "news"]
         
         if any(word in lower_input for word in agent_keywords):
@@ -415,7 +419,6 @@ class AIAgent:
             except Exception:
                 pass
 
-        # ✅ FIXED: Sirf pehli baar intro, phir direct to-the-point
         if not self.intro_given:
             intro = "Hey! I'm Apex AI - your business buddy! 🚀\n\n"
             self.intro_given = True
@@ -463,53 +466,49 @@ Response (max 40 words):
         ]
 
 # ============================================
-# 🎨 UI - CUSTOM CSS (FIXED BLANK BOXES)
+# 🎨 UI - FORCE DARK THEME (STREAMLIT CLOUD)
 # ============================================
 
 st.markdown("""
 <style>
-    /* Main App Background */
+    /* ✅ FORCE DARK THEME ON STREAMLIT CLOUD */
     .stApp {
-        background: radial-gradient(circle at top, #1e1b4b 0%, #0b0f19 80%);
-        color: #f8fafc;
+        background: radial-gradient(circle at top, #1e1b4b 0%, #0b0f19 80%) !important;
+        color: #f8fafc !important;
     }
     
-    /* Header */
     .gradient-header {
-        font-size: 2.5rem;
-        font-weight: 800;
-        background: linear-gradient(90deg, #38bdf8, #818cf8, #c084fc);
-        -webkit-background-clip: text;
-        -webkit-text-fill-color: transparent;
-        text-align: center;
-        padding: 10px 0;
+        font-size: 2.5rem !important;
+        font-weight: 800 !important;
+        background: linear-gradient(90deg, #38bdf8, #818cf8, #c084fc) !important;
+        -webkit-background-clip: text !important;
+        -webkit-text-fill-color: transparent !important;
+        text-align: center !important;
+        padding: 10px 0 !important;
     }
     
-    /* User Card */
     .user-card {
-        background: rgba(30, 41, 59, 0.8);
-        border: 1px solid #38bdf8;
-        border-radius: 16px;
-        padding: 20px;
-        backdrop-filter: blur(10px);
-        box-shadow: 0 0 30px rgba(56, 189, 248, 0.1);
+        background: rgba(30, 41, 59, 0.8) !important;
+        border: 1px solid #38bdf8 !important;
+        border-radius: 16px !important;
+        padding: 20px !important;
+        backdrop-filter: blur(10px) !important;
+        box-shadow: 0 0 30px rgba(56, 189, 248, 0.1) !important;
     }
     
-    /* ✅ CHAT CONTAINER - FIXED BLANK BOXES */
     .chat-container {
-        background: rgba(15, 23, 42, 0.6);
-        border: 2px solid #6366f1;
-        border-radius: 20px;
-        padding: 20px;
-        box-shadow: 0 0 40px rgba(99, 102, 241, 0.2);
-        backdrop-filter: blur(5px);
-        max-height: 500px;
-        overflow-y: auto;
-        margin-bottom: 15px;
-        min-height: 100px;
+        background: rgba(15, 23, 42, 0.6) !important;
+        border: 2px solid #6366f1 !important;
+        border-radius: 20px !important;
+        padding: 20px !important;
+        box-shadow: 0 0 40px rgba(99, 102, 241, 0.2) !important;
+        backdrop-filter: blur(5px) !important;
+        max-height: 500px !important;
+        overflow-y: auto !important;
+        margin-bottom: 15px !important;
+        min-height: 100px !important;
     }
     
-    /* ✅ USER MESSAGES - FIXED */
     .user-msg {
         background: linear-gradient(135deg, #1e3a5f, #2563eb) !important;
         border-left: 4px solid #60a5fa !important;
@@ -521,7 +520,10 @@ st.markdown("""
         animation: slideIn 0.3s ease !important;
     }
     
-    /* ✅ AGENT MESSAGES - FIXED */
+    .user-msg b {
+        color: #93c5fd !important;
+    }
+    
     .bot-msg {
         background: linear-gradient(135deg, #1a1a4e, #7c3aed) !important;
         border-left: 4px solid #a78bfa !important;
@@ -534,35 +536,134 @@ st.markdown("""
         animation: slideIn 0.3s ease !important;
     }
     
-    /* Animation */
+    .bot-msg b {
+        color: #c4b5fd !important;
+    }
+    
+    .bot-msg ul {
+        padding-left: 20px !important;
+    }
+    
+    .bot-msg li {
+        list-style-type: none !important;
+    }
+    
+    .bot-msg li::before {
+        content: "✨ " !important;
+        color: #a78bfa !important;
+    }
+    
+    /* ✅ FORCE BUTTONS DARK */
+    .stButton button {
+        background: linear-gradient(135deg, #1e293b, #334155) !important;
+        color: #f8fafc !important;
+        border: 1px solid #38bdf8 !important;
+        border-radius: 30px !important;
+        padding: 10px 20px !important;
+        font-weight: 600 !important;
+        width: 100% !important;
+        box-shadow: 0 2px 10px rgba(0,0,0,0.3) !important;
+        transition: all 0.3s ease !important;
+    }
+    
+    .stButton button:hover {
+        background: linear-gradient(135deg, #2563eb, #7c3aed) !important;
+        box-shadow: 0 0 30px rgba(99, 102, 241, 0.3) !important;
+        transform: translateY(-2px) !important;
+        border-color: #a78bfa !important;
+    }
+    
+    /* ✅ TALK TO ADMIN BUTTON */
+    .stButton button[data-testid="baseButton-secondary"] {
+        background: linear-gradient(135deg, #f472b6, #ec4899) !important;
+        border: none !important;
+        box-shadow: 0 4px 20px rgba(244, 114, 182, 0.4) !important;
+        color: white !important;
+    }
+    
+    .stButton button[data-testid="baseButton-secondary"]:hover {
+        background: linear-gradient(135deg, #ec4899, #db2777) !important;
+        box-shadow: 0 4px 30px rgba(244, 114, 182, 0.6) !important;
+    }
+    
+    /* ✅ NOTIFY ADMIN BUTTON */
+    .stButton button[data-testid="baseButton-primary"] {
+        background: linear-gradient(135deg, #f59e0b, #d97706) !important;
+        border: none !important;
+        box-shadow: 0 4px 20px rgba(245, 158, 11, 0.3) !important;
+        color: white !important;
+    }
+    
+    .stButton button[data-testid="baseButton-primary"]:hover {
+        background: linear-gradient(135deg, #d97706, #b45309) !important;
+        box-shadow: 0 4px 30px rgba(245, 158, 11, 0.5) !important;
+        transform: translateY(-2px) !important;
+    }
+    
+    .admin-chat-box {
+        background: linear-gradient(135deg, #fdf2f8, #fce7f3) !important;
+        border: 3px solid #f472b6 !important;
+        border-radius: 20px !important;
+        padding: 25px !important;
+        box-shadow: 0 0 50px rgba(244, 114, 182, 0.3) !important;
+    }
+    
+    .admin-chat-box .stButton button {
+        background: linear-gradient(135deg, #f472b6, #ec4899) !important;
+        color: white !important;
+        border: none !important;
+        box-shadow: 0 4px 20px rgba(244, 114, 182, 0.4) !important;
+    }
+    
+    .admin-chat-box .stButton button:hover {
+        background: linear-gradient(135deg, #ec4899, #db2777) !important;
+        box-shadow: 0 4px 30px rgba(244, 114, 182, 0.6) !important;
+    }
+    
+    .admin-reply-box {
+        background: rgba(30, 41, 59, 0.5) !important;
+        border: 1px solid #c084fc !important;
+        border-radius: 12px !important;
+        padding: 15px !important;
+        margin: 10px 0 !important;
+    }
+    
+    .admin-user-msg {
+        background: linear-gradient(135deg, #4a1a2e, #db2777) !important;
+        border-left: 4px solid #f472b6 !important;
+        padding: 12px 18px !important;
+        border-radius: 12px !important;
+        margin: 8px 0 !important;
+        box-shadow: 0 4px 20px rgba(219, 39, 119, 0.3) !important;
+        color: #fdf2f8 !important;
+        animation: slideIn 0.3s ease !important;
+    }
+    
+    .admin-user-msg b {
+        color: #f9a8d4 !important;
+    }
+    
+    .admin-reply-msg {
+        background: linear-gradient(135deg, #1a3a2e, #10b981) !important;
+        border-left: 4px solid #34d399 !important;
+        padding: 12px 18px !important;
+        border-radius: 12px !important;
+        margin: 8px 0 !important;
+        box-shadow: 0 4px 20px rgba(16, 185, 129, 0.3) !important;
+        color: #ecfdf5 !important;
+        animation: slideIn 0.3s ease !important;
+    }
+    
+    .admin-reply-msg b {
+        color: #6ee7b7 !important;
+    }
+    
     @keyframes slideIn {
         from { opacity: 0; transform: translateY(15px) scale(0.98); }
         to { opacity: 1; transform: translateY(0) scale(1); }
     }
     
-    /* Admin Chat Box */
-    .admin-chat-box {
-        background: linear-gradient(135deg, #fdf2f8, #fce7f3);
-        border: 3px solid #f472b6;
-        border-radius: 20px;
-        padding: 25px;
-        box-shadow: 0 0 50px rgba(244, 114, 182, 0.3);
-    }
-    
-    .admin-reply-box {
-        background: rgba(30, 41, 59, 0.5);
-        border: 1px solid #c084fc;
-        border-radius: 12px;
-        padding: 15px;
-        margin: 10px 0;
-    }
-    
-    /* Hide Streamlit Default */
-    #MainMenu {visibility: hidden;}
-    footer {visibility: hidden;}
-    header {visibility: hidden;}
-    
-    /* Input Fields */
+    /* ✅ INPUT FIELDS */
     .stTextInput input {
         background: rgba(30, 41, 59, 0.8) !important;
         border: 2px solid #6366f1 !important;
@@ -590,26 +691,15 @@ st.markdown("""
         box-shadow: 0 0 25px rgba(99, 102, 241, 0.3) !important;
     }
     
-    /* Clear Chat Button */
-    .clear-btn {
-        background: #dc2626 !important;
-        color: white !important;
-        border-radius: 20px !important;
-        padding: 5px 15px !important;
-        font-size: 12px !important;
-        border: none !important;
-        cursor: pointer !important;
-    }
-    
-    .clear-btn:hover {
-        background: #b91c1c !important;
-    }
+    /* ✅ HIDE STREAMLIT DEFAULT ELEMENTS */
+    #MainMenu {visibility: hidden !important;}
+    footer {visibility: hidden !important;}
+    header {visibility: hidden !important;}
 </style>
 """, unsafe_allow_html=True)
 
-
 # ============================================
-# 📌 MAIN APPLICATION
+# 👤 MAIN APP
 # ============================================
 
 query_params = st.query_params
@@ -620,7 +710,6 @@ user_name = query_params.get("username", "Guest")
 user_age = query_params.get("age", "N/A")
 user_country = query_params.get("country", "N/A")
 
-# Auto-login for existing users
 if user_email != "Not Provided":
     existing_user = get_user_by_email(user_email)
     if existing_user:
@@ -628,9 +717,8 @@ if user_email != "Not Provided":
         user_age = existing_user.get('age', user_age)
         user_country = existing_user.get('country', user_country)
 
-
 # ============================================
-# 👨‍💼 ADMIN PANEL
+# 👨‍💼 ADMIN VIEW
 # ============================================
 
 if is_admin_mode:
@@ -662,9 +750,8 @@ if is_admin_mode:
         admin_replies = load_admin_replies()
         admin_chat_history = load_admin_chat_history()
         
-        # Statistics
         col1, col2, col3 = st.columns(3)
-        with col1: st.metric("👥 Total Users", len(users))
+        with col1: st.metric("👥 Users", len(users))
         with col2: st.metric("⏳ Pending", len([u for u in users if u.get('status') == 'pending']))
         with col3: st.metric("💬 Messages", len(messages))
         
@@ -718,6 +805,17 @@ if is_admin_mode:
         # Messages Tab
         with tab2:
             st.subheader("💬 Messages - Reply to Users")
+            
+            # ✅ CLEAR ALL HISTORY BUTTON
+            col1, col2 = st.columns([3, 1])
+            with col2:
+                if st.button("🗑️ Clear All History", use_container_width=True):
+                    clear_all_history()
+                    st.success("✅ All history cleared!")
+                    st.balloons()
+                    st.rerun()
+            
+            st.markdown("---")
             
             if messages:
                 for idx, msg in enumerate(messages[::-1]):
@@ -798,7 +896,6 @@ if is_admin_mode:
     
     st.stop()
 
-
 # ============================================
 # 👤 USER VIEW
 # ============================================
@@ -837,6 +934,18 @@ st.markdown("""
 col1, col2, col3 = st.columns([2, 1, 1])
 
 with col1:
+    # ✅ Fix for guest users
+    if user_email == "Not Provided" or user_name == "Guest":
+        display_name = "Guest User"
+        display_email = "Not Signed In"
+        display_country = "N/A"
+        avatar_letter = "G"
+    else:
+        display_name = user_name
+        display_email = user_email
+        display_country = user_country
+        avatar_letter = user_name[0].upper() if user_name else "G"
+    
     st.markdown(f"""
     <div class="user-card">
         <div style="display: flex; align-items: center; gap: 15px;">
@@ -844,11 +953,11 @@ with col1:
                         width: 55px; height: 55px; border-radius: 50%; 
                         display: flex; align-items: center; justify-content: center; 
                         font-size: 24px; font-weight: bold; color: white;">
-                {user_name[0].upper() if user_name else 'G'}
+                {avatar_letter}
             </div>
             <div>
-                <b style="font-size: 1.3rem;">👤 {user_name}</b><br>
-                <span style="color: #94a3b8;">✉️ {user_email} | 🌍 {user_country}</span>
+                <b style="font-size: 1.3rem;">👤 {display_name}</b><br>
+                <span style="color: #94a3b8;">✉️ {display_email} | 🌍 {display_country}</span>
             </div>
         </div>
     </div>
@@ -911,10 +1020,7 @@ if st.session_state.show_admin_chat:
 
 st.markdown("---")
 
-# ============================================
-# 💬 CHAT DISPLAY + CLEAR CHAT
-# ============================================
-
+# Chat Display + Clear Chat
 col1, col2 = st.columns([3, 1])
 with col1:
     st.markdown("### 💬 Chat with Apex AI")
@@ -943,10 +1049,7 @@ with st.container():
     
     st.markdown('</div>', unsafe_allow_html=True)
 
-# ============================================
-# ⚡ QUICK TOPICS
-# ============================================
-
+# Quick Topics
 st.markdown("### ⚡ Quick Topics")
 qcols = st.columns(4)
 quick_topics = st.session_state.agent.get_quick_topics()
@@ -958,10 +1061,7 @@ for idx, col in enumerate(qcols):
         if st.button(f"{icons[idx]}{quick_topics[idx]}", key=f"topic_{idx}", use_container_width=True):
             selected_topic = quick_topics[idx]
 
-# ============================================
-# 💬 CHAT INPUT
-# ============================================
-
+# Chat Input
 st.markdown("### 💬 Type your message")
 
 with st.form(key="chat_form", clear_on_submit=True):
@@ -996,7 +1096,6 @@ with st.form(key="chat_form", clear_on_submit=True):
                     "timestamp": str(datetime.datetime.now())
                 })
                 
-                # Check if new user
                 if user_email != "Not Provided":
                     existing = get_user_by_email(user_email)
                     is_new_user = (existing is None)
@@ -1063,6 +1162,7 @@ with st.form(key="chat_form", clear_on_submit=True):
                 
             except Exception as e:
                 st.error(f"❌ Error: {e}")
+                st.info("💡 Make sure all secrets are set in Streamlit Cloud")
 
 # Footer
 st.markdown("---")
