@@ -1,14 +1,7 @@
 # ============================================
-# 📁 app.py - APEX AI BUSINESS AGENT
-# 🏢 Professional AI Agent for Business Solutions
-# 👩‍💻 Developer: TAQWA
-# 📅 Version: 1.0.0
+# 📁 app.py - APEX AI AGENT (FINAL)
+# TAQWA's Final Project - ALL FIXES
 # ============================================
-
-"""
-Apex AI Business Agent - A professional AI agent that helps businesses with 
-web development, AI solutions, video editing, and automation.
-"""
 
 import os
 import json
@@ -16,7 +9,6 @@ import datetime
 import smtplib
 from email.mime.text import MIMEText
 from email.mime.multipart import MIMEMultipart
-
 import streamlit as st
 from dotenv import load_dotenv
 import pandas as pd
@@ -27,39 +19,18 @@ from langchain.agents import create_agent
 from langchain.tools import tool
 from langchain_google_genai import ChatGoogleGenerativeAI
 
-# ============================================
-# 📌 STREAMLIT PAGE CONFIGURATION
-# ============================================
-
-st.set_page_config(
-    page_title="Apex AI Business Agent",
-    page_icon="🤖",
-    layout="wide",
-    initial_sidebar_state="collapsed"
-)
+st.set_page_config(page_title="Apex AI Agent", page_icon="🤖", layout="wide")
 
 load_dotenv()
 
 # ============================================
-# 📧 GMAIL EMAIL CONFIGURATION
+# 📧 GMAIL SETUP
 # ============================================
 
 GMAIL_EMAIL = os.getenv("GMAIL_EMAIL", "banukabil348@gmail.com")
 GMAIL_PASSWORD = os.getenv("GMAIL_PASSWORD", "your_app_password")
 
-
-def send_gmail_notification(to_email: str, subject: str, body: str) -> bool:
-    """
-    Send an email notification using Gmail SMTP.
-    
-    Args:
-        to_email (str): Recipient email address
-        subject (str): Email subject line
-        body (str): Email body content
-    
-    Returns:
-        bool: True if email sent successfully, False otherwise
-    """
+def send_gmail_notification(to_email, subject, body):
     try:
         msg = MIMEMultipart()
         msg['From'] = GMAIL_EMAIL
@@ -77,13 +48,11 @@ def send_gmail_notification(to_email: str, subject: str, body: str) -> bool:
         print(f"Email error: {e}")
         return False
 
-
 # ============================================
-# 📁 DATA STORAGE FUNCTIONS
+# 📁 DATA HANDLING
 # ============================================
 
-def load_users() -> list:
-    """Load all registered users from JSON file."""
+def load_users():
     try:
         os.makedirs('data', exist_ok=True)
         with open('data/users.json', 'r') as f:
@@ -91,9 +60,7 @@ def load_users() -> list:
     except Exception:
         return []
 
-
-def save_user(user_data: dict) -> None:
-    """Save or update user data in JSON file."""
+def save_user(user_data):
     users = load_users()
     for i, u in enumerate(users):
         if u['email'] == user_data['email']:
@@ -105,9 +72,7 @@ def save_user(user_data: dict) -> None:
     with open('data/users.json', 'w') as f:
         json.dump(users, f, indent=4)
 
-
-def load_messages() -> list:
-    """Load all chat messages from JSON file."""
+def load_messages():
     try:
         os.makedirs('data', exist_ok=True)
         with open('data/messages.json', 'r') as f:
@@ -115,17 +80,13 @@ def load_messages() -> list:
     except Exception:
         return []
 
-
-def save_message(msg_data: dict) -> None:
-    """Save a chat message to JSON file."""
+def save_message(msg_data):
     messages = load_messages()
     messages.append(msg_data)
     with open('data/messages.json', 'w') as f:
         json.dump(messages, f, indent=4)
 
-
-def load_admin_replies() -> list:
-    """Load all admin replies from JSON file."""
+def load_admin_replies():
     try:
         os.makedirs('data', exist_ok=True)
         with open('data/admin_replies.json', 'r') as f:
@@ -133,17 +94,13 @@ def load_admin_replies() -> list:
     except Exception:
         return []
 
-
-def save_admin_reply(reply_data: dict) -> None:
-    """Save an admin reply to JSON file."""
+def save_admin_reply(reply_data):
     replies = load_admin_replies()
     replies.append(reply_data)
     with open('data/admin_replies.json', 'w') as f:
         json.dump(replies, f, indent=4)
 
-
-def load_admin_chat_history() -> list:
-    """Load admin-user chat history from JSON file."""
+def load_admin_chat_history():
     try:
         os.makedirs('data', exist_ok=True)
         with open('data/admin_chat_history.json', 'r') as f:
@@ -151,32 +108,36 @@ def load_admin_chat_history() -> list:
     except Exception:
         return []
 
-
-def save_admin_chat_history(chat_data: dict) -> None:
-    """Save admin-user chat to JSON file."""
+def save_admin_chat_history(chat_data):
     history = load_admin_chat_history()
     history.append(chat_data)
     with open('data/admin_chat_history.json', 'w') as f:
         json.dump(history, f, indent=4)
 
-
-def get_user_by_email(email: str) -> dict:
-    """Retrieve user data by email address."""
+def get_user_by_email(email):
     users = load_users()
     for user in users:
         if user['email'] == email:
             return user
     return None
 
-
-def get_user_messages(email: str) -> list:
-    """Retrieve all messages for a specific user."""
+def get_user_messages(email):
     messages = load_messages()
-    return [msg for msg in messages if msg.get('user') == email]
+    user_msgs = []
+    for msg in messages:
+        if msg.get('user') == email:
+            user_msgs.append(msg)
+    return user_msgs
 
+def clear_user_history(email):
+    """Clear all messages for a specific user"""
+    messages = load_messages()
+    user_msgs = [msg for msg in messages if msg.get('user') != email]
+    with open('data/messages.json', 'w') as f:
+        json.dump(user_msgs, f, indent=4)
 
 # ============================================
-# 🤖 GEMINI AI CONFIGURATION
+# 🤖 GEMINI SETUP
 # ============================================
 
 gemini_key = os.getenv("GEMINI_API_KEY") or os.getenv("GOOGLE_API_KEY")
@@ -187,17 +148,7 @@ if not gemini_key:
 
 client = genai.Client(api_key=gemini_key)
 
-
-def generate_ai_response(prompt: str) -> str:
-    """
-    Generate AI response using Google Gemini models.
-    
-    Args:
-        prompt (str): User input prompt
-    
-    Returns:
-        str: AI generated response
-    """
+def generate_ai_response(prompt):
     models_to_try = [
         "gemini-3.6-flash",
         "gemini-3.5-flash",
@@ -219,24 +170,13 @@ def generate_ai_response(prompt: str) -> str:
             
     return None
 
-
 # ============================================
-# 🔍 TAVILY SEARCH API
+# 🔍 TAVILY SEARCH
 # ============================================
 
 TAVILY_API_KEY = os.getenv("TAVILY_API_KEY")
 
-
-def search_internet(query: str) -> str:
-    """
-    Search the internet using Tavily API.
-    
-    Args:
-        query (str): Search query
-    
-    Returns:
-        str: Search results
-    """
+def search_internet(query):
     if not TAVILY_API_KEY:
         return "Tavily API key not configured."
     
@@ -261,23 +201,17 @@ def search_internet(query: str) -> str:
     except Exception as e:
         return f"Search error: {e}"
 
-
 # ============================================
-# 📊 REPORT GENERATION FUNCTIONS
+# 📊 REPORT FUNCTIONS
 # ============================================
 
-def get_todays_report_data() -> pd.DataFrame:
-    """
-    Generate today's report data including users and messages.
-    
-    Returns:
-        pd.DataFrame: Report data
-    """
+def get_todays_report_data():
     try:
         users = load_users()
         messages = load_messages()
         
         today = datetime.datetime.now().strftime("%Y-%m-%d")
+        today_users = [u for u in users if u.get('signup_time', '').startswith(today)]
         today_messages = [m for m in messages if m.get('timestamp', '').startswith(today)]
         
         data = []
@@ -295,14 +229,7 @@ def get_todays_report_data() -> pd.DataFrame:
     except Exception:
         return pd.DataFrame([{"User": "Error", "Message": "Data load issue", "Time": "-"}])
 
-
-def send_daily_report() -> str:
-    """
-    Send daily report email to admin.
-    
-    Returns:
-        str: Status message
-    """
+def send_daily_report():
     try:
         df = get_todays_report_data()
         table_html = df.to_html(index=False, border=0)
@@ -345,16 +272,14 @@ def send_daily_report() -> str:
     except Exception as e:
         return f"❌ Error: {str(e)}"
 
-
 # ============================================
-# 🧠 LANGCHAIN AGENT TOOLS
+# 🧠 LANGCHAIN v1 AGENT TOOLS
 # ============================================
 
 @tool
 def internet_search(query: str) -> str:
     """Search the internet for current information, news, or latest updates."""
     return search_internet(query)
-
 
 @tool
 def get_report_data(query: str) -> str:
@@ -375,15 +300,13 @@ def get_report_data(query: str) -> str:
         f"📝 Recent Messages:\n{df.to_string(index=False)}"
     )
 
-
 @tool
 def send_report_email(query: str) -> str:
     """Send the daily report to admin email."""
     return send_daily_report()
 
-
 # ============================================
-# 🧠 LANGCHAIN AGENT SETUP
+# 🧠 LANGCHAIN AGENT
 # ============================================
 
 langchain_model = ChatGoogleGenerativeAI(
@@ -399,7 +322,7 @@ langchain_agent = create_agent(
 
 IMPORTANT RULES:
 1. ALWAYS start with: "Hey! I'm Apex AI - your business buddy! 🚀"
-2. Introduce yourself briefly
+2. Introduce yourself briefly ONLY on first message
 3. Ask what they want to build
 4. If they ask about payment, say admin will help
 5. Keep it short (max 50 words)
@@ -413,9 +336,7 @@ Give short, clear, professional answers.
 """
 )
 
-
-def run_langchain_agent(user_input: str) -> str:
-    """Execute the LangChain agent with user input."""
+def run_langchain_agent(user_input):
     try:
         result = langchain_agent.invoke({
             "messages": [{"role": "user", "content": user_input}]
@@ -445,51 +366,39 @@ def run_langchain_agent(user_input: str) -> str:
     except Exception as e:
         return f"⚠️ Error: {str(e)}"
 
-
 # ============================================
-# 🤖 AI AGENT CLASS
+# 🤖 AI AGENT CLASS - FIXED
 # ============================================
 
 class AIAgent:
-    """Main AI Agent class that handles user interactions."""
-    
     def __init__(self):
         self.memory = []
         self.user_info = {}
-        self.intro_given = False
+        self.intro_given = False  # ✅ Sirf pehli baar intro
 
-    def think(self, user_input: str) -> dict:
-        """
-        Process user input and generate a response.
-        
-        Args:
-            user_input (str): User's message
-            
-        Returns:
-            dict: Contains 'reply' and 'should_connect' flag
-        """
+    def think(self, user_input):
         self.memory.append({"role": "user", "content": user_input})
         lower_input = user_input.lower()
 
-        # Off-topic questions
+        # Off-topic check
         off_topic = ["weather", "birthday", "song", "movie", "recipe", "joke", "funny", "love", "relationship"]
         if any(word in lower_input for word in off_topic):
             return {
-                "reply": "🌟 **I'm Apex AI - Your Business Partner!**\n\nI specialize in:\n• 💻 Web Development\n• 🤖 AI Agents\n• 🎬 Video Editing\n• 📱 Automation\n\nHow can I help with your business? 😊",
+                "reply": "🌟 I'm Apex AI - Your Business Partner!\n\nI specialize in:\n• 💻 Web Development\n• 🤖 AI Agents\n• 🎬 Video Editing\n• 📱 Automation\n\nHow can I help with your business? 😊",
                 "should_connect": False
             }
 
-        # Payment inquiries
+        # Payment check
         if "payment" in lower_input or "pay" in lower_input:
             return {
-                "reply": "💎 **Payment & Pricing:**\n\nFor payment details, I'll connect you with our admin team.\n\n✨ **Why choose us?**\n• Best prices\n• Flexible plans\n• Quality guaranteed\n\nClick **Talk to Admin** below! 🚀",
+                "reply": "💎 **Payment & Pricing:**\n\nFor payment details, I'll connect you with our admin team.\n\n✨ Why choose us?\n• Best prices\n• Flexible plans\n• Quality guaranteed\n\nClick **Talk to Admin** below! 🚀",
                 "should_connect": True
             }
 
         # Identity questions
         if "who are you" in lower_input or "who is" in lower_input:
             return {
-                "reply": "🌟 **I'm Apex AI - your business buddy!** 🚀\n\nI'm a professional Business AI Agent designed to help you with:\n• 💻 Web Development\n• 🤖 Custom AI Agents\n• 🎬 Video Editing\n• 📱 Automation\n\nTell me what you want to build, and I'll guide you! 😊",
+                "reply": "🌟 I'm Apex AI - your business buddy! 🚀\n\nI'm a professional Business AI Agent designed to help you with:\n• 💻 Web Development\n• 🤖 Custom AI Agents\n• 🎬 Video Editing\n• 📱 Automation\n\nTell me what you want to build! 😊",
                 "should_connect": False
             }
 
@@ -506,7 +415,7 @@ class AIAgent:
             except Exception:
                 pass
 
-        # Standard response with intro control
+        # ✅ FIXED: Sirf pehli baar intro, phir direct to-the-point
         if not self.intro_given:
             intro = "Hey! I'm Apex AI - your business buddy! 🚀\n\n"
             self.intro_given = True
@@ -541,12 +450,11 @@ Response (max 40 words):
             return {"reply": reply, "should_connect": should_connect}
         else:
             return {
-                "reply": "🌟 **Hey! I'm Apex AI!**\n\nI'd love to help with:\n• 💻 Web Development\n• 🤖 AI Agents\n• 🎬 Video Editing\n• 📱 Automation\n\nWhat can I do for you today? 😊",
+                "reply": "🌟 Hey! I'm Apex AI!\n\nI'd love to help with:\n• 💻 Web Development\n• 🤖 AI Agents\n• 🎬 Video Editing\n• 📱 Automation\n\nWhat can I do for you today? 😊",
                 "should_connect": True
             }
 
-    def get_quick_topics(self) -> list:
-        """Return quick topic suggestions for users."""
+    def get_quick_topics(self):
         return [
             "Web Development",
             "AI Agents", 
@@ -554,9 +462,8 @@ Response (max 40 words):
             "Automation"
         ]
 
-
 # ============================================
-# 🎨 UI STYLING
+# 🎨 UI - CUSTOM CSS (FIXED BLANK BOXES)
 # ============================================
 
 st.markdown("""
@@ -567,7 +474,7 @@ st.markdown("""
         color: #f8fafc;
     }
     
-    /* Header Gradient */
+    /* Header */
     .gradient-header {
         font-size: 2.5rem;
         font-weight: 800;
@@ -588,7 +495,7 @@ st.markdown("""
         box-shadow: 0 0 30px rgba(56, 189, 248, 0.1);
     }
     
-    /* Chat Container */
+    /* ✅ CHAT CONTAINER - FIXED BLANK BOXES */
     .chat-container {
         background: rgba(15, 23, 42, 0.6);
         border: 2px solid #6366f1;
@@ -599,55 +506,32 @@ st.markdown("""
         max-height: 500px;
         overflow-y: auto;
         margin-bottom: 15px;
+        min-height: 100px;
     }
     
-    /* User Messages - Blue Theme */
+    /* ✅ USER MESSAGES - FIXED */
     .user-msg {
-        background: linear-gradient(135deg, #1e3a5f, #2563eb);
-        border-left: 4px solid #60a5fa;
-        padding: 12px 18px;
-        border-radius: 12px;
-        margin: 8px 0;
-        box-shadow: 0 4px 20px rgba(37, 99, 235, 0.3);
-        color: #f0f9ff;
-        animation: slideIn 0.3s ease;
+        background: linear-gradient(135deg, #1e3a5f, #2563eb) !important;
+        border-left: 4px solid #60a5fa !important;
+        padding: 12px 18px !important;
+        border-radius: 12px !important;
+        margin: 8px 0 !important;
+        box-shadow: 0 4px 20px rgba(37, 99, 235, 0.3) !important;
+        color: #f0f9ff !important;
+        animation: slideIn 0.3s ease !important;
     }
     
-    /* Agent Messages - Purple Theme */
+    /* ✅ AGENT MESSAGES - FIXED */
     .bot-msg {
-        background: linear-gradient(135deg, #1a1a4e, #7c3aed);
-        border-left: 4px solid #a78bfa;
-        padding: 14px 22px;
-        border-radius: 12px;
-        margin: 8px 0;
-        line-height: 1.8;
-        box-shadow: 0 4px 20px rgba(124, 58, 237, 0.3);
-        color: #f5f3ff;
-        animation: slideIn 0.3s ease;
-    }
-    
-    /* Admin Messages - Pink Theme */
-    .admin-user-msg {
-        background: linear-gradient(135deg, #4a1a2e, #db2777);
-        border-left: 4px solid #f472b6;
-        padding: 12px 18px;
-        border-radius: 12px;
-        margin: 8px 0;
-        box-shadow: 0 4px 20px rgba(219, 39, 119, 0.3);
-        color: #fdf2f8;
-        animation: slideIn 0.3s ease;
-    }
-    
-    /* Admin Replies - Green Theme */
-    .admin-reply-msg {
-        background: linear-gradient(135deg, #1a3a2e, #10b981);
-        border-left: 4px solid #34d399;
-        padding: 12px 18px;
-        border-radius: 12px;
-        margin: 8px 0;
-        box-shadow: 0 4px 20px rgba(16, 185, 129, 0.3);
-        color: #ecfdf5;
-        animation: slideIn 0.3s ease;
+        background: linear-gradient(135deg, #1a1a4e, #7c3aed) !important;
+        border-left: 4px solid #a78bfa !important;
+        padding: 14px 22px !important;
+        border-radius: 12px !important;
+        margin: 8px 0 !important;
+        line-height: 1.8 !important;
+        box-shadow: 0 4px 20px rgba(124, 58, 237, 0.3) !important;
+        color: #f5f3ff !important;
+        animation: slideIn 0.3s ease !important;
     }
     
     /* Animation */
@@ -673,7 +557,7 @@ st.markdown("""
         margin: 10px 0;
     }
     
-    /* Hide Streamlit Default Elements */
+    /* Hide Streamlit Default */
     #MainMenu {visibility: hidden;}
     footer {visibility: hidden;}
     header {visibility: hidden;}
@@ -704,6 +588,21 @@ st.markdown("""
     .stTextArea textarea:focus {
         border-color: #a78bfa !important;
         box-shadow: 0 0 25px rgba(99, 102, 241, 0.3) !important;
+    }
+    
+    /* Clear Chat Button */
+    .clear-btn {
+        background: #dc2626 !important;
+        color: white !important;
+        border-radius: 20px !important;
+        padding: 5px 15px !important;
+        font-size: 12px !important;
+        border: none !important;
+        cursor: pointer !important;
+    }
+    
+    .clear-btn:hover {
+        background: #b91c1c !important;
     }
 </style>
 """, unsafe_allow_html=True)
@@ -1012,8 +911,20 @@ if st.session_state.show_admin_chat:
 
 st.markdown("---")
 
-# Chat Display
-st.markdown("### 💬 Chat with Apex AI")
+# ============================================
+# 💬 CHAT DISPLAY + CLEAR CHAT
+# ============================================
+
+col1, col2 = st.columns([3, 1])
+with col1:
+    st.markdown("### 💬 Chat with Apex AI")
+with col2:
+    if st.button("🗑️ Clear Chat", use_container_width=True):
+        st.session_state.chat_history = []
+        if user_email != "Not Provided":
+            clear_user_history(user_email)
+        st.success("✅ Chat cleared!")
+        st.rerun()
 
 with st.container():
     st.markdown('<div class="chat-container">', unsafe_allow_html=True)
@@ -1032,7 +943,10 @@ with st.container():
     
     st.markdown('</div>', unsafe_allow_html=True)
 
-# Quick Topics
+# ============================================
+# ⚡ QUICK TOPICS
+# ============================================
+
 st.markdown("### ⚡ Quick Topics")
 qcols = st.columns(4)
 quick_topics = st.session_state.agent.get_quick_topics()
@@ -1044,7 +958,10 @@ for idx, col in enumerate(qcols):
         if st.button(f"{icons[idx]}{quick_topics[idx]}", key=f"topic_{idx}", use_container_width=True):
             selected_topic = quick_topics[idx]
 
-# Chat Input
+# ============================================
+# 💬 CHAT INPUT
+# ============================================
+
 st.markdown("### 💬 Type your message")
 
 with st.form(key="chat_form", clear_on_submit=True):
@@ -1146,7 +1063,6 @@ with st.form(key="chat_form", clear_on_submit=True):
                 
             except Exception as e:
                 st.error(f"❌ Error: {e}")
-                st.info("💡 Make sure all secrets are set in Streamlit Cloud")
 
 # Footer
 st.markdown("---")
