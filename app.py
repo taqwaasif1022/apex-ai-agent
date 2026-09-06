@@ -1,8 +1,6 @@
 # ============================================
-# 📁 app.py - APEX AI BUSINESS AGENT
-# 🏢 Professional AI Agent for Business Solutions
-# 👩‍💻 Developer: TAQWA
-# 📅 Version: 3.0.0
+# 📁 app.py - APEX AI AGENT (FINAL)
+# TAQWA's Final Project - ALL FIXES
 # ============================================
 
 import os
@@ -21,7 +19,6 @@ from langchain.agents import create_agent
 from langchain.tools import tool
 from langchain_google_genai import ChatGoogleGenerativeAI
 
-# ✅ FORCE DEPLOY - v3.0
 st.set_page_config(
     page_title="Apex AI Business Agent",
     page_icon="🤖",
@@ -39,7 +36,6 @@ GMAIL_EMAIL = os.getenv("GMAIL_EMAIL", "banukabil348@gmail.com")
 GMAIL_PASSWORD = os.getenv("GMAIL_PASSWORD", "your_app_password")
 
 def send_gmail_notification(to_email, subject, body):
-    """Send email notification via Gmail SMTP"""
     try:
         msg = MIMEMultipart()
         msg['From'] = GMAIL_EMAIL
@@ -134,6 +130,21 @@ def get_user_messages(email):
     messages = load_messages()
     return [msg for msg in messages if msg.get('user') == email]
 
+def clear_user_history(email):
+    """Clear user's chat history permanently from JSON"""
+    try:
+        messages = load_messages()
+        user_msgs = [msg for msg in messages if msg.get('user') != email]
+        with open('data/messages.json', 'w') as f:
+            json.dump(user_msgs, f, indent=4)
+        
+        if "chat_history" in st.session_state:
+            st.session_state.chat_history = []
+        return True
+    except Exception as e:
+        print(f"Error clearing history: {e}")
+        return False
+
 def clear_all_history():
     with open('data/messages.json', 'w') as f:
         json.dump([], f, indent=4)
@@ -141,12 +152,6 @@ def clear_all_history():
         json.dump([], f, indent=4)
     with open('data/admin_replies.json', 'w') as f:
         json.dump([], f, indent=4)
-
-def clear_user_history(email):
-    messages = load_messages()
-    user_msgs = [msg for msg in messages if msg.get('user') != email]
-    with open('data/messages.json', 'w') as f:
-        json.dump(user_msgs, f, indent=4)
 
 # ============================================
 # 🤖 GEMINI SETUP
@@ -462,7 +467,6 @@ Response (max 40 words):
 
 st.markdown("""
 <style>
-    /* ✅ FORCE DARK THEME - STREAMLIT CLOUD */
     .stApp {
         background: radial-gradient(circle at top, #1e1b4b 0%, #0b0f19 80%) !important;
         color: #f8fafc !important;
@@ -487,7 +491,6 @@ st.markdown("""
         box-shadow: 0 0 30px rgba(56, 189, 248, 0.1) !important;
     }
     
-    /* ✅ CHAT CONTAINER - WITH INPUT INSIDE */
     .chat-container {
         background: rgba(15, 23, 42, 0.6) !important;
         border: 2px solid #6366f1 !important;
@@ -501,7 +504,6 @@ st.markdown("""
         margin-bottom: 15px !important;
     }
     
-    /* ✅ Chat Messages Area */
     .chat-messages {
         flex: 1 !important;
         overflow-y: auto !important;
@@ -509,67 +511,6 @@ st.markdown("""
         padding: 5px 0 !important;
     }
     
-    /* ✅ Chat Input Area - Inside Container */
-    .chat-input-area {
-        display: flex !important;
-        gap: 10px !important;
-        padding-top: 15px !important;
-        border-top: 1px solid #334155 !important;
-        margin-top: 10px !important;
-    }
-    
-    .chat-input-area input {
-        flex: 1 !important;
-        padding: 12px 20px !important;
-        background: rgba(30, 41, 59, 0.8) !important;
-        border: 2px solid #6366f1 !important;
-        border-radius: 30px !important;
-        color: white !important;
-        font-size: 15px !important;
-    }
-    
-    .chat-input-area input:focus {
-        outline: none !important;
-        border-color: #a78bfa !important;
-        box-shadow: 0 0 25px rgba(99, 102, 241, 0.3) !important;
-    }
-    
-    .chat-input-area input::placeholder {
-        color: #94a3b8 !important;
-    }
-    
-    .chat-input-area button {
-        background: linear-gradient(135deg, #2563eb, #7c3aed) !important;
-        border: none !important;
-        border-radius: 30px !important;
-        color: white !important;
-        padding: 12px 24px !important;
-        font-weight: 600 !important;
-        cursor: pointer !important;
-        transition: all 0.3s ease !important;
-        white-space: nowrap !important;
-    }
-    
-    .chat-input-area button:hover {
-        transform: scale(1.05) !important;
-        box-shadow: 0 4px 20px rgba(99, 102, 241, 0.4) !important;
-    }
-    
-    /* ✅ Scrollbar */
-    .chat-messages::-webkit-scrollbar {
-        width: 6px !important;
-    }
-    
-    .chat-messages::-webkit-scrollbar-track {
-        background: rgba(15, 23, 42, 0.3) !important;
-    }
-    
-    .chat-messages::-webkit-scrollbar-thumb {
-        background: #6366f1 !important;
-        border-radius: 10px !important;
-    }
-    
-    /* ✅ User Messages */
     .user-msg {
         background: linear-gradient(135deg, #1e3a5f, #2563eb) !important;
         border-left: 4px solid #60a5fa !important;
@@ -583,7 +524,6 @@ st.markdown("""
         align-self: flex-end !important;
     }
     
-    /* ✅ Agent Messages */
     .bot-msg {
         background: linear-gradient(135deg, #1a1a4e, #7c3aed) !important;
         border-left: 4px solid #a78bfa !important;
@@ -641,7 +581,6 @@ st.markdown("""
         to { opacity: 1; transform: translateY(0) scale(1); }
     }
     
-    /* ✅ ALL BUTTONS */
     .stButton button {
         background: linear-gradient(135deg, #1e293b, #334155) !important;
         color: #f8fafc !important;
@@ -661,7 +600,6 @@ st.markdown("""
         border-color: #a78bfa !important;
     }
     
-    /* TALK TO ADMIN */
     .stButton button[data-testid="baseButton-secondary"] {
         background: linear-gradient(135deg, #f472b6, #ec4899) !important;
         border: none !important;
@@ -674,7 +612,6 @@ st.markdown("""
         box-shadow: 0 4px 30px rgba(244, 114, 182, 0.6) !important;
     }
     
-    /* NOTIFY ADMIN */
     .stButton button[data-testid="baseButton-primary"] {
         background: linear-gradient(135deg, #f59e0b, #d97706) !important;
         border: none !important;
@@ -688,7 +625,6 @@ st.markdown("""
         transform: translateY(-2px) !important;
     }
     
-    /* SEND BUTTON */
     .stButton button[data-testid="baseButton-formSubmit"] {
         background: linear-gradient(135deg, #2563eb, #7c3aed) !important;
         border: none !important;
@@ -707,7 +643,6 @@ st.markdown("""
         transform: translateY(-2px) !important;
     }
     
-    /* ✅ INPUT FIELDS */
     .stTextInput input {
         background: rgba(30, 41, 59, 0.8) !important;
         border: 2px solid #6366f1 !important;
@@ -1052,23 +987,22 @@ if st.session_state.show_admin_chat:
 
 st.markdown("---")
 
-# ✅ CHAT CONTAINER WITH INPUT INSIDE
+# ✅ CHAT DISPLAY + PERMANENT CLEAR CHAT
 col1, col2 = st.columns([3, 1])
 with col1:
     st.markdown("### 💬 Chat with Apex AI")
 with col2:
     if st.button("🗑️ Clear Chat", use_container_width=True):
-        st.session_state.chat_history = []
         if user_email != "Not Provided":
             clear_user_history(user_email)
-        st.success("✅ Chat cleared!")
+        st.session_state.chat_history = []
+        st.success("✅ Chat cleared permanently!")
         st.rerun()
 
 with st.container():
     st.markdown('<div class="chat-container">', unsafe_allow_html=True)
-    
-    # ✅ Messages area
     st.markdown('<div class="chat-messages">', unsafe_allow_html=True)
+    
     if st.session_state.chat_history:
         for chat in st.session_state.chat_history:
             if isinstance(chat, dict):
@@ -1080,50 +1014,29 @@ with st.container():
                     st.markdown(f'<div class="bot-msg"><b>🤖 Apex AI:</b><br>{chat["response"]}</div>', unsafe_allow_html=True)
     else:
         st.info("🌟 Start a conversation with Apex AI!")
-    st.markdown('</div>', unsafe_allow_html=True)  # End chat-messages
     
-    # ✅ Input area inside chat container
-    with st.form(key="chat_form", clear_on_submit=True):
-        col1, col2 = st.columns([4, 1])
-        with col1:
-            user_input = st.text_input(
-                "",
-                placeholder="💬 Type your message...",
-                key="chat_input",
-                label_visibility="collapsed"
-            )
-        with col2:
-            send_btn = st.form_submit_button("🚀 Send", use_container_width=True)
+    st.markdown('</div>', unsafe_allow_html=True)
     
-    st.markdown('</div>', unsafe_allow_html=True)  # End chat-container
+    # ✅ CHAT INPUT - st.chat_input
+    user_input = st.chat_input("💬 Type your message...")
+    
+    st.markdown('</div>', unsafe_allow_html=True)
 
-# ✅ Quick Topics
-st.markdown("### ⚡ Quick Topics")
-qcols = st.columns(4)
-quick_topics = st.session_state.agent.get_quick_topics()
-icons = ["💻 ", "🤖 ", "🎬 ", "📱 "]
-
-selected_topic = None
-for idx, col in enumerate(qcols):
-    with col:
-        if st.button(f"{icons[idx]}{quick_topics[idx]}", key=f"topic_{idx}", use_container_width=True):
-            selected_topic = quick_topics[idx]
-
-# Process message
-if selected_topic:
+# ✅ Process message from chat_input
+if user_input:
     with st.spinner("🤖 Thinking..."):
         try:
-            response = st.session_state.agent.think(selected_topic)
+            response = st.session_state.agent.think(user_input)
             
             st.session_state.chat_history.append({
-                "user_query": selected_topic,
+                "user_query": user_input,
                 "bot_response": response['reply']
             })
             
             save_message({
                 "user": user_email,
                 "name": user_name,
-                "message": selected_topic,
+                "message": user_input,
                 "response": response['reply'],
                 "timestamp": str(datetime.datetime.now())
             })
@@ -1183,7 +1096,7 @@ if selected_topic:
                 send_gmail_notification(
                     GMAIL_EMAIL,
                     f"💬 User wants admin: {user_name}",
-                    f"User: {user_name}\nEmail: {user_email}\nQuery: {selected_topic}"
+                    f"User: {user_name}\nEmail: {user_email}\nQuery: {user_input}"
                 )
                 st.info("💖 Admin notified! They'll reach out soon!")
                 st.balloons()
@@ -1192,7 +1105,98 @@ if selected_topic:
             
         except Exception as e:
             st.error(f"❌ Error: {e}")
-            st.info("💡 Make sure all secrets are set in Streamlit Cloud")
+
+# ✅ Quick Topics
+st.markdown("### ⚡ Quick Topics")
+qcols = st.columns(4)
+quick_topics = st.session_state.agent.get_quick_topics()
+icons = ["💻 ", "🤖 ", "🎬 ", "📱 "]
+
+for idx, col in enumerate(qcols):
+    with col:
+        if st.button(f"{icons[idx]}{quick_topics[idx]}", key=f"topic_{idx}", use_container_width=True):
+            topic_text = quick_topics[idx]
+            with st.spinner("🤖 Thinking..."):
+                try:
+                    response = st.session_state.agent.think(topic_text)
+                    
+                    st.session_state.chat_history.append({
+                        "user_query": topic_text,
+                        "bot_response": response['reply']
+                    })
+                    
+                    save_message({
+                        "user": user_email,
+                        "name": user_name,
+                        "message": topic_text,
+                        "response": response['reply'],
+                        "timestamp": str(datetime.datetime.now())
+                    })
+                    
+                    if user_email != "Not Provided":
+                        existing = get_user_by_email(user_email)
+                        is_new_user = (existing is None)
+                        
+                        if is_new_user:
+                            send_gmail_notification(
+                                user_email,
+                                "🎉 Welcome to Apex AI Solutions!",
+                                f"""
+                                🌟 Hi {user_name}!
+                                
+                                Welcome to Apex AI Solutions! 🚀
+                                
+                                ✨ We can help you with:
+                                • 💻 Web Development
+                                • 🤖 AI Agents
+                                • 🎬 Video Editing  
+                                • 📱 Automation
+                                
+                                Let's make something amazing! 💪
+                                
+                                Best,
+                                Apex AI Team
+                                """
+                            )
+                            
+                            send_gmail_notification(
+                                GMAIL_EMAIL,
+                                f"🔔 New User Sign-In: {user_name}",
+                                f"""
+                                New user signed in!
+                                
+                                Name: {user_name}
+                                Email: {user_email}
+                                Age: {user_age}
+                                Country: {user_country}
+                                Time: {datetime.datetime.now()}
+                                """
+                            )
+                            
+                            st.toast("🎉 Welcome email sent!", icon="🎉")
+                    
+                    save_user({
+                        "name": user_name,
+                        "email": user_email,
+                        "age": user_age,
+                        "country": user_country,
+                        "signup_time": str(datetime.datetime.now()),
+                        "status": "pending"
+                    })
+                    
+                    if response.get('should_connect', False):
+                        send_gmail_notification(
+                            GMAIL_EMAIL,
+                            f"💬 User wants admin: {user_name}",
+                            f"User: {user_name}\nEmail: {user_email}\nQuery: {topic_text}"
+                        )
+                        st.info("💖 Admin notified! They'll reach out soon!")
+                        st.balloons()
+                    
+                    st.rerun()
+                    
+                except Exception as e:
+                    st.error(f"❌ Error: {e}")
 
 # Footer
 st.markdown("---")
