@@ -1,8 +1,10 @@
 # ============================================
-# 📁 app.py - APEX AI AGENT (FINAL)
-# TAQWA's Final Project - STREAMLIT CLOUD READY
+# 📁 app.py - APEX AI BUSINESS AGENT
+# 🏢 Professional AI Agent for Business Solutions
+# 👩‍💻 Developer: TAQWA
+# 📅 Version: 3.0.0
 # ============================================
-# FORCE DEPLOY - v2.1
+
 import os
 import json
 import datetime
@@ -19,8 +21,13 @@ from langchain.agents import create_agent
 from langchain.tools import tool
 from langchain_google_genai import ChatGoogleGenerativeAI
 
-# ✅ FORCE DEPLOY - v2.0
-st.set_page_config(page_title="Apex AI Agent", page_icon="🤖", layout="wide")
+# ✅ FORCE DEPLOY - v3.0
+st.set_page_config(
+    page_title="Apex AI Business Agent",
+    page_icon="🤖",
+    layout="wide",
+    initial_sidebar_state="collapsed"
+)
 
 load_dotenv()
 
@@ -32,6 +39,7 @@ GMAIL_EMAIL = os.getenv("GMAIL_EMAIL", "banukabil348@gmail.com")
 GMAIL_PASSWORD = os.getenv("GMAIL_PASSWORD", "your_app_password")
 
 def send_gmail_notification(to_email, subject, body):
+    """Send email notification via Gmail SMTP"""
     try:
         msg = MIMEMultipart()
         msg['From'] = GMAIL_EMAIL
@@ -124,11 +132,7 @@ def get_user_by_email(email):
 
 def get_user_messages(email):
     messages = load_messages()
-    user_msgs = []
-    for msg in messages:
-        if msg.get('user') == email:
-            user_msgs.append(msg)
-    return user_msgs
+    return [msg for msg in messages if msg.get('user') == email]
 
 def clear_all_history():
     with open('data/messages.json', 'w') as f:
@@ -391,14 +395,14 @@ class AIAgent:
         # Payment
         if "payment" in lower_input or "pay" in lower_input:
             return {
-                "reply": "💎 **Payment & Pricing:**\n\nFor payment details, I'll connect you with our admin team.\n\n📞 **Talk to Admin:** http://localhost:8501/?admin=true\n\nOr click **Talk to Admin** button above! 🚀",
+                "reply": "💎 **Payment & Pricing:**\n\nFor payment details, please click the **'Talk to Admin'** button above ☝️\n\nOur admin team will assist you with pricing and payment plans! 🚀",
                 "should_connect": True
             }
 
         # Identity
         if "who are you" in lower_input or "who is" in lower_input or "introduce" in lower_input:
             return {
-                "reply": "🌟 **Hey! I'm Apex AI - your business buddy!** 🚀\n\nI'm a professional Business AI Agent designed to help you with:\n• 💻 Web Development\n• 🤖 Custom AI Agents\n• 🎬 Video Editing\n• 📱 Automation\n\nTell me what you want to build! 😊",
+                "reply": "🌟 **Hey! I'm Apex AI - your business buddy!** 🚀\n\nI'm a professional Business AI Agent designed to help you with:\n• 💻 Web Development\n• 🤖 Custom AI Agents\n• 🎬 Video Editing\n• 📱 Automation\n\nFor payment or complex queries, click the **'Talk to Admin'** button above! 😊",
                 "should_connect": False
             }
 
@@ -426,7 +430,7 @@ RULES:
 3. Use 1-2 emojis maximum
 4. Keep it short (max 40 words)
 5. Ask ONE follow-up question
-6. For payments, suggest admin
+6. For payments, say "click the Talk to Admin button above"
 
 Response (max 40 words):
 """
@@ -440,7 +444,7 @@ Response (max 40 words):
             return {"reply": reply, "should_connect": should_connect}
         else:
             return {
-                "reply": "I can help with business solutions! What would you like to build today? 😊",
+                "reply": "I can help with business solutions! For payment, click the 'Talk to Admin' button above. What would you like to build today? 😊",
                 "should_connect": True
             }
 
@@ -453,7 +457,7 @@ Response (max 40 words):
         ]
 
 # ============================================
-# 🎨 UI - FORCE DARK THEME (STREAMLIT CLOUD)
+# 🎨 UI - FORCE DARK THEME
 # ============================================
 
 st.markdown("""
@@ -483,6 +487,7 @@ st.markdown("""
         box-shadow: 0 0 30px rgba(56, 189, 248, 0.1) !important;
     }
     
+    /* ✅ CHAT CONTAINER - WITH INPUT INSIDE */
     .chat-container {
         background: rgba(15, 23, 42, 0.6) !important;
         border: 2px solid #6366f1 !important;
@@ -490,12 +495,81 @@ st.markdown("""
         padding: 20px !important;
         box-shadow: 0 0 40px rgba(99, 102, 241, 0.2) !important;
         backdrop-filter: blur(5px) !important;
-        max-height: 500px !important;
-        overflow-y: auto !important;
+        max-height: 550px !important;
+        display: flex !important;
+        flex-direction: column !important;
         margin-bottom: 15px !important;
-        min-height: 100px !important;
     }
     
+    /* ✅ Chat Messages Area */
+    .chat-messages {
+        flex: 1 !important;
+        overflow-y: auto !important;
+        max-height: 400px !important;
+        padding: 5px 0 !important;
+    }
+    
+    /* ✅ Chat Input Area - Inside Container */
+    .chat-input-area {
+        display: flex !important;
+        gap: 10px !important;
+        padding-top: 15px !important;
+        border-top: 1px solid #334155 !important;
+        margin-top: 10px !important;
+    }
+    
+    .chat-input-area input {
+        flex: 1 !important;
+        padding: 12px 20px !important;
+        background: rgba(30, 41, 59, 0.8) !important;
+        border: 2px solid #6366f1 !important;
+        border-radius: 30px !important;
+        color: white !important;
+        font-size: 15px !important;
+    }
+    
+    .chat-input-area input:focus {
+        outline: none !important;
+        border-color: #a78bfa !important;
+        box-shadow: 0 0 25px rgba(99, 102, 241, 0.3) !important;
+    }
+    
+    .chat-input-area input::placeholder {
+        color: #94a3b8 !important;
+    }
+    
+    .chat-input-area button {
+        background: linear-gradient(135deg, #2563eb, #7c3aed) !important;
+        border: none !important;
+        border-radius: 30px !important;
+        color: white !important;
+        padding: 12px 24px !important;
+        font-weight: 600 !important;
+        cursor: pointer !important;
+        transition: all 0.3s ease !important;
+        white-space: nowrap !important;
+    }
+    
+    .chat-input-area button:hover {
+        transform: scale(1.05) !important;
+        box-shadow: 0 4px 20px rgba(99, 102, 241, 0.4) !important;
+    }
+    
+    /* ✅ Scrollbar */
+    .chat-messages::-webkit-scrollbar {
+        width: 6px !important;
+    }
+    
+    .chat-messages::-webkit-scrollbar-track {
+        background: rgba(15, 23, 42, 0.3) !important;
+    }
+    
+    .chat-messages::-webkit-scrollbar-thumb {
+        background: #6366f1 !important;
+        border-radius: 10px !important;
+    }
+    
+    /* ✅ User Messages */
     .user-msg {
         background: linear-gradient(135deg, #1e3a5f, #2563eb) !important;
         border-left: 4px solid #60a5fa !important;
@@ -505,8 +579,11 @@ st.markdown("""
         box-shadow: 0 4px 20px rgba(37, 99, 235, 0.3) !important;
         color: #f0f9ff !important;
         animation: slideIn 0.3s ease !important;
+        max-width: 80% !important;
+        align-self: flex-end !important;
     }
     
+    /* ✅ Agent Messages */
     .bot-msg {
         background: linear-gradient(135deg, #1a1a4e, #7c3aed) !important;
         border-left: 4px solid #a78bfa !important;
@@ -517,6 +594,8 @@ st.markdown("""
         box-shadow: 0 4px 20px rgba(124, 58, 237, 0.3) !important;
         color: #f5f3ff !important;
         animation: slideIn 0.3s ease !important;
+        max-width: 80% !important;
+        align-self: flex-start !important;
     }
     
     .admin-user-msg {
@@ -557,7 +636,12 @@ st.markdown("""
         margin: 10px 0 !important;
     }
     
-    /* ✅ ALL BUTTONS - FIXED */
+    @keyframes slideIn {
+        from { opacity: 0; transform: translateY(15px) scale(0.98); }
+        to { opacity: 1; transform: translateY(0) scale(1); }
+    }
+    
+    /* ✅ ALL BUTTONS */
     .stButton button {
         background: linear-gradient(135deg, #1e293b, #334155) !important;
         color: #f8fafc !important;
@@ -608,20 +692,22 @@ st.markdown("""
     .stButton button[data-testid="baseButton-formSubmit"] {
         background: linear-gradient(135deg, #2563eb, #7c3aed) !important;
         border: none !important;
-        box-shadow: 0 4px 20px rgba(99, 102, 241, 0.4) !important;
+        border-radius: 30px !important;
         color: white !important;
+        padding: 10px 20px !important;
+        font-weight: 600 !important;
+        box-shadow: 0 4px 20px rgba(99, 102, 241, 0.4) !important;
+        transition: all 0.3s ease !important;
+        width: 100% !important;
     }
     
     .stButton button[data-testid="baseButton-formSubmit"]:hover {
         background: linear-gradient(135deg, #1d4ed8, #6d28d9) !important;
         box-shadow: 0 4px 30px rgba(99, 102, 241, 0.6) !important;
+        transform: translateY(-2px) !important;
     }
     
-    @keyframes slideIn {
-        from { opacity: 0; transform: translateY(15px) scale(0.98); }
-        to { opacity: 1; transform: translateY(0) scale(1); }
-    }
-    
+    /* ✅ INPUT FIELDS */
     .stTextInput input {
         background: rgba(30, 41, 59, 0.8) !important;
         border: 2px solid #6366f1 !important;
@@ -966,6 +1052,7 @@ if st.session_state.show_admin_chat:
 
 st.markdown("---")
 
+# ✅ CHAT CONTAINER WITH INPUT INSIDE
 col1, col2 = st.columns([3, 1])
 with col1:
     st.markdown("### 💬 Chat with Apex AI")
@@ -980,6 +1067,8 @@ with col2:
 with st.container():
     st.markdown('<div class="chat-container">', unsafe_allow_html=True)
     
+    # ✅ Messages area
+    st.markdown('<div class="chat-messages">', unsafe_allow_html=True)
     if st.session_state.chat_history:
         for chat in st.session_state.chat_history:
             if isinstance(chat, dict):
@@ -991,9 +1080,24 @@ with st.container():
                     st.markdown(f'<div class="bot-msg"><b>🤖 Apex AI:</b><br>{chat["response"]}</div>', unsafe_allow_html=True)
     else:
         st.info("🌟 Start a conversation with Apex AI!")
+    st.markdown('</div>', unsafe_allow_html=True)  # End chat-messages
     
-    st.markdown('</div>', unsafe_allow_html=True)
+    # ✅ Input area inside chat container
+    with st.form(key="chat_form", clear_on_submit=True):
+        col1, col2 = st.columns([4, 1])
+        with col1:
+            user_input = st.text_input(
+                "",
+                placeholder="💬 Type your message...",
+                key="chat_input",
+                label_visibility="collapsed"
+            )
+        with col2:
+            send_btn = st.form_submit_button("🚀 Send", use_container_width=True)
+    
+    st.markdown('</div>', unsafe_allow_html=True)  # End chat-container
 
+# ✅ Quick Topics
 st.markdown("### ⚡ Quick Topics")
 qcols = st.columns(4)
 quick_topics = st.session_state.agent.get_quick_topics()
@@ -1005,106 +1109,92 @@ for idx, col in enumerate(qcols):
         if st.button(f"{icons[idx]}{quick_topics[idx]}", key=f"topic_{idx}", use_container_width=True):
             selected_topic = quick_topics[idx]
 
-st.markdown("### 💬 Type your message")
-
-with st.form(key="chat_form", clear_on_submit=True):
-    col1, col2 = st.columns([4, 1])
-    with col1:
-        user_input = st.text_input(
-            "",
-            placeholder="💬 Type your message and press Enter...",
-            key="chat_input",
-            label_visibility="collapsed"
-        )
-    with col2:
-        send_btn = st.form_submit_button("🚀 Send", use_container_width=True)
-    
-    final_input = selected_topic if selected_topic else (user_input if send_btn else None)
-    
-    if final_input:
-        with st.spinner("🤖 Thinking..."):
-            try:
-                response = st.session_state.agent.think(final_input)
+# Process message
+if selected_topic:
+    with st.spinner("🤖 Thinking..."):
+        try:
+            response = st.session_state.agent.think(selected_topic)
+            
+            st.session_state.chat_history.append({
+                "user_query": selected_topic,
+                "bot_response": response['reply']
+            })
+            
+            save_message({
+                "user": user_email,
+                "name": user_name,
+                "message": selected_topic,
+                "response": response['reply'],
+                "timestamp": str(datetime.datetime.now())
+            })
+            
+            if user_email != "Not Provided":
+                existing = get_user_by_email(user_email)
+                is_new_user = (existing is None)
                 
-                st.session_state.chat_history.append({
-                    "user_query": final_input,
-                    "bot_response": response['reply']
-                })
-                
-                save_message({
-                    "user": user_email,
-                    "name": user_name,
-                    "message": final_input,
-                    "response": response['reply'],
-                    "timestamp": str(datetime.datetime.now())
-                })
-                
-                if user_email != "Not Provided":
-                    existing = get_user_by_email(user_email)
-                    is_new_user = (existing is None)
+                if is_new_user:
+                    send_gmail_notification(
+                        user_email,
+                        "🎉 Welcome to Apex AI Solutions!",
+                        f"""
+                        🌟 Hi {user_name}!
+                        
+                        Welcome to Apex AI Solutions! 🚀
+                        
+                        ✨ We can help you with:
+                        • 💻 Web Development
+                        • 🤖 AI Agents
+                        • 🎬 Video Editing  
+                        • 📱 Automation
+                        
+                        Let's make something amazing! 💪
+                        
+                        Best,
+                        Apex AI Team
+                        """
+                    )
                     
-                    if is_new_user:
-                        send_gmail_notification(
-                            user_email,
-                            "🎉 Welcome to Apex AI Solutions!",
-                            f"""
-                            🌟 Hi {user_name}!
-                            
-                            Welcome to Apex AI Solutions! 🚀
-                            
-                            ✨ We can help you with:
-                            • 💻 Web Development
-                            • 🤖 AI Agents
-                            • 🎬 Video Editing  
-                            • 📱 Automation
-                            
-                            Let's make something amazing! 💪
-                            
-                            Best,
-                            Apex AI Team
-                            """
-                        )
-                        
-                        send_gmail_notification(
-                            GMAIL_EMAIL,
-                            f"🔔 New User Sign-In: {user_name}",
-                            f"""
-                            New user signed in!
-                            
-                            Name: {user_name}
-                            Email: {user_email}
-                            Age: {user_age}
-                            Country: {user_country}
-                            Time: {datetime.datetime.now()}
-                            """
-                        )
-                        
-                        st.toast("🎉 Welcome email sent!", icon="🎉")
-                
-                save_user({
-                    "name": user_name,
-                    "email": user_email,
-                    "age": user_age,
-                    "country": user_country,
-                    "signup_time": str(datetime.datetime.now()),
-                    "status": "pending"
-                })
-                
-                if response.get('should_connect', False):
                     send_gmail_notification(
                         GMAIL_EMAIL,
-                        f"💬 User wants admin: {user_name}",
-                        f"User: {user_name}\nEmail: {user_email}\nQuery: {final_input}"
+                        f"🔔 New User Sign-In: {user_name}",
+                        f"""
+                        New user signed in!
+                        
+                        Name: {user_name}
+                        Email: {user_email}
+                        Age: {user_age}
+                        Country: {user_country}
+                        Time: {datetime.datetime.now()}
+                        """
                     )
-                    st.info("💖 Admin notified! They'll reach out soon!")
-                    st.balloons()
-                
-                st.rerun()
-                
-            except Exception as e:
-                st.error(f"❌ Error: {e}")
-                st.info("💡 Make sure all secrets are set in Streamlit Cloud")
+                    
+                    st.toast("🎉 Welcome email sent!", icon="🎉")
+            
+            save_user({
+                "name": user_name,
+                "email": user_email,
+                "age": user_age,
+                "country": user_country,
+                "signup_time": str(datetime.datetime.now()),
+                "status": "pending"
+            })
+            
+            if response.get('should_connect', False):
+                send_gmail_notification(
+                    GMAIL_EMAIL,
+                    f"💬 User wants admin: {user_name}",
+                    f"User: {user_name}\nEmail: {user_email}\nQuery: {selected_topic}"
+                )
+                st.info("💖 Admin notified! They'll reach out soon!")
+                st.balloons()
+            
+            st.rerun()
+            
+        except Exception as e:
+            st.error(f"❌ Error: {e}")
+            st.info("💡 Make sure all secrets are set in Streamlit Cloud")
 
+# Footer
 st.markdown("---")
 st.markdown("""
 <div style="text-align: center; color: #64748b; padding: 10px;">

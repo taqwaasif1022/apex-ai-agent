@@ -4,13 +4,10 @@
    ============================================ */
 
 :root {
-    /* Dark Theme Colors */
     --bg-main: #0b0f19;
     --bg-card: #1e293b;
     --bg-chat: #0f172a;
     --bg-input: #0f172a;
-    
-    /* Accent Colors */
     --ai-bg: #1e293b;
     --ai-border: #0ea5e9;
     --ai-text: #f1f5f9;
@@ -20,17 +17,11 @@
     --accent-pink: #f472b6;
     --accent-gold: #f59e0b;
     --accent-green: #10b981;
-
-    /* Text Colors */
     --text-primary: #f8fafc;
     --text-secondary: #94a3b8;
     --text-muted: #64748b;
-    
-    /* Border Colors */
     --border-color: #334155;
     --border-light: #1e293b;
-    
-    /* Shadows */
     --shadow-blue: rgba(56, 189, 248, 0.1);
     --shadow-purple: rgba(99, 102, 241, 0.2);
     --shadow-pink: rgba(244, 114, 182, 0.3);
@@ -204,7 +195,6 @@ body {
     gap: 16px; 
 }
 
-/* ✅ User Messages - Blue Theme */
 .user-message { 
     align-self: flex-end; 
     max-width: 80%; 
@@ -220,7 +210,6 @@ body {
     color: #f0f9ff;
 }
 
-/* ✅ Agent Messages - Purple Theme */
 .bot-message { 
     align-self: flex-start; 
     max-width: 80%; 
@@ -237,7 +226,6 @@ body {
     color: #f5f3ff;
 }
 
-/* ✅ Suggestion Chips / Quick Topics */
 .suggestion-chips { 
     padding: 10px 20px; 
     display: flex; 
@@ -266,351 +254,69 @@ body {
 }
 
 /* ============================================
-   👑 OWNER / ADMIN CHAT
+   ✅ ALL BUTTONS
    ============================================ */
 
-.floating-owner-widget { 
-    position: fixed; 
-    bottom: 24px; 
-    right: 24px; 
-    display: flex; 
-    align-items: center; 
-    gap: 10px; 
-    background: linear-gradient(135deg, #be123c, #db2777);
-    border: 2px solid #f472b6; 
-    padding: 8px 20px 8px 8px; 
-    border-radius: 40px; 
-    cursor: pointer; 
-    box-shadow: 0 10px 30px rgba(244, 63, 94, 0.4); 
-    z-index: 999;
-    transition: all 0.3s ease;
+.stButton button {
+    background: linear-gradient(135deg, #1e293b, #334155) !important;
+    color: #f8fafc !important;
+    border: 1px solid #38bdf8 !important;
+    border-radius: 30px !important;
+    padding: 10px 20px !important;
+    font-weight: 600 !important;
+    width: 100% !important;
+    box-shadow: 0 2px 10px rgba(0,0,0,0.3) !important;
+    transition: all 0.3s ease !important;
 }
 
-.floating-owner-widget:hover {
-    transform: scale(1.05);
-    box-shadow: 0 10px 40px rgba(244, 63, 94, 0.6);
+.stButton button:hover {
+    background: linear-gradient(135deg, #2563eb, #7c3aed) !important;
+    box-shadow: 0 0 30px rgba(99, 102, 241, 0.3) !important;
+    transform: translateY(-2px) !important;
+    border-color: #a78bfa !important;
 }
 
-.floating-owner-widget img { 
-    width: 42px; 
-    height: 42px; 
-    border-radius: 50%; 
-    object-fit: cover; 
-    border: 2px solid #fff; 
+.stButton button[data-testid="baseButton-secondary"] {
+    background: linear-gradient(135deg, #f472b6, #ec4899) !important;
+    border: none !important;
+    box-shadow: 0 4px 20px rgba(244, 114, 182, 0.4) !important;
+    color: white !important;
 }
 
-.widget-label { 
-    font-size: 14px; 
-    font-weight: 700; 
-    color: #ffe4e6; 
+.stButton button[data-testid="baseButton-secondary"]:hover {
+    background: linear-gradient(135deg, #ec4899, #db2777) !important;
+    box-shadow: 0 4px 30px rgba(244, 114, 182, 0.6) !important;
 }
 
-/* ✅ Owner Modal */
-.owner-modal-overlay { 
-    position: fixed; 
-    inset: 0; 
-    background: rgba(0,0,0,0.85); 
-    display: flex; 
-    align-items: center; 
-    justify-content: center; 
-    z-index: 1000; 
+.stButton button[data-testid="baseButton-primary"] {
+    background: linear-gradient(135deg, #f59e0b, #d97706) !important;
+    border: none !important;
+    box-shadow: 0 4px 20px rgba(245, 158, 11, 0.3) !important;
+    color: white !important;
 }
 
-.owner-chat-card { 
-    width: 100%; 
-    max-width: 480px; 
-    height: 600px; 
-    background: var(--bg-card);
-    border: 2px solid #f472b6; 
-    border-radius: 20px; 
-    display: flex; 
-    flex-direction: column; 
-    overflow: hidden;
-    box-shadow: 0 0 60px rgba(244, 114, 182, 0.2);
+.stButton button[data-testid="baseButton-primary"]:hover {
+    background: linear-gradient(135deg, #d97706, #b45309) !important;
+    box-shadow: 0 4px 30px rgba(245, 158, 11, 0.5) !important;
+    transform: translateY(-2px) !important;
 }
 
-.owner-modal-header { 
-    padding: 16px 20px; 
-    background: linear-gradient(135deg, #881337, #be123c);
-    display: flex; 
-    align-items: center; 
-    justify-content: space-between; 
-    border-bottom: 1px solid #f472b6; 
+.stButton button[data-testid="baseButton-formSubmit"] {
+    background: linear-gradient(135deg, #2563eb, #7c3aed) !important;
+    border: none !important;
+    border-radius: 30px !important;
+    color: white !important;
+    padding: 10px 20px !important;
+    font-weight: 600 !important;
+    box-shadow: 0 4px 20px rgba(99, 102, 241, 0.4) !important;
+    transition: all 0.3s ease !important;
+    width: 100% !important;
 }
 
-.owner-info { 
-    display: flex; 
-    align-items: center; 
-    gap: 12px; 
-}
-
-.owner-avatar { 
-    width: 40px; 
-    height: 40px; 
-    border-radius: 50%; 
-    object-fit: cover; 
-}
-
-.owner-info h4 { 
-    font-size: 16px; 
-    color: #fff; 
-    margin: 0; 
-}
-
-.online-status { 
-    font-size: 12px; 
-    color: #f9a8d4; 
-}
-
-.close-modal-btn { 
-    background: transparent; 
-    border: none; 
-    color: #fff; 
-    font-size: 24px; 
-    cursor: pointer; 
-}
-
-/* ✅ Owner Chat Messages */
-.owner-chatbox { 
-    flex: 1; 
-    padding: 16px 20px; 
-    overflow-y: auto; 
-    display: flex; 
-    flex-direction: column; 
-    gap: 12px; 
-}
-
-.owner-sys-msg .message-content { 
-    background: rgba(244, 63, 94, 0.15); 
-    border: 1px solid #f472b6; 
-    padding: 12px 16px; 
-    border-radius: 12px; 
-    font-size: 13px; 
-    color: #ffe4e6; 
-}
-
-.owner-reply-msg { 
-    align-self: flex-start; 
-    max-width: 80%; 
-}
-
-.owner-reply-msg .message-content { 
-    background: linear-gradient(135deg, #881337, #db2777);
-    border: 1px solid #f472b6; 
-    padding: 12px 16px; 
-    border-radius: 12px; 
-    font-size: 14px; 
-    color: #fff; 
-    box-shadow: 0 4px 15px rgba(219, 39, 119, 0.3);
-}
-
-/* ✅ Owner Input */
-.owner-input-container { 
-    padding: 12px 16px; 
-    background: #1a0517; 
-    display: flex; 
-    gap: 10px; 
-    border-top: 1px solid #f472b6; 
-}
-
-.owner-input-container input { 
-    flex: 1; 
-    padding: 12px 16px; 
-    background: #090e1a; 
-    border: 1px solid #f472b6; 
-    border-radius: 25px; 
-    color: white; 
-    font-size: 14px;
-}
-
-.owner-input-container input:focus {
-    outline: none;
-    border-color: #f9a8d4;
-    box-shadow: 0 0 20px rgba(244, 114, 182, 0.2);
-}
-
-.owner-input-container button { 
-    background: linear-gradient(135deg, #f472b6, #ec4899);
-    border: none; 
-    color: white; 
-    padding: 12px 24px; 
-    border-radius: 25px; 
-    font-weight: 700; 
-    cursor: pointer;
-    transition: all 0.3s ease;
-}
-
-.owner-input-container button:hover {
-    transform: scale(1.05);
-    box-shadow: 0 4px 20px rgba(244, 114, 182, 0.4);
-}
-
-/* ============================================
-   🖼️ MODALS & OVERLAYS
-   ============================================ */
-
-.zoom-modal { 
-    position: fixed; 
-    inset: 0; 
-    background: rgba(0,0,0,0.92); 
-    display: flex; 
-    align-items: center; 
-    justify-content: center; 
-    z-index: 2000; 
-}
-
-.zoom-modal img { 
-    max-width: 90%; 
-    max-height: 90%; 
-    border-radius: 12px; 
-    border: 2px solid var(--accent-cyan); 
-}
-
-.modal-overlay { 
-    position: fixed; 
-    inset: 0; 
-    background: rgba(0,0,0,0.85); 
-    display: flex; 
-    align-items: center; 
-    justify-content: center; 
-    z-index: 1001; 
-}
-
-.modal-card { 
-    background: var(--bg-card); 
-    border: 1px solid var(--border-color); 
-    width: 100%; 
-    max-width: 480px; 
-    padding: 32px; 
-    border-radius: 20px;
-    box-shadow: 0 0 50px rgba(99, 102, 241, 0.15);
-}
-
-.modal-card input, 
-.modal-card select { 
-    width: 100%; 
-    padding: 12px 16px; 
-    margin-bottom: 12px; 
-    background: var(--bg-chat); 
-    border: 1px solid var(--border-color); 
-    border-radius: 10px; 
-    color: white; 
-    font-size: 14px;
-}
-
-.modal-card input:focus,
-.modal-card select:focus {
-    outline: none;
-    border-color: var(--accent-cyan);
-    box-shadow: 0 0 20px rgba(56, 189, 248, 0.1);
-}
-
-.form-row { 
-    display: flex; 
-    gap: 10px; 
-}
-
-.submit-btn, 
-.cta-button { 
-    background: linear-gradient(135deg, var(--accent-blue), var(--accent-purple));
-    border: none; 
-    color: white; 
-    padding: 14px 28px; 
-    border-radius: 30px; 
-    font-weight: 700; 
-    cursor: pointer;
-    transition: all 0.3s ease;
-    width: 100%;
-}
-
-.submit-btn:hover,
-.cta-button:hover {
-    transform: translateY(-2px);
-    box-shadow: 0 4px 30px rgba(99, 102, 241, 0.3);
-}
-
-/* ============================================
-   🎛️ INPUTS & CONTROLS
-   ============================================ */
-
-.input-container { 
-    padding: 16px 20px; 
-    display: flex; 
-    gap: 12px; 
-    align-items: center; 
-    background: var(--bg-card); 
-    border-top: 1px solid var(--border-color); 
-}
-
-.input-container input[type="text"] { 
-    flex: 1; 
-    padding: 12px 20px; 
-    background: var(--bg-chat); 
-    border: 1px solid var(--border-color); 
-    border-radius: 30px; 
-    color: white; 
-    font-size: 14px;
-}
-
-.input-container input[type="text"]:focus {
-    outline: none;
-    border-color: var(--accent-cyan);
-    box-shadow: 0 0 20px rgba(56, 189, 248, 0.1);
-}
-
-.clear-btn { 
-    background: #dc2626; 
-    border: none; 
-    color: white; 
-    padding: 8px 16px; 
-    border-radius: 20px; 
-    font-size: 12px;
-    font-weight: 600;
-    cursor: pointer;
-    transition: all 0.3s ease;
-}
-
-.clear-btn:hover {
-    background: #b91c1c;
-    transform: scale(1.05);
-}
-
-.clear-btn-small { 
-    background: transparent; 
-    border: none; 
-    color: #fecdd3; 
-    font-size: 12px; 
-    cursor: pointer; 
-}
-
-.fancy-file-btn { 
-    background: rgba(30, 41, 59, 0.8);
-    border: 1.5px solid var(--accent-cyan); 
-    color: var(--accent-cyan); 
-    padding: 10px 20px; 
-    border-radius: 25px; 
-    font-size: 13px;
-    font-weight: 600; 
-    cursor: pointer;
-    transition: all 0.3s ease;
-}
-
-.fancy-file-btn:hover {
-    background: rgba(56, 189, 248, 0.15);
-    transform: translateY(-2px);
-}
-
-.fancy-file-btn input { 
-    display: none; 
-}
-
-.file-preview { 
-    font-size: 12px; 
-    color: var(--accent-cyan); 
-}
-
-.hidden { 
-    display: none !important; 
+.stButton button[data-testid="baseButton-formSubmit"]:hover {
+    background: linear-gradient(135deg, #1d4ed8, #6d28d9) !important;
+    box-shadow: 0 4px 30px rgba(99, 102, 241, 0.6) !important;
+    transform: translateY(-2px) !important;
 }
 
 /* ============================================

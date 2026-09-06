@@ -72,7 +72,7 @@
         <button class="consult-btn" onclick="openModal()"><i class="fa-solid fa-comments"></i> Consult AI Agent Now</button>
     </section>
 
-    <!-- ENTERPRISE CAPABILITIES -->
+    <!-- ✅ 5 SERVICES BOXES -->
     <section class="services-section">
         <h2 class="section-title">Enterprise Capabilities</h2>
         <div class="grid">
@@ -101,11 +101,6 @@
                 <h3>Cloud Infrastructure</h3>
                 <p>Enterprise cloud deployment, backend APIs, and database integration.</p>
             </div>
-            <div class="card">
-                <img src="https://images.pexels.com/photos/8386440/pexels-photo-8386440.jpeg?auto=compress&cs=tinysrgb&w=600" alt="Autonomous AI Agents">
-                <h3>Autonomous AI Agents</h3>
-                <p>Intelligent autonomous workflows, task automation, custom LLM integration, and multi-agent systems.</p>
-            </div>
         </div>
     </section>
 
@@ -113,15 +108,11 @@
     <section id="agent-workspace" class="agent-container">
         <h2 class="section-title">Active Workspace</h2>
         <div class="iframe-wrapper">
-            <iframe 
-                id="agent-iframe" 
-                src="https://apex-ai-agent-ta.streamlit.app/?embed=true" 
-                title="AI Workspace">
-            </iframe>
+            <iframe id="agent-iframe" src="" title="AI Workspace"></iframe>
         </div>
     </section>
 
-    <!-- Modal -->
+    <!-- Sign In Modal -->
     <div class="modal" id="authModal">
         <div class="modal-content">
             <button class="close-btn" onclick="closeModal('authModal')">×</button>
@@ -152,6 +143,7 @@
     <script>
         let currentUser = {};
 
+        // ✅ AUTO-LOGIN
         window.onload = function() {
             const savedUser = localStorage.getItem('apex_user');
             if (savedUser) {
