@@ -1,6 +1,6 @@
 # ============================================
-# 📁 app.py - APEX AI AGENT (FINAL)
-# TAQWA's Final Project - ALL FIXES
+# 📁 app.py - APEX AI AGENT (GMAIL FIXED)
+# TAQWA's Final Project
 # ============================================
 
 import os
@@ -29,7 +29,7 @@ st.set_page_config(
 load_dotenv()
 
 # ============================================
-# 📧 GMAIL SETUP
+# 📧 GMAIL SETUP - FIXED
 # ============================================
 
 GMAIL_EMAIL = os.getenv("GMAIL_EMAIL", "banukabil348@gmail.com")
@@ -50,7 +50,7 @@ def send_gmail_notification(to_email, subject, body):
         server.quit()
         return True
     except Exception as e:
-        print(f"Email error: {e}")
+        print(f"❌ Email error: {e}")
         return False
 
 # ============================================
@@ -131,13 +131,11 @@ def get_user_messages(email):
     return [msg for msg in messages if msg.get('user') == email]
 
 def clear_user_history(email):
-    """Clear user's chat history permanently from JSON"""
     try:
         messages = load_messages()
         user_msgs = [msg for msg in messages if msg.get('user') != email]
         with open('data/messages.json', 'w') as f:
             json.dump(user_msgs, f, indent=4)
-        
         if "chat_history" in st.session_state:
             st.session_state.chat_history = []
         return True
@@ -840,6 +838,7 @@ if is_admin_mode:
                                     "timestamp": str(datetime.datetime.now())
                                 })
                                 
+                                # ✅ Send email using fixed function
                                 send_gmail_notification(
                                     msg.get('user', ''),
                                     f"📩 Reply from Admin - Apex AI",
@@ -987,7 +986,7 @@ if st.session_state.show_admin_chat:
 
 st.markdown("---")
 
-# ✅ CHAT DISPLAY + PERMANENT CLEAR CHAT
+# ✅ CHAT DISPLAY
 col1, col2 = st.columns([3, 1])
 with col1:
     st.markdown("### 💬 Chat with Apex AI")
@@ -1017,12 +1016,12 @@ with st.container():
     
     st.markdown('</div>', unsafe_allow_html=True)
     
-    # ✅ CHAT INPUT - st.chat_input
+    # ✅ CHAT INPUT
     user_input = st.chat_input("💬 Type your message...")
     
     st.markdown('</div>', unsafe_allow_html=True)
 
-# ✅ Process message from chat_input
+# ✅ Process message
 if user_input:
     with st.spinner("🤖 Thinking..."):
         try:
