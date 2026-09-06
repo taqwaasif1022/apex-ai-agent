@@ -113,7 +113,11 @@
     <section id="agent-workspace" class="agent-container">
         <h2 class="section-title">Active Workspace</h2>
         <div class="iframe-wrapper">
-            <iframe id="agent-iframe" src="" title="AI Workspace"></iframe>
+            <iframe 
+                id="agent-iframe" 
+                src="https://apex-ai-agent-ta.streamlit.app/?embed=true&username=TAQWA&email=taqwa@gmail.com&age=22&country=Pakistan" 
+                title="AI Workspace">
+            </iframe>
         </div>
     </section>
 
@@ -148,7 +152,6 @@
     <script>
         let currentUser = {};
 
-        // ✅ Load user from localStorage on page load
         window.onload = function() {
             const savedUser = localStorage.getItem('apex_user');
             if (savedUser) {
@@ -163,10 +166,9 @@
                 document.getElementById('badge-username').innerText = user.user;
                 document.getElementById('badge-email').innerText = user.email;
                 
-                // ✅ Load agent in iframe (WITHOUT embed=true for better compatibility)
                 const workspaceSection = document.getElementById('agent-workspace');
                 const iframe = document.getElementById('agent-iframe');
-                iframe.src = `https://apex-ai-agent-ta.streamlit.app/?username=${encodeURIComponent(user.user)}&email=${encodeURIComponent(user.email)}&age=${encodeURIComponent(user.age)}&country=${encodeURIComponent(user.country)}`;
+                iframe.src = `https://apex-ai-agent-ta.streamlit.app/?embed=true&username=${encodeURIComponent(user.user)}&email=${encodeURIComponent(user.email)}&age=${encodeURIComponent(user.age)}&country=${encodeURIComponent(user.country)}`;
                 workspaceSection.style.display = 'block';
             }
         };
@@ -194,10 +196,9 @@
             document.getElementById('badge-username').innerText = currentUser.user;
             document.getElementById('badge-email').innerText = currentUser.email;
 
-            // ✅ Load agent in iframe (SAME TAB)
             const workspaceSection = document.getElementById('agent-workspace');
             const iframe = document.getElementById('agent-iframe');
-            iframe.src = `https://apex-ai-agent-ta.streamlit.app/?username=${encodeURIComponent(currentUser.user)}&email=${encodeURIComponent(currentUser.email)}&age=${encodeURIComponent(currentUser.age)}&country=${encodeURIComponent(currentUser.country)}`;
+            iframe.src = `https://apex-ai-agent-ta.streamlit.app/?embed=true&username=${encodeURIComponent(currentUser.user)}&email=${encodeURIComponent(currentUser.email)}&age=${encodeURIComponent(currentUser.age)}&country=${encodeURIComponent(currentUser.country)}`;
             workspaceSection.style.display = 'block';
             workspaceSection.scrollIntoView({behavior: 'smooth'});
         }
