@@ -104,15 +104,19 @@
         </div>
     </section>
 
-    <!-- Active Workspace -->
+    <!-- Active Workspace - SAME TAB -->
     <section id="agent-workspace" class="agent-container">
         <h2 class="section-title">Active Workspace</h2>
         <div class="iframe-wrapper">
-            <iframe id="agent-iframe" src="" title="AI Workspace"></iframe>
+            <iframe 
+                id="agent-iframe" 
+                src="" 
+                title="AI Workspace">
+            </iframe>
         </div>
     </section>
 
-    <!-- Sign In Modal -->
+    <!-- Modal -->
     <div class="modal" id="authModal">
         <div class="modal-content">
             <button class="close-btn" onclick="closeModal('authModal')">×</button>
@@ -143,7 +147,7 @@
     <script>
         let currentUser = {};
 
-        // ✅ AUTO-LOGIN
+        // ✅ AUTO-LOGIN on page load (localStorage)
         window.onload = function() {
             const savedUser = localStorage.getItem('apex_user');
             if (savedUser) {
@@ -158,6 +162,7 @@
                 document.getElementById('badge-username').innerText = user.user;
                 document.getElementById('badge-email').innerText = user.email;
                 
+                // ✅ SAME TAB - Agent load
                 const workspaceSection = document.getElementById('agent-workspace');
                 const iframe = document.getElementById('agent-iframe');
                 iframe.src = `https://apex-ai-agent-ta.streamlit.app/?embed=true&username=${encodeURIComponent(user.user)}&email=${encodeURIComponent(user.email)}&age=${encodeURIComponent(user.age)}&country=${encodeURIComponent(user.country)}`;
@@ -188,6 +193,7 @@
             document.getElementById('badge-username').innerText = currentUser.user;
             document.getElementById('badge-email').innerText = currentUser.email;
 
+            // ✅ SAME TAB - Agent load
             const workspaceSection = document.getElementById('agent-workspace');
             const iframe = document.getElementById('agent-iframe');
             iframe.src = `https://apex-ai-agent-ta.streamlit.app/?embed=true&username=${encodeURIComponent(currentUser.user)}&email=${encodeURIComponent(currentUser.email)}&age=${encodeURIComponent(currentUser.age)}&country=${encodeURIComponent(currentUser.country)}`;
