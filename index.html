@@ -1,272 +1,1921 @@
+```html
 <!DOCTYPE html>
 <html lang="en">
 <head>
-<meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Apex AI — Intelligent Business Agent</title>
-<link rel="preconnect" href="https://fonts.googleapis.com">
-<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
-<style>
-*{box-sizing:border-box;margin:0;padding:0}
-:root{--bg:#050816;--card:rgba(15,23,42,.72);--line:rgba(129,140,248,.25);--cyan:#67e8f9;--purple:#a78bfa;--pink:#f0abfc;--text:#f8fafc;--muted:#94a3b8}
-body{font-family:Inter,system-ui,sans-serif;background:
-radial-gradient(circle at 15% 0%,rgba(34,211,238,.12),transparent 28%),
-radial-gradient(circle at 85% 5%,rgba(168,85,247,.18),transparent 32%),
-linear-gradient(180deg,#050816,#0b1020 55%,#050816);color:var(--text);min-height:100vh}
-body:before{content:"";position:fixed;inset:0;pointer-events:none;background-image:linear-gradient(rgba(255,255,255,.025) 1px,transparent 1px),linear-gradient(90deg,rgba(255,255,255,.025) 1px,transparent 1px);background-size:44px 44px;mask-image:linear-gradient(to bottom,#000,transparent 85%)}
-nav{position:sticky;top:0;z-index:20;display:flex;justify-content:space-between;align-items:center;padding:16px 5%;background:rgba(5,8,22,.76);border-bottom:1px solid var(--line);backdrop-filter:blur(18px)}
-.logo{font-size:1.25rem;font-weight:800;letter-spacing:-.03em}.logo span{color:var(--cyan)}
-.auth-btn,.primary{border:1px solid rgba(103,232,249,.45);background:linear-gradient(135deg,#0ea5e9,#7c3aed);color:#fff;border-radius:14px;padding:11px 18px;font-weight:700;cursor:pointer;box-shadow:0 0 28px rgba(99,102,241,.24)}
-.profile{display:none;align-items:center;gap:10px}.avatar{width:36px;height:36px;border-radius:50%;display:grid;place-items:center;background:linear-gradient(135deg,#22d3ee,#8b5cf6);font-weight:800}.profile button{background:transparent;color:#cbd5e1;border:1px solid #334155;border-radius:10px;padding:7px 10px;cursor:pointer}
-.hero{max-width:1050px;margin:auto;padding:95px 22px 55px;text-align:center;position:relative}
-.badge{display:inline-flex;gap:8px;align-items:center;padding:8px 13px;border:1px solid rgba(103,232,249,.35);border-radius:999px;background:rgba(34,211,238,.06);color:#a5f3fc;font-size:.85rem;font-weight:700}
-h1{font-size:clamp(2.8rem,7vw,5.8rem);line-height:.98;letter-spacing:-.065em;margin:20px 0;background:linear-gradient(90deg,#fff,#67e8f9,#a78bfa,#f0abfc);-webkit-background-clip:text;-webkit-text-fill-color:transparent}
-.hero p{max-width:760px;margin:auto;color:var(--muted);font-size:1.08rem;line-height:1.8}.hero-actions{margin-top:28px;display:flex;justify-content:center;gap:12px;flex-wrap:wrap}
-.secondary{padding:11px 18px;border:1px solid #334155;background:rgba(15,23,42,.72);color:#e2e8f0;border-radius:14px;font-weight:700;cursor:pointer}
-.section{max-width:1180px;margin:0 auto;padding:50px 22px}.section h2{text-align:center;font-size:2rem;margin-bottom:10px}.section>p{text-align:center;color:var(--muted);margin-bottom:30px}
-.grid{display:grid;grid-template-columns:repeat(3,1fr);gap:18px}.card{padding:24px;border:1px solid var(--line);border-radius:22px;background:var(--card);backdrop-filter:blur(12px);transition:.25s}.card:hover{transform:translateY(-6px);border-color:rgba(103,232,249,.6);box-shadow:0 20px 50px rgba(56,189,248,.10)}.icon{font-size:2rem;margin-bottom:15px}.card h3{margin-bottom:7px}.card p{color:var(--muted);line-height:1.65;font-size:.93rem}
-.workspace{display:none;max-width:1200px;margin:35px auto 80px;padding:0 22px}.iframe-shell{height:760px;border-radius:26px;border:1px solid rgba(129,140,248,.42);overflow:hidden;box-shadow:0 0 70px rgba(99,102,241,.14);background:#070b16}.iframe-shell iframe{width:100%;height:100%;border:0}
-.modal{display:none;position:fixed;inset:0;z-index:100;background:rgba(2,6,23,.82);backdrop-filter:blur(15px);align-items:center;justify-content:center;padding:20px}.modal-box{width:min(460px,100%);padding:28px;border-radius:24px;background:linear-gradient(145deg,#0f172a,#111827);border:1px solid rgba(167,139,250,.42);box-shadow:0 30px 90px rgba(0,0,0,.55)}.close{float:right;background:transparent;color:#94a3b8;border:0;font-size:25px;cursor:pointer}.modal h2{font-size:1.7rem;margin:5px 0 8px}.modal p{color:var(--muted);font-size:.9rem;margin-bottom:18px}.tabs{display:grid;grid-template-columns:1fr 1fr;background:#0b1222;padding:4px;border-radius:12px;margin-bottom:18px}.tabs button{border:0;background:transparent;color:#94a3b8;padding:10px;border-radius:9px;cursor:pointer;font-weight:700}.tabs button.active{background:#1e293b;color:#fff}.form{display:grid;gap:11px}.form label{font-size:.8rem;color:#cbd5e1}.form input{width:100%;padding:12px 13px;border-radius:12px;border:1px solid #334155;background:#080d1b;color:#fff;outline:none}.form input:focus{border-color:#67e8f9;box-shadow:0 0 0 3px rgba(103,232,249,.08)}.hint{font-size:.78rem;color:#64748b}.error{color:#fda4af;font-size:.85rem;min-height:18px}.google{margin-top:9px;width:100%;padding:11px;border-radius:12px;border:1px solid #475569;background:#111827;color:#fff;font-weight:700;cursor:pointer}
-@media(max-width:800px){.grid{grid-template-columns:1fr}.hero{padding-top:70px}nav{padding:14px 20px}.iframe-shell{height:720px}}
-</style>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Apex AI & Software Solutions Enterprise</title>
+
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" rel="stylesheet">
+
+    <style>
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+        }
+
+        :root {
+            --bg: #0b0f19;
+            --nav: rgba(15, 23, 42, 0.95);
+            --card: #1e293b;
+            --border: #334155;
+            --cyan: #38bdf8;
+            --blue: #2563eb;
+            --purple: #818cf8;
+            --violet: #7c3aed;
+            --text: #f8fafc;
+            --muted: #94a3b8;
+        }
+
+        body {
+            font-family: "Segoe UI", Tahoma, Geneva, Verdana, sans-serif;
+            background:
+                radial-gradient(circle at 20% 0%, rgba(56, 189, 248, 0.08), transparent 30%),
+                radial-gradient(circle at 80% 10%, rgba(124, 58, 237, 0.12), transparent 32%),
+                var(--bg);
+            color: var(--text);
+            line-height: 1.6;
+            min-height: 100vh;
+        }
+
+        body::before {
+            content: "";
+            position: fixed;
+            inset: 0;
+            pointer-events: none;
+            background:
+                linear-gradient(rgba(255,255,255,0.018) 1px, transparent 1px),
+                linear-gradient(90deg, rgba(255,255,255,0.018) 1px, transparent 1px);
+            background-size: 45px 45px;
+            mask-image: linear-gradient(to bottom, #000, transparent 85%);
+            z-index: -1;
+        }
+
+        /* ================= NAVBAR ================= */
+
+        nav {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 18px 5%;
+            background: var(--nav);
+            backdrop-filter: blur(14px);
+            border-bottom: 1px solid #1e293b;
+            position: sticky;
+            top: 0;
+            z-index: 100;
+        }
+
+        .logo {
+            font-size: 1.5rem;
+            font-weight: 800;
+            letter-spacing: -0.03em;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            background: linear-gradient(
+                90deg,
+                var(--cyan),
+                var(--purple),
+                #c084fc
+            );
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+        }
+
+        .logo i {
+            color: #facc15;
+            -webkit-text-fill-color: #facc15;
+            filter: drop-shadow(0 0 10px rgba(250, 204, 21, 0.5));
+        }
+
+        /* ================= AUTH ================= */
+
+        .auth-container {
+            display: flex;
+            align-items: center;
+            gap: 15px;
+        }
+
+        .auth-btn {
+            background: linear-gradient(135deg, #0284c7, #2563eb);
+            color: #fff;
+            padding: 11px 22px;
+            border-radius: 22px;
+            border: 1px solid rgba(103, 232, 249, 0.4);
+            font-weight: 700;
+            cursor: pointer;
+            font-size: 0.95rem;
+            box-shadow: 0 0 25px rgba(37, 99, 235, 0.25);
+            transition: 0.3s;
+        }
+
+        .auth-btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 0 35px rgba(56, 189, 248, 0.4);
+        }
+
+        .user-profile-badge {
+            display: none;
+            align-items: center;
+            gap: 12px;
+            background: rgba(30, 41, 59, 0.9);
+            border: 1px solid var(--cyan);
+            padding: 6px 10px 6px 6px;
+            border-radius: 30px;
+            box-shadow: 0 0 25px rgba(56, 189, 248, 0.12);
+        }
+
+        .user-avatar {
+            width: 38px;
+            height: 38px;
+            background: linear-gradient(135deg, var(--cyan), var(--purple));
+            border-radius: 50%;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            font-weight: 800;
+            color: #fff;
+        }
+
+        .user-details {
+            display: flex;
+            flex-direction: column;
+            text-align: left;
+        }
+
+        .user-name {
+            font-size: 0.9rem;
+            font-weight: 700;
+            color: #f8fafc;
+        }
+
+        .user-email {
+            font-size: 0.72rem;
+            color: var(--muted);
+        }
+
+        .logout-btn {
+            background: #dc2626;
+            color: #fff;
+            padding: 6px 12px;
+            border-radius: 14px;
+            border: none;
+            cursor: pointer;
+            font-size: 0.7rem;
+            font-weight: 700;
+            transition: 0.3s;
+        }
+
+        .logout-btn:hover {
+            background: #b91c1c;
+            transform: scale(1.04);
+        }
+
+        /* ================= HERO ================= */
+
+        .hero {
+            text-align: center;
+            padding: 95px 20px 65px;
+            background:
+                radial-gradient(
+                    circle at top,
+                    rgba(30, 27, 75, 0.95) 0%,
+                    rgba(11, 15, 25, 0.9) 65%
+                );
+            position: relative;
+            overflow: hidden;
+        }
+
+        .hero::before {
+            content: "";
+            position: absolute;
+            width: 550px;
+            height: 550px;
+            border-radius: 50%;
+            background: rgba(56, 189, 248, 0.07);
+            filter: blur(90px);
+            top: -250px;
+            left: 50%;
+            transform: translateX(-50%);
+        }
+
+        .hero-content {
+            position: relative;
+            z-index: 1;
+        }
+
+        .hero-badge {
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+            padding: 8px 15px;
+            border-radius: 30px;
+            border: 1px solid rgba(56, 189, 248, 0.35);
+            background: rgba(56, 189, 248, 0.07);
+            color: #a5f3fc;
+            font-size: 0.85rem;
+            font-weight: 700;
+            margin-bottom: 20px;
+        }
+
+        .hero h1 {
+            font-size: clamp(3rem, 7vw, 5.2rem);
+            line-height: 1;
+            font-weight: 850;
+            letter-spacing: -0.055em;
+            margin-bottom: 22px;
+
+            background: linear-gradient(
+                90deg,
+                #ffffff,
+                #38bdf8,
+                #818cf8,
+                #c084fc
+            );
+
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+        }
+
+        .hero p {
+            font-size: 1.15rem;
+            color: var(--muted);
+            max-width: 780px;
+            margin: 0 auto 32px;
+            line-height: 1.8;
+        }
+
+        .consult-btn {
+            display: inline-flex;
+            align-items: center;
+            gap: 10px;
+            background: linear-gradient(135deg, #2563eb, #7c3aed);
+            color: #fff;
+            padding: 15px 36px;
+            font-size: 1.05rem;
+            font-weight: 800;
+            border-radius: 30px;
+            border: 1px solid rgba(167, 139, 250, 0.5);
+            box-shadow:
+                0 0 25px rgba(99, 102, 241, 0.4),
+                0 10px 40px rgba(0, 0, 0, 0.3);
+            cursor: pointer;
+            transition: 0.3s;
+        }
+
+        .consult-btn:hover {
+            transform: translateY(-3px) scale(1.02);
+            box-shadow:
+                0 0 45px rgba(99, 102, 241, 0.65),
+                0 15px 50px rgba(0, 0, 0, 0.4);
+        }
+
+        /* ================= SERVICES ================= */
+
+        .services-section {
+            padding: 70px 20px;
+            max-width: 1220px;
+            margin: 0 auto;
+        }
+
+        .section-heading {
+            text-align: center;
+            margin-bottom: 42px;
+        }
+
+        .section-heading h2 {
+            font-size: 2.35rem;
+            margin-bottom: 10px;
+
+            background: linear-gradient(
+                90deg,
+                var(--cyan),
+                var(--purple),
+                #c084fc
+            );
+
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+        }
+
+        .section-heading p {
+            color: var(--muted);
+        }
+
+        .grid {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 25px;
+        }
+
+        .card {
+            background:
+                linear-gradient(
+                    145deg,
+                    rgba(30, 41, 59, 0.96),
+                    rgba(15, 23, 42, 0.96)
+                );
+            border: 1px solid var(--border);
+            border-radius: 20px;
+            padding: 20px;
+            text-align: left;
+            overflow: hidden;
+            transition: all 0.35s ease;
+            box-shadow: 0 12px 35px rgba(0, 0, 0, 0.18);
+        }
+
+        .card:hover {
+            transform: translateY(-7px);
+            border-color: rgba(56, 189, 248, 0.75);
+            box-shadow:
+                0 18px 55px rgba(0, 0, 0, 0.35),
+                0 0 35px rgba(56, 189, 248, 0.12);
+        }
+
+        .card-image-wrap {
+            position: relative;
+            overflow: hidden;
+            border-radius: 14px;
+            margin-bottom: 17px;
+        }
+
+        .card-image-wrap::after {
+            content: "";
+            position: absolute;
+            inset: 0;
+            background: linear-gradient(
+                to top,
+                rgba(7, 11, 22, 0.35),
+                transparent 60%
+            );
+            pointer-events: none;
+        }
+
+        .card img {
+            width: 100%;
+            height: 185px;
+            object-fit: cover;
+            display: block;
+            transition: transform 0.5s ease, filter 0.5s ease;
+        }
+
+        .card:hover img {
+            transform: scale(1.05);
+            filter: brightness(1.08);
+        }
+
+        .card h3 {
+            font-size: 1.25rem;
+            color: #f8fafc;
+            margin-bottom: 8px;
+        }
+
+        .card p {
+            color: var(--muted);
+            font-size: 0.9rem;
+            line-height: 1.65;
+        }
+
+        /* ================= WORKSPACE ================= */
+
+        .agent-container {
+            display: none;
+            max-width: 1200px;
+            margin: 40px auto 90px;
+            padding: 0 20px;
+        }
+
+        .workspace-title {
+            text-align: center;
+            margin-bottom: 20px;
+        }
+
+        .workspace-title h2 {
+            font-size: 2rem;
+            margin-bottom: 6px;
+
+            background: linear-gradient(
+                90deg,
+                var(--cyan),
+                var(--purple)
+            );
+
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+        }
+
+        .workspace-title p {
+            color: var(--muted);
+        }
+
+        .iframe-wrapper {
+            width: 100%;
+            height: 760px;
+            border-radius: 26px;
+            overflow: hidden;
+            border: 1px solid rgba(129, 140, 248, 0.5);
+            background: #070b16;
+            box-shadow:
+                0 0 70px rgba(99, 102, 241, 0.15),
+                0 25px 70px rgba(0, 0, 0, 0.55);
+        }
+
+        iframe {
+            width: 100%;
+            height: 100%;
+            border: none;
+        }
+
+        /* ================= AUTH MODAL ================= */
+
+        .modal {
+            display: none;
+            position: fixed;
+            inset: 0;
+            background: rgba(2, 6, 23, 0.86);
+            backdrop-filter: blur(14px);
+            justify-content: center;
+            align-items: center;
+            z-index: 1000;
+            padding: 20px;
+        }
+
+        .modal-content {
+            width: min(460px, 100%);
+            background:
+                linear-gradient(
+                    145deg,
+                    #0f172a,
+                    #111827
+                );
+            border: 1px solid rgba(129, 140, 248, 0.5);
+            border-radius: 24px;
+            padding: 30px;
+            box-shadow:
+                0 30px 100px rgba(0, 0, 0, 0.65),
+                0 0 45px rgba(99, 102, 241, 0.12);
+        }
+
+        .close-btn {
+            float: right;
+            background: transparent;
+            color: #94a3b8;
+            border: none;
+            font-size: 28px;
+            cursor: pointer;
+            line-height: 1;
+        }
+
+        .close-btn:hover {
+            color: #fff;
+        }
+
+        .modal-content h2 {
+            font-size: 1.8rem;
+            margin-bottom: 7px;
+            color: #fff;
+        }
+
+        .modal-subtitle {
+            color: var(--muted);
+            font-size: 0.9rem;
+            margin-bottom: 20px;
+        }
+
+        .tabs {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            background: #0b1222;
+            padding: 4px;
+            border-radius: 12px;
+            margin-bottom: 20px;
+        }
+
+        .tabs button {
+            border: none;
+            background: transparent;
+            color: #94a3b8;
+            padding: 10px;
+            border-radius: 9px;
+            cursor: pointer;
+            font-weight: 700;
+        }
+
+        .tabs button.active {
+            background: #1e293b;
+            color: #fff;
+        }
+
+        .form-group {
+            margin-bottom: 13px;
+        }
+
+        .form-group label {
+            display: block;
+            font-size: 0.82rem;
+            color: #cbd5e1;
+            margin-bottom: 6px;
+        }
+
+        .form-group input {
+            width: 100%;
+            padding: 12px 13px;
+            background: #080d1b;
+            border: 1px solid #334155;
+            border-radius: 11px;
+            color: #fff;
+            font-size: 0.95rem;
+            outline: none;
+        }
+
+        .form-group input:focus {
+            border-color: var(--cyan);
+            box-shadow: 0 0 0 3px rgba(56, 189, 248, 0.08);
+        }
+
+        .btn-submit {
+            width: 100%;
+            background: linear-gradient(135deg, #0284c7, #6366f1);
+            color: #fff;
+            padding: 12px;
+            border-radius: 11px;
+            border: none;
+            font-size: 1rem;
+            font-weight: 800;
+            cursor: pointer;
+            margin-top: 5px;
+            box-shadow: 0 0 25px rgba(99, 102, 241, 0.2);
+        }
+
+        .btn-submit:hover {
+            box-shadow: 0 0 35px rgba(99, 102, 241, 0.4);
+        }
+
+        .google-btn {
+            margin-top: 9px;
+            width: 100%;
+            padding: 11px;
+            border-radius: 11px;
+            border: 1px solid #475569;
+            background: #111827;
+            color: #fff;
+            font-weight: 700;
+            cursor: pointer;
+        }
+
+        .google-btn:hover {
+            background: #1e293b;
+        }
+
+        .hint {
+            color: #64748b;
+            font-size: 0.77rem;
+            margin: 5px 0;
+        }
+
+        .error {
+            color: #fda4af;
+            font-size: 0.84rem;
+            min-height: 20px;
+            margin: 5px 0;
+        }
+
+        /* ================= RESPONSIVE ================= */
+
+        @media (max-width: 900px) {
+            .grid {
+                grid-template-columns: repeat(2, 1fr);
+            }
+
+            .hero h1 {
+                font-size: 3.4rem;
+            }
+        }
+
+        @media (max-width: 650px) {
+            nav {
+                padding: 14px 18px;
+            }
+
+            .logo {
+                font-size: 1.1rem;
+            }
+
+            .user-details {
+                display: none;
+            }
+
+            .grid {
+                grid-template-columns: 1fr;
+            }
+
+            .hero {
+                padding: 70px 18px 50px;
+            }
+
+            .hero h1 {
+                font-size: 2.7rem;
+            }
+
+            .hero p {
+                font-size: 1rem;
+            }
+
+            .services-section {
+                padding: 50px 18px;
+            }
+
+            .section-heading h2 {
+                font-size: 1.9rem;
+            }
+
+            .iframe-wrapper {
+                height: 720px;
+                border-radius: 18px;
+            }
+        }
+    </style>
 </head>
+
 <body>
-<nav>
-  <div class="logo">⚡ <span>Apex AI</span> Solutions</div>
-  <div>
-    <button id="authBtn" class="auth-btn" onclick="openAuth()">Sign In / Sign Up</button>
-    <div id="profile" class="profile">
-      <div id="avatar" class="avatar">A</div>
-      <div><b id="pname">User</b><br><small id="pemail" style="color:#94a3b8">user@email.com</small></div>
-      <button onclick="signOutUser()">Sign out</button>
+
+    <!-- ================= NAVBAR ================= -->
+
+    <nav>
+        <div class="logo">
+            <i class="fa-solid fa-bolt"></i>
+            Apex AI Solutions
+        </div>
+
+        <div class="auth-container">
+
+            <button
+                class="auth-btn"
+                id="signin-btn"
+                onclick="openModal()"
+            >
+                <i class="fa-solid fa-right-to-bracket"></i>
+                Sign In / Sign Up
+            </button>
+
+            <div
+                class="user-profile-badge"
+                id="profile-badge"
+            >
+                <div
+                    class="user-avatar"
+                    id="avatar-initial"
+                >
+                    U
+                </div>
+
+                <div class="user-details">
+                    <span
+                        class="user-name"
+                        id="badge-username"
+                    >
+                        User
+                    </span>
+
+                    <span
+                        class="user-email"
+                        id="badge-email"
+                    >
+                        user@email.com
+                    </span>
+                </div>
+
+                <button
+                    class="logout-btn"
+                    onclick="logoutUser()"
+                >
+                    Logout
+                </button>
+            </div>
+
+        </div>
+    </nav>
+
+
+    <!-- ================= HERO ================= -->
+
+    <section class="hero">
+
+        <div class="hero-content">
+
+            <div class="hero-badge">
+                <i class="fa-solid fa-bolt"></i>
+                AI-powered business assistance
+            </div>
+
+            <h1>
+                Building Next-Gen<br>
+                Digital Products
+            </h1>
+
+            <p>
+                Enterprise Web Platforms, AI Agents,
+                Custom Chatbots, Video Editing,
+                and Social Automation.
+            </p>
+
+            <button
+                class="consult-btn"
+                onclick="openModal()"
+            >
+                <i class="fa-solid fa-comments"></i>
+                Consult AI Agent Now
+            </button>
+
+        </div>
+
+    </section>
+
+
+    <!-- ================= SERVICES ================= -->
+
+    <section class="services-section">
+
+        <div class="section-heading">
+
+            <h2>
+                Enterprise Capabilities
+            </h2>
+
+            <p>
+                Powerful digital solutions built for modern businesses.
+            </p>
+
+        </div>
+
+
+        <div class="grid">
+
+            <!-- Web -->
+
+            <div class="card">
+
+                <div class="card-image-wrap">
+                    <img
+                        src="https://images.unsplash.com/photo-1498050108023-c5249f4df085?auto=format&fit=crop&w=600&q=80"
+                        alt="Web Development"
+                    >
+                </div>
+
+                <h3>
+                    Web & Software Dev
+                </h3>
+
+                <p>
+                    Full-stack web applications,
+                    SaaS platforms, and enterprise
+                    software solutions.
+                </p>
+
+            </div>
+
+
+            <!-- Chatbot -->
+
+            <div class="card">
+
+                <div class="card-image-wrap">
+                    <img
+                        src="https://images.unsplash.com/photo-1531746020798-e6953c6e8e04?auto=format&fit=crop&w=600&q=80"
+                        alt="Smart Chatbot Systems"
+                    >
+                </div>
+
+                <h3>
+                    Smart Chatbot Systems
+                </h3>
+
+                <p>
+                    Conversational bots for automated
+                    customer acquisition and support.
+                </p>
+
+            </div>
+
+
+            <!-- Video -->
+
+            <div class="card">
+
+                <div class="card-image-wrap">
+                    <img
+                        src="https://images.unsplash.com/photo-1574717024653-61fd2cf4d44d?auto=format&fit=crop&w=600&q=80"
+                        alt="AI Video Editing"
+                    >
+                </div>
+
+                <h3>
+                    AI Video Editing
+                </h3>
+
+                <p>
+                    Automated video rendering,
+                    clipping, subtitling, and
+                    short-form creation.
+                </p>
+
+            </div>
+
+
+            <!-- Social -->
+
+            <div class="card">
+
+                <div class="card-image-wrap">
+                    <img
+                        src="https://images.unsplash.com/photo-1611162617213-7d7a39e9b1d7?auto=format&fit=crop&w=600&q=80"
+                        alt="Social Media Automation"
+                    >
+                </div>
+
+                <h3>
+                    Social Media Automation
+                </h3>
+
+                <p>
+                    Automated Facebook/Instagram
+                    scheduling, graphic design,
+                    and posts.
+                </p>
+
+            </div>
+
+
+            <!-- Cloud -->
+
+            <div class="card">
+
+                <div class="card-image-wrap">
+                    <img
+                        src="https://images.unsplash.com/photo-1451187580459-43490279c0fa?auto=format&fit=crop&w=600&q=80"
+                        alt="Cloud Infrastructure"
+                    >
+                </div>
+
+                <h3>
+                    Cloud Infrastructure
+                </h3>
+
+                <p>
+                    Enterprise cloud deployment,
+                    backend APIs, and database
+                    integration.
+                </p>
+
+            </div>
+
+
+            <!-- Autonomous AI -->
+
+            <div class="card">
+
+                <div class="card-image-wrap">
+                    <img
+                        src="https://images.pexels.com/photos/8386440/pexels-photo-8386440.jpeg?auto=compress&cs=tinysrgb&w=600"
+                        alt="Autonomous AI Agents"
+                    >
+                </div>
+
+                <h3>
+                    Autonomous AI Agents
+                </h3>
+
+                <p>
+                    Intelligent autonomous workflows,
+                    task automation, custom LLM
+                    integration, and multi-agent systems.
+                </p>
+
+            </div>
+
+        </div>
+
+    </section>
+
+
+    <!-- ================= WORKSPACE ================= -->
+
+    <section
+        id="agent-workspace"
+        class="agent-container"
+    >
+
+        <div class="workspace-title">
+
+            <h2>
+                Active Workspace
+            </h2>
+
+            <p>
+                Your Apex AI assistant is ready.
+            </p>
+
+        </div>
+
+        <div class="iframe-wrapper">
+
+            <iframe
+                id="agent-iframe"
+                src=""
+                title="Apex AI Workspace"
+            ></iframe>
+
+        </div>
+
+    </section>
+
+
+    <!-- ================= AUTH MODAL ================= -->
+
+    <div
+        class="modal"
+        id="authModal"
+    >
+
+        <div class="modal-content">
+
+            <button
+                class="close-btn"
+                onclick="closeModal()"
+            >
+                ×
+            </button>
+
+            <h2 id="authTitle">
+                Welcome to Apex AI
+            </h2>
+
+            <p
+                class="modal-subtitle"
+                id="authSubtitle"
+            >
+                Sign in to continue.
+                Your session stays signed in on this device.
+            </p>
+
+
+            <!-- Tabs -->
+
+            <div class="tabs">
+
+                <button
+                    id="signInTab"
+                    class="active"
+                    onclick="setMode('signin')"
+                >
+                    Sign In
+                </button>
+
+                <button
+                    id="signUpTab"
+                    onclick="setMode('signup')"
+                >
+                    Sign Up
+                </button>
+
+            </div>
+
+
+            <!-- Form -->
+
+            <form id="authForm">
+
+                <div
+                    class="form-group"
+                    id="nameWrap"
+                    style="display:none"
+                >
+                    <label>
+                        Full name
+                    </label>
+
+                    <input
+                        id="name"
+                        autocomplete="name"
+                        placeholder="Your name"
+                    >
+                </div>
+
+
+                <div
+                    class="form-group"
+                    id="countryWrap"
+                    style="display:none"
+                >
+                    <label>
+                        Country
+                    </label>
+
+                    <input
+                        id="country"
+                        placeholder="Pakistan"
+                    >
+                </div>
+
+
+                <div
+                    class="form-group"
+                    id="ageWrap"
+                    style="display:none"
+                >
+                    <label>
+                        Age
+                    </label>
+
+                    <input
+                        id="age"
+                        type="number"
+                        min="13"
+                        max="120"
+                        placeholder="18"
+                    >
+                </div>
+
+
+                <div class="form-group">
+
+                    <label>
+                        Email
+                    </label>
+
+                    <input
+                        id="email"
+                        type="email"
+                        required
+                        autocomplete="email"
+                        placeholder="you@example.com"
+                    >
+
+                </div>
+
+
+                <div class="form-group">
+
+                    <label>
+                        Password
+                    </label>
+
+                    <input
+                        id="password"
+                        type="password"
+                        required
+                        minlength="6"
+                        autocomplete="current-password"
+                        placeholder="At least 6 characters"
+                    >
+
+                </div>
+
+
+                <div
+                    class="hint"
+                    id="verifyHint"
+                >
+                    Email verification is required
+                    for new accounts.
+                </div>
+
+
+                <div
+                    class="error"
+                    id="error"
+                ></div>
+
+
+                <button
+                    class="btn-submit"
+                    type="submit"
+                    id="submitBtn"
+                >
+                    Sign In
+                </button>
+
+
+                <button
+                    class="google-btn"
+                    type="button"
+                    onclick="googleLogin()"
+                >
+                    <i class="fa-brands fa-google"></i>
+                    Continue with Google
+                </button>
+
+            </form>
+
+        </div>
+
     </div>
-  </div>
-</nav>
 
-<section class="hero">
-  <div class="badge">⚡ AI-powered business assistance</div>
-  <h1>Turn Ideas Into<br>Digital Products.</h1>
-  <p>Apex AI helps prospects understand your services, explore project scope, get transparent pricing ranges, and connect with a human admin when they need one.</p>
-  <div class="hero-actions">
-    <button class="primary" onclick="openAuth()">🚀 Talk to Apex AI</button>
-    <button class="secondary" onclick="document.getElementById('services').scrollIntoView({behavior:'smooth'})">Explore capabilities</button>
-  </div>
-</section>
 
-<section id="services" class="section">
-  <h2>What Apex AI Can Help With</h2>
-  <p>Fast answers for real business conversations.</p>
-  <div class="grid">
-    <div class="card"><div class="icon">🌐</div><h3>Website Development</h3><p>Landing pages, full-stack applications, SaaS products and custom web platforms.</p></div>
-    <div class="card"><div class="icon">🤖</div><h3>AI Agents & RAG</h3><p>Intelligent agents with tools, memory, retrieval and multi-step workflows.</p></div>
-    <div class="card"><div class="icon">💬</div><h3>Chatbots</h3><p>Conversational customer acquisition and support experiences.</p></div>
-    <div class="card"><div class="icon">⚙️</div><h3>Workflow Automation</h3><p>n8n, Make, Python and API-driven automation for repetitive business work.</p></div>
-    <div class="card"><div class="icon">🎬</div><h3>Video Editing</h3><p>Short-form reels, YouTube editing, captions, clipping and content workflows.</p></div>
-    <div class="card"><div class="icon">🤝</div><h3>Human Handoff</h3><p>Users can move from AI assistance to a private admin conversation without losing context.</p></div>
-  </div>
-</section>
+    <!-- ================= FIREBASE ================= -->
 
-<section id="workspace" class="workspace">
-  <h2 style="text-align:center;margin-bottom:12px">Apex AI Workspace</h2>
-  <p style="text-align:center;color:#94a3b8;margin-bottom:20px">Your conversations are connected to your account.</p>
-  <div class="iframe-shell"><iframe id="agentFrame" title="Apex AI Workspace"></iframe></div>
-</section>
+    <script type="module">
 
-<div id="authModal" class="modal">
-  <div class="modal-box">
-    <button class="close" onclick="closeAuth()">×</button>
-    <h2 id="authTitle">Welcome to Apex AI</h2>
-    <p id="authSubtitle">Sign in to continue. Your session stays signed in on this device.</p>
-    <div class="tabs">
-      <button id="signInTab" class="active" onclick="setMode('signin')">Sign In</button>
-      <button id="signUpTab" onclick="setMode('signup')">Sign Up</button>
-    </div>
-    <form id="authForm" class="form">
-      <div id="nameWrap" style="display:none"><label>Full name</label><input id="name" autocomplete="name" placeholder="Your name"></div>
-      <div id="countryWrap" style="display:none"><label>Country</label><input id="country" placeholder="Pakistan"></div>
-      <div id="ageWrap" style="display:none"><label>Age</label><input id="age" type="number" min="13" max="120" placeholder="18"></div>
-      <div><label>Email</label><input id="email" type="email" required autocomplete="email" placeholder="you@example.com"></div>
-      <div><label>Password</label><input id="password" type="password" required minlength="6" autocomplete="current-password" placeholder="At least 6 characters"></div>
-      <div class="hint" id="verifyHint">Email verification is required for new accounts.</div>
-      <div class="error" id="error"></div>
-      <button class="primary" type="submit" id="submitBtn">Sign In</button>
-      <button class="google" type="button" onclick="googleLogin()">Continue with Google</button>
-    </form>
-  </div>
-</div>
+        import {
+            initializeApp
+        } from
+        "https://www.gstatic.com/firebasejs/12.1.0/firebase-app.js";
 
-<script type="module">
-import { initializeApp } from "https://www.gstatic.com/firebasejs/12.1.0/firebase-app.js";
-import {
-  getAuth, setPersistence, browserLocalPersistence, onAuthStateChanged,
-  createUserWithEmailAndPassword, signInWithEmailAndPassword,
-  sendEmailVerification, GoogleAuthProvider, signInWithPopup, signOut
-} from "https://www.gstatic.com/firebasejs/12.1.0/firebase-auth.js";
-import {
-  getFirestore, doc, setDoc, getDoc
-} from "https://www.gstatic.com/firebasejs/12.1.0/firebase-firestore.js";
 
-/*
-  IMPORTANT:
-  Replace the values below with your Firebase Web App config.
-  Firebase client API keys are public-by-design; protect data with Auth + Firestore Rules.
-*/
-const firebaseConfig = {
-  apiKey: "AIzaSyBac787OJTtg0lHHDCoxxZ92nkW1mF0Sbg",
-  authDomain: "apex-ai-7b594.firebaseapp.com",
-  projectId: "apex-ai-7b594",
-  storageBucket: "apex-ai-7b594.firebasestorage.app",
-  messagingSenderId: "633820251935",
-  appId: "1:633820251935:web:0922ddb857d0b88275d22a",
-  measurementId: "G-DNBXDKL013"
-};
+        import {
+            getAuth,
+            setPersistence,
+            browserLocalPersistence,
+            onAuthStateChanged,
+            createUserWithEmailAndPassword,
+            signInWithEmailAndPassword,
+            sendEmailVerification,
+            GoogleAuthProvider,
+            signInWithPopup,
+            signOut
+        } from
+        "https://www.gstatic.com/firebasejs/12.1.0/firebase-auth.js";
 
-const firebaseReady = !Object.values(firebaseConfig).some(v => String(v).startsWith("PASTE_"));
-let auth, db;
-if (firebaseReady) {
-  const app = initializeApp(firebaseConfig);
-  auth = getAuth(app);
-  db = getFirestore(app);
-  setPersistence(auth, browserLocalPersistence);
-}
 
-let mode = "signin";
-const modal = document.getElementById("authModal");
-const errorBox = document.getElementById("error");
+        import {
+            getFirestore,
+            doc,
+            setDoc,
+            getDoc
+        } from
+        "https://www.gstatic.com/firebasejs/12.1.0/firebase-firestore.js";
 
-window.openAuth = () => { modal.style.display = "flex"; };
-window.closeAuth = () => { modal.style.display = "none"; errorBox.textContent=""; };
-window.setMode = (newMode) => {
-  mode = newMode;
-  document.getElementById("signInTab").classList.toggle("active", mode==="signin");
-  document.getElementById("signUpTab").classList.toggle("active", mode==="signup");
-  document.getElementById("nameWrap").style.display = mode==="signup" ? "block" : "none";
-  document.getElementById("countryWrap").style.display = mode==="signup" ? "block" : "none";
-  document.getElementById("ageWrap").style.display = mode==="signup" ? "block" : "none";
-  document.getElementById("submitBtn").textContent = mode==="signup" ? "Create Account" : "Sign In";
-  document.getElementById("authTitle").textContent = mode==="signup" ? "Create your Apex account" : "Welcome back";
-  document.getElementById("authSubtitle").textContent = mode==="signup"
-    ? "Create one account and Apex will remember you on this device."
-    : "Sign in to continue. Your session stays signed in on this device.";
-  document.getElementById("verifyHint").textContent = mode==="signup"
-    ? "We'll send a verification email after account creation."
-    : "Use the same account — you won't need to fill your profile again.";
-  errorBox.textContent="";
-};
 
-function friendlyError(e){
-  const map = {
-    "auth/email-already-in-use":"That email already has an account. Try Sign In.",
-    "auth/invalid-credential":"Email or password is incorrect.",
-    "auth/invalid-email":"Please enter a valid email.",
-    "auth/weak-password":"Use a password with at least 6 characters.",
-    "auth/popup-closed-by-user":"Google sign-in was cancelled."
-  };
-  return map[e.code] || e.message || "Something went wrong.";
-}
+        /* ==========================================
+           FIREBASE CONFIG
+           ========================================== */
 
-async function getProfile(user){
-  let profile = { user: user.displayName || user.email.split("@")[0], email:user.email, age:"N/A", country:"N/A" };
-  if (db) {
-    const snap = await getDoc(doc(db, "users", user.uid));
-    if (snap.exists()) profile = {...profile, ...snap.data()};
-  }
-  return profile;
-}
+        const firebaseConfig = {
 
-function launch(profile){
-  const params = new URLSearchParams({
-    embed:"true",
-    username: profile.user || "User",
-    email: profile.email || "",
-    age: profile.age || "N/A",
-    country: profile.country || "N/A"
-  });
-  document.getElementById("authBtn").style.display="none";
-  document.getElementById("profile").style.display="flex";
-  document.getElementById("avatar").textContent=(profile.user || "U").charAt(0).toUpperCase();
-  document.getElementById("pname").textContent=profile.user || "User";
-  document.getElementById("pemail").textContent=profile.email || "";
-  document.getElementById("agentFrame").src=`https://apex-ai-agent-ta.streamlit.app/?${params.toString()}`;
-  document.getElementById("workspace").style.display="block";
-}
+            apiKey:
+                "AIzaSyBac787OJTtg0lHHDCoxxZ92nkW1mF0Sbg",
 
-document.getElementById("authForm").addEventListener("submit", async (e)=>{
-  e.preventDefault();
-  errorBox.textContent="";
-  if (!firebaseReady) {
-    errorBox.textContent="Firebase is not configured yet. Add your Firebase Web App config in index.html.";
-    return;
-  }
-  try {
-    let user;
-    if(mode==="signup"){
-      const name=document.getElementById("name").value.trim();
-      const country=document.getElementById("country").value.trim();
-      const age=document.getElementById("age").value.trim();
-      const email=document.getElementById("email").value.trim();
-      const password=document.getElementById("password").value;
-      if(!name || !country || !age) throw new Error("Name, country and age are required for Sign Up.");
-      const cred=await createUserWithEmailAndPassword(auth,email,password);
-      user=cred.user;
-      await setDoc(doc(db,"users",user.uid),{user:name,email,age,country,createdAt:new Date().toISOString()});
-      await sendEmailVerification(user);
-      alert("Account created. Please verify your email, then sign in. A verification link was sent to your inbox.");
-      await signOut(auth);
-      setMode("signin");
-      document.getElementById("email").value=email;
-      return;
-    }
-    const cred=await signInWithEmailAndPassword(auth,
-      document.getElementById("email").value.trim(),
-      document.getElementById("password").value
-    );
-    user=cred.user;
-    await user.reload();
-    if(!user.emailVerified){
-      await sendEmailVerification(user);
-      throw new Error("Please verify your email first. A fresh verification email was sent.");
-    }
-    launch(await getProfile(user));
-    closeAuth();
-  } catch(err){ errorBox.textContent=friendlyError(err); }
-});
+            authDomain:
+                "apex-ai-7b594.firebaseapp.com",
 
-window.googleLogin = async ()=>{
-  errorBox.textContent="";
-  if(!firebaseReady){ errorBox.textContent="Firebase is not configured yet."; return; }
-  try{
-    const provider=new GoogleAuthProvider();
-    const result=await signInWithPopup(auth,provider);
-    const user=result.user;
-    const existing=await getDoc(doc(db,"users",user.uid));
-    if(!existing.exists()){
-      await setDoc(doc(db,"users",user.uid),{
-        user:user.displayName || user.email.split("@")[0],
-        email:user.email, age:"N/A", country:"N/A",
-        createdAt:new Date().toISOString()
-      });
-    }
-    launch(await getProfile(user)); closeAuth();
-  }catch(err){errorBox.textContent=friendlyError(err);}
-};
+            projectId:
+                "apex-ai-7b594",
 
-window.signOutUser = async ()=>{
-  if(auth) await signOut(auth);
-  document.getElementById("authBtn").style.display="inline-block";
-  document.getElementById("profile").style.display="none";
-  document.getElementById("workspace").style.display="none";
-  document.getElementById("agentFrame").src="";
-};
+            storageBucket:
+                "apex-ai-7b594.firebasestorage.app",
 
-if(firebaseReady){
-  onAuthStateChanged(auth, async user=>{
-    if(user && user.emailVerified){
-      launch(await getProfile(user));
-    }
-  });
-}
-</script>
+            messagingSenderId:
+                "633820251935",
+
+            appId:
+                "1:633820251935:web:0922ddb857d0b88275d22a",
+
+            measurementId:
+                "G-DNBXDKL013"
+        };
+
+
+        const app =
+            initializeApp(firebaseConfig);
+
+        const auth =
+            getAuth(app);
+
+        const db =
+            getFirestore(app);
+
+
+        /*
+            Keep users signed in on the browser.
+        */
+
+        setPersistence(
+            auth,
+            browserLocalPersistence
+        );
+
+
+        /* ==========================================
+           UI STATE
+           ========================================== */
+
+        let mode = "signin";
+
+        const modal =
+            document.getElementById("authModal");
+
+        const errorBox =
+            document.getElementById("error");
+
+
+        /* ==========================================
+           MODAL
+           ========================================== */
+
+        window.openModal = function () {
+
+            modal.style.display = "flex";
+
+        };
+
+
+        window.closeModal = function () {
+
+            modal.style.display = "none";
+
+            errorBox.textContent = "";
+
+        };
+
+
+        /* Close when clicking outside */
+
+        modal.addEventListener(
+            "click",
+            function (event) {
+
+                if (event.target === modal) {
+
+                    closeModal();
+
+                }
+
+            }
+        );
+
+
+        /* ==========================================
+           SIGN IN / SIGN UP MODE
+           ========================================== */
+
+        window.setMode = function (newMode) {
+
+            mode = newMode;
+
+
+            document
+                .getElementById("signInTab")
+                .classList
+                .toggle(
+                    "active",
+                    mode === "signin"
+                );
+
+
+            document
+                .getElementById("signUpTab")
+                .classList
+                .toggle(
+                    "active",
+                    mode === "signup"
+                );
+
+
+            document
+                .getElementById("nameWrap")
+                .style.display =
+                mode === "signup"
+                    ? "block"
+                    : "none";
+
+
+            document
+                .getElementById("countryWrap")
+                .style.display =
+                mode === "signup"
+                    ? "block"
+                    : "none";
+
+
+            document
+                .getElementById("ageWrap")
+                .style.display =
+                mode === "signup"
+                    ? "block"
+                    : "none";
+
+
+            document
+                .getElementById("submitBtn")
+                .textContent =
+                mode === "signup"
+                    ? "Create Account"
+                    : "Sign In";
+
+
+            document
+                .getElementById("authTitle")
+                .textContent =
+                mode === "signup"
+                    ? "Create your Apex account"
+                    : "Welcome back";
+
+
+            document
+                .getElementById("authSubtitle")
+                .textContent =
+                mode === "signup"
+                    ? "Create one account and Apex will remember you on this device."
+                    : "Sign in to continue. Your session stays signed in on this device.";
+
+
+            document
+                .getElementById("verifyHint")
+                .textContent =
+                mode === "signup"
+                    ? "We'll send a verification email after account creation."
+                    : "Use the same account — you won't need to fill your profile again.";
+
+
+            errorBox.textContent = "";
+
+        };
+
+
+        /* ==========================================
+           ERROR HANDLING
+           ========================================== */
+
+        function friendlyError(error) {
+
+            const messages = {
+
+                "auth/email-already-in-use":
+                    "That email already has an account. Try Sign In.",
+
+                "auth/invalid-credential":
+                    "Email or password is incorrect.",
+
+                "auth/invalid-email":
+                    "Please enter a valid email address.",
+
+                "auth/weak-password":
+                    "Use a password with at least 6 characters.",
+
+                "auth/popup-closed-by-user":
+                    "Google sign-in was cancelled.",
+
+                "auth/popup-blocked":
+                    "Your browser blocked the Google login popup. Please allow popups for this site.",
+
+                "auth/network-request-failed":
+                    "Network error. Please check your internet connection."
+
+            };
+
+
+            return (
+                messages[error.code] ||
+                error.message ||
+                "Something went wrong."
+            );
+
+        }
+
+
+        /* ==========================================
+           FIRESTORE PROFILE
+           ========================================== */
+
+        async function getProfile(user) {
+
+            let profile = {
+
+                user:
+                    user.displayName ||
+                    user.email.split("@")[0],
+
+                email:
+                    user.email,
+
+                age:
+                    "N/A",
+
+                country:
+                    "N/A"
+
+            };
+
+
+            try {
+
+                const snapshot =
+                    await getDoc(
+                        doc(
+                            db,
+                            "users",
+                            user.uid
+                        )
+                    );
+
+
+                if (snapshot.exists()) {
+
+                    profile = {
+                        ...profile,
+                        ...snapshot.data()
+                    };
+
+                }
+
+            } catch (error) {
+
+                console.warn(
+                    "Could not load profile:",
+                    error
+                );
+
+            }
+
+
+            return profile;
+
+        }
+
+
+        /* ==========================================
+           LAUNCH STREAMLIT
+           ========================================== */
+
+        function launchWorkspace(profile) {
+
+            const params =
+                new URLSearchParams({
+
+                    embed:
+                        "true",
+
+                    username:
+                        profile.user ||
+                        "User",
+
+                    email:
+                        profile.email ||
+                        "",
+
+                    age:
+                        profile.age ||
+                        "N/A",
+
+                    country:
+                        profile.country ||
+                        "N/A"
+
+                });
+
+
+            /* Hide Sign In button */
+
+            document
+                .getElementById("signin-btn")
+                .style.display =
+                "none";
+
+
+            /* Show profile */
+
+            document
+                .getElementById("profile-badge")
+                .style.display =
+                "flex";
+
+
+            document
+                .getElementById("avatar-initial")
+                .textContent =
+                (
+                    profile.user ||
+                    "U"
+                )
+                .charAt(0)
+                .toUpperCase();
+
+
+            document
+                .getElementById("badge-username")
+                .textContent =
+                profile.user ||
+                "User";
+
+
+            document
+                .getElementById("badge-email")
+                .textContent =
+                profile.email ||
+                "";
+
+
+            /* Streamlit URL */
+
+            const streamlitURL =
+                "https://apex-ai-agent-ta.streamlit.app/?" +
+                params.toString();
+
+
+            document
+                .getElementById("agent-iframe")
+                .src =
+                streamlitURL;
+
+
+            /* Show workspace */
+
+            document
+                .getElementById("agent-workspace")
+                .style.display =
+                "block";
+
+
+            /* Scroll to workspace */
+
+            setTimeout(
+                function () {
+
+                    document
+                        .getElementById("agent-workspace")
+                        .scrollIntoView({
+                            behavior: "smooth"
+                        });
+
+                },
+                300
+            );
+
+        }
+
+
+        /* ==========================================
+           EMAIL AUTH
+           ========================================== */
+
+        document
+            .getElementById("authForm")
+            .addEventListener(
+                "submit",
+                async function (event) {
+
+                    event.preventDefault();
+
+                    errorBox.textContent = "";
+
+
+                    try {
+
+                        let user;
+
+
+                        /* ================= SIGN UP ================= */
+
+                        if (mode === "signup") {
+
+                            const name =
+                                document
+                                    .getElementById("name")
+                                    .value
+                                    .trim();
+
+
+                            const country =
+                                document
+                                    .getElementById("country")
+                                    .value
+                                    .trim();
+
+
+                            const age =
+                                document
+                                    .getElementById("age")
+                                    .value
+                                    .trim();
+
+
+                            const email =
+                                document
+                                    .getElementById("email")
+                                    .value
+                                    .trim();
+
+
+                            const password =
+                                document
+                                    .getElementById("password")
+                                    .value;
+
+
+                            if (
+                                !name ||
+                                !country ||
+                                !age
+                            ) {
+
+                                throw new Error(
+                                    "Name, country and age are required for Sign Up."
+                                );
+
+                            }
+
+
+                            const credential =
+                                await createUserWithEmailAndPassword(
+                                    auth,
+                                    email,
+                                    password
+                                );
+
+
+                            user =
+                                credential.user;
+
+
+                            /* Save profile */
+
+                            await setDoc(
+                                doc(
+                                    db,
+                                    "users",
+                                    user.uid
+                                ),
+                                {
+
+                                    user:
+                                        name,
+
+                                    email:
+                                        email,
+
+                                    age:
+                                        age,
+
+                                    country:
+                                        country,
+
+                                    createdAt:
+                                        new Date().toISOString()
+
+                                }
+                            );
+
+
+                            /* Email verification */
+
+                            await sendEmailVerification(
+                                user
+                            );
+
+
+                            alert(
+                                "Account created successfully. Please verify your email, then sign in. A verification link was sent to your inbox."
+                            );
+
+
+                            await signOut(auth);
+
+
+                            setMode("signin");
+
+
+                            document
+                                .getElementById("email")
+                                .value =
+                                email;
+
+
+                            return;
+
+                        }
+
+
+                        /* ================= SIGN IN ================= */
+
+                        const credential =
+                            await signInWithEmailAndPassword(
+                                auth,
+
+                                document
+                                    .getElementById("email")
+                                    .value
+                                    .trim(),
+
+                                document
+                                    .getElementById("password")
+                                    .value
+                            );
+
+
+                        user =
+                            credential.user;
+
+
+                        await user.reload();
+
+
+                        /* Require email verification */
+
+                        if (!user.emailVerified) {
+
+                            await sendEmailVerification(
+                                user
+                            );
+
+                            throw new Error(
+                                "Please verify your email first. A fresh verification email was sent."
+                            );
+
+                        }
+
+
+                        const profile =
+                            await getProfile(user);
+
+
+                        launchWorkspace(
+                            profile
+                        );
+
+
+                        closeModal();
+
+                    }
+
+                    catch (error) {
+
+                        errorBox.textContent =
+                            friendlyError(error);
+
+                    }
+
+                }
+            );
+
+
+        /* ==========================================
+           GOOGLE LOGIN
+           ========================================== */
+
+        window.googleLogin =
+            async function () {
+
+                errorBox.textContent = "";
+
+
+                try {
+
+                    const provider =
+                        new GoogleAuthProvider();
+
+
+                    const result =
+                        await signInWithPopup(
+                            auth,
+                            provider
+                        );
+
+
+                    const user =
+                        result.user;
+
+
+                    const profileRef =
+                        doc(
+                            db,
+                            "users",
+                            user.uid
+                        );
+
+
+                    const existing =
+                        await getDoc(
+                            profileRef
+                        );
+
+
+                    if (!existing.exists()) {
+
+                        await setDoc(
+                            profileRef,
+                            {
+
+                                user:
+                                    user.displayName ||
+                                    user.email.split("@")[0],
+
+                                email:
+                                    user.email,
+
+                                age:
+                                    "N/A",
+
+                                country:
+                                    "N/A",
+
+                                createdAt:
+                                    new Date().toISOString()
+
+                            }
+                        );
+
+                    }
+
+
+                    const profile =
+                        await getProfile(user);
+
+
+                    launchWorkspace(
+                        profile
+                    );
+
+
+                    closeModal();
+
+                }
+
+                catch (error) {
+
+                    errorBox.textContent =
+                        friendlyError(error);
+
+                }
+
+            };
+
+
+        /* ==========================================
+           LOGOUT
+           ========================================== */
+
+        window.logoutUser =
+            async function () {
+
+                try {
+
+                    await signOut(auth);
+
+                }
+
+                catch (error) {
+
+                    console.error(error);
+
+                }
+
+
+                document
+                    .getElementById("signin-btn")
+                    .style.display =
+                    "inline-flex";
+
+
+                document
+                    .getElementById("profile-badge")
+                    .style.display =
+                    "none";
+
+
+                document
+                    .getElementById("agent-workspace")
+                    .style.display =
+                    "none";
+
+
+                document
+                    .getElementById("agent-iframe")
+                    .src =
+                    "";
+
+            };
+
+
+        /* ==========================================
+           REMEMBER LOGIN
+           ========================================== */
+
+        onAuthStateChanged(
+            auth,
+            async function (user) {
+
+                if (
+                    user &&
+                    user.emailVerified
+                ) {
+
+                    const profile =
+                        await getProfile(user);
+
+
+                    launchWorkspace(
+                        profile
+                    );
+
+                }
+
+            }
+        );
+
+    </script>
+
 </body>
 </html>
+```
