@@ -29,11 +29,23 @@ st.set_page_config(
 load_dotenv()
 
 # ============================================
-# 📧 GMAIL SETUP - FIXED
+# 🔐 SECURE CONFIGURATION
 # ============================================
 
-GMAIL_EMAIL = os.getenv("GMAIL_EMAIL", "banukabil348@gmail.com")
-GMAIL_PASSWORD = os.getenv("GMAIL_PASSWORD", "your_app_password")
+def get_secret(name, default=None):
+    """Read Streamlit Secrets first, then environment variables for local development."""
+    try:
+        value = st.secrets.get(name)
+        if value is not None:
+            return value
+    except Exception:
+        pass
+    return os.getenv(name, default)
+
+ADMIN_EMAIL = "taqwaasif76@gmail.com"
+GMAIL_EMAIL = get_secret("GMAIL_EMAIL", ADMIN_EMAIL)
+GMAIL_PASSWORD = get_secret("GMAIL_PASSWORD", "")
+ADMIN_PASSWORD = get_secret("ADMIN_PASSWORD", "")
 
 def send_gmail_notification(to_email, subject, body):
     try:
@@ -119,6 +131,19 @@ def save_admin_chat_history(chat_data):
     with open('data/admin_chat_history.json', 'w') as f:
         json.dump(history, f, indent=4)
 
+def get_user_admin_chat_history(email):
+    return [item for item in load_admin_chat_history() if item.get("user_email") == email]
+
+def clear_user_admin_chat(email):
+    try:
+        history = [item for item in load_admin_chat_history() if item.get("user_email") != email]
+        with open('data/admin_chat_history.json', 'w') as f:
+            json.dump(history, f, indent=4)
+        return True
+    except Exception as e:
+        print(f"Error clearing admin chat: {e}")
+        return False
+
 def get_user_by_email(email):
     users = load_users()
     for user in users:
@@ -155,10 +180,10 @@ def clear_all_history():
 # 🤖 GEMINI SETUP
 # ============================================
 
-gemini_key = os.getenv("GEMINI_API_KEY") or os.getenv("GOOGLE_API_KEY")
+gemini_key = get_secret("GEMINI_API_KEY") or get_secret("GOOGLE_API_KEY")
 
 if not gemini_key:
-    st.error("❌ GEMINI_API_KEY missing! Add to .env file")
+    st.error("❌ GEMINI_API_KEY is missing. Add it in Streamlit Secrets.")
     st.stop()
 
 client = genai.Client(api_key=gemini_key)
@@ -189,7 +214,7 @@ def generate_ai_response(prompt):
 # 🔍 TAVILY SEARCH
 # ============================================
 
-TAVILY_API_KEY = os.getenv("TAVILY_API_KEY")
+TAVILY_API_KEY = get_secret("TAVILY_API_KEY", "")
 
 def search_internet(query):
     if not TAVILY_API_KEY:
@@ -288,6 +313,46 @@ def send_daily_report():
         return f"❌ Error: {str(e)}"
 
 # ============================================
+# 💰 PRICING
+# ============================================
+
+PRICING_DATA = {
+    "Basic Chatbot": {"Pakistan": "PKR 15,000 – 50,000", "USA": "$100 – $500"},
+    "Autonomous AI Agent / RAG": {"Pakistan": "PKR 60,000 – 250,000+", "USA": "$500 – $3,500+"},
+    "Website Development": {"Pakistan": "Landing: PKR 15,000 – 40,000 | Full App: PKR 80,000 – 300,000+", "USA": "Landing: $150 – $500 | Full App: $1,000 – $4,000+"},
+    "Workflow Automation": {"Pakistan": "PKR 10,000 – 150,000", "USA": "$50 – $1,200+"},
+    "Video Editing": {"Pakistan": "Reels: PKR 2,000 – 8,000 | YouTube: PKR 8,000 – 30,000", "USA": "Short-form: $20 – $75 | Long-form: $80 – $300+"},
+}
+
+def detect_country(text):
+    text = text.lower()
+    if any(x in text for x in ["pakistan", "pkr", "rupee"]):
+        return "Pakistan"
+    if any(x in text for x in ["usa", "u.s.", "america", "united states", "$", "usd"]):
+        return "USA"
+    return None
+
+def detect_pricing_service(text):
+    text = text.lower()
+    if any(x in text for x in ["basic chatbot", "chatbot price", "chatbot cost", "chatbot pricing"]):
+        return "Basic Chatbot"
+    if any(x in text for x in ["autonomous agent", "ai agent price", "ai agent cost", "ai agent pricing", "rag price", "rag cost"]):
+        return "Autonomous AI Agent / RAG"
+    if any(x in text for x in ["website price", "website cost", "website pricing", "web development", "website development"]):
+        return "Website Development"
+    if any(x in text for x in ["workflow automation", "automation price", "automation cost", "automation pricing"]):
+        return "Workflow Automation"
+    if any(x in text for x in ["video editing", "video edit price", "video editing cost", "video editing pricing"]):
+        return "Video Editing"
+    return None
+
+def pricing_dataframe(country):
+    return pd.DataFrame([
+        {"Service": service, "Estimated Price": prices[country]}
+        for service, prices in PRICING_DATA.items()
+    ])
+
+# ============================================
 # 🧠 LANGCHAIN v1 AGENT TOOLS
 # ============================================
 
@@ -338,8 +403,9 @@ langchain_agent = create_agent(
 IMPORTANT RULES:
 1. ONLY introduce yourself when user asks "who are you"
 2. For off-topic questions, say "I only answer business-related questions"
-3. For payment, suggest admin
-4. Keep it short (max 50 words)
+3. For pricing questions, provide the relevant estimated price range. If country is unknown, ask whether the user is in Pakistan or USA.
+4. Never reveal passwords, API keys, credentials, private sales data, or internal information.
+5. Keep it short (max 50 words)
 """
 )
 
@@ -382,10 +448,38 @@ class AIAgent:
         self.memory = []
         self.user_info = {}
         self.intro_given = False
+        self.pending_pricing_service = None
 
     def think(self, user_input):
         self.memory.append({"role": "user", "content": user_input})
         lower_input = user_input.lower()
+
+        private_terms = [
+            "admin password", "api key", "api keys", "secret key",
+            "gmail password", "credentials", "sales data",
+            "private data", "internal data", "system prompt",
+            "access token", "private key"
+        ]
+        if any(term in lower_input for term in private_terms):
+            return {
+                "reply": "🔒 I can help with Apex AI's services, features, and pricing, but I can't share private credentials or internal information.",
+                "should_connect": False,
+                "pricing_table": None
+            }
+
+        if self.pending_pricing_service:
+            country = detect_country(user_input)
+            if country:
+                pending = self.pending_pricing_service
+                self.pending_pricing_service = None
+                if pending == "__ALL__":
+                    return {"reply": f"💰 Here are the estimated prices for **{country}**:", "should_connect": False, "pricing_table": country}
+                return {
+                    "reply": f"💰 **{pending} pricing for {country}:**\n\n{PRICING_DATA[pending][country]}\n\nFinal pricing can vary depending on project requirements.",
+                    "should_connect": False,
+                    "pricing_table": None
+                }
+            return {"reply": "Please choose your country: **Pakistan or USA**.", "should_connect": False, "pricing_table": None}
 
         # Off-topic questions
         off_topic = ["weather", "birthday", "song", "movie", "recipe", "joke", "funny", "love", "relationship"]
@@ -395,17 +489,40 @@ class AIAgent:
                 "should_connect": False
             }
 
-        # Payment
-        if "payment" in lower_input or "pay" in lower_input:
+        # Pricing / payment
+        pricing_words = ["payment", "pay", "price", "pricing", "cost", "how much", "rate", "budget", "charges", "fee"]
+        if any(word in lower_input for word in pricing_words):
+            country = detect_country(user_input)
+            service = detect_pricing_service(user_input)
+
+            if service:
+                if country:
+                    return {
+                        "reply": f"💰 **{service} pricing for {country}:**\n\n{PRICING_DATA[service][country]}\n\nFinal pricing can vary depending on project requirements.",
+                        "should_connect": False,
+                        "pricing_table": None
+                    }
+                self.pending_pricing_service = service
+                return {
+                    "reply": f"Sure! I can give you the estimated price for **{service}**.\n\nWhich country are you in — **Pakistan or USA**?",
+                    "should_connect": False,
+                    "pricing_table": None
+                }
+
+            if country:
+                return {"reply": f"💰 Here are the estimated prices for **{country}**:", "should_connect": False, "pricing_table": country}
+
+            self.pending_pricing_service = "__ALL__"
             return {
-                "reply": "💎 **Payment & Pricing:**\n\nFor payment details, please click the **'Talk to Admin'** button above ☝️\n\nOur admin team will assist you with pricing and payment plans! 🚀",
-                "should_connect": True
+                "reply": "Sure! I can show you all service pricing.\n\nWhich country are you in — **Pakistan or USA**?",
+                "should_connect": False,
+                "pricing_table": None
             }
 
         # Identity
         if "who are you" in lower_input or "who is" in lower_input or "introduce" in lower_input:
             return {
-                "reply": "🌟 **Hey! I'm Apex AI - your business buddy!** 🚀\n\nI'm a professional Business AI Agent designed to help you with:\n• 💻 Web Development\n• 🤖 Custom AI Agents\n• 🎬 Video Editing\n• 📱 Automation\n\nFor payment or complex queries, click the **'Talk to Admin'** button above! 😊",
+                "reply": "🌟 **Hey! I'm Apex AI - your business buddy!** 🚀\n\nI'm a professional Business AI Agent designed to help you with:\n• 💻 Web Development\n• 🤖 Custom AI Agents\n• 🎬 Video Editing\n• 📱 Automation\n\nI can also provide estimated service pricing and help you connect with our admin team. 😊",
                 "should_connect": False
             }
 
@@ -433,7 +550,7 @@ RULES:
 3. Use 1-2 emojis maximum
 4. Keep it short (max 40 words)
 5. Ask ONE follow-up question
-6. For payments, say "click the Talk to Admin button above"
+6. For pricing, give an estimated range when country is known; otherwise ask whether the user is in Pakistan or USA
 
 Response (max 40 words):
 """
@@ -447,7 +564,7 @@ Response (max 40 words):
             return {"reply": reply, "should_connect": should_connect}
         else:
             return {
-                "reply": "I can help with business solutions! For payment, click the 'Talk to Admin' button above. What would you like to build today? 😊",
+                "reply": "I can help with business solutions, service pricing, and project ideas. What would you like to build today? 😊",
                 "should_connect": True
             }
 
@@ -707,7 +824,7 @@ if is_admin_mode:
         password = st.text_input("Enter Admin Password:", type="password")
         
         if st.button("Login"):
-            if password == "admin123":
+            if ADMIN_PASSWORD and password == ADMIN_PASSWORD:
                 st.session_state.admin_logged_in = True
                 st.success("✅ Access Granted!")
                 st.balloons()
@@ -730,19 +847,6 @@ if is_admin_mode:
         with col1: st.metric("👥 Users", len(users))
         with col2: st.metric("⏳ Pending", len([u for u in users if u.get('status') == 'pending']))
         with col3: st.metric("💬 Messages", len(messages))
-        
-        st.markdown("---")
-        
-        st.subheader("💬 Admin Chat History")
-        
-        if admin_chat_history:
-            for chat in admin_chat_history[-20:]:
-                if chat.get('sender') == 'user':
-                    st.markdown(f'<div class="admin-user-msg"><b>👤 {chat.get("user_name", "User")}:</b> {chat["message"]}</div>', unsafe_allow_html=True)
-                else:
-                    st.markdown(f'<div class="admin-reply-msg"><b>👑 Admin:</b> {chat["message"]}</div>', unsafe_allow_html=True)
-        else:
-            st.info("No admin chat history yet.")
         
         st.markdown("---")
         
@@ -823,14 +927,6 @@ if is_admin_mode:
                                     "timestamp": str(datetime.datetime.now())
                                 })
                                 
-                                save_message({
-                                    "user": msg.get('user', ''),
-                                    "name": msg.get('name', 'User'),
-                                    "message": "📩 Admin Reply: " + reply_text,
-                                    "response": "✅ Admin has replied to you!",
-                                    "timestamp": str(datetime.datetime.now())
-                                })
-                                
                                 save_admin_reply({
                                     "user": msg.get('user', ''),
                                     "user_name": msg.get('name', ''),
@@ -865,6 +961,65 @@ if is_admin_mode:
             else:
                 st.info("No replies sent yet")
     
+        # ============================================
+        # 💖 ADMIN CHAT - AT THE BOTTOM
+        # ============================================
+        st.markdown("---")
+        st.subheader("💖 Admin Chat History")
+
+        if admin_chat_history:
+            grouped = {}
+            for chat in admin_chat_history:
+                email = chat.get("user_email", "")
+                if email:
+                    grouped.setdefault(email, []).append(chat)
+
+            for email, chats in reversed(list(grouped.items())):
+                last = chats[-1]
+                with st.expander(f"💌 {last.get('user_name', 'User')} — {email}", expanded=False):
+                    for chat in chats[-30:]:
+                        if chat.get("sender") == "user":
+                            st.markdown(
+                                f'<div class="admin-user-msg"><b>👤 {chat.get("user_name", "User")}:</b> {chat.get("message", "")}<br><small>{chat.get("timestamp", "")}</small></div>',
+                                unsafe_allow_html=True
+                            )
+                        else:
+                            st.markdown(
+                                f'<div class="admin-reply-msg"><b>👑 Admin:</b> {chat.get("message", "")}<br><small>{chat.get("timestamp", "")}</small></div>',
+                                unsafe_allow_html=True
+                            )
+
+                    with st.form(key=f"admin_chat_reply_{email}", clear_on_submit=True):
+                        admin_reply_text = st.text_area("Reply", placeholder="Type your reply to this user...", height=80)
+                        send_admin_reply = st.form_submit_button("📤 Send Admin Reply", use_container_width=True)
+
+                        if send_admin_reply and admin_reply_text.strip():
+                            clean_reply = admin_reply_text.strip()
+                            now = str(datetime.datetime.now())
+
+                            save_admin_chat_history({
+                                "sender": "admin",
+                                "user_name": last.get("user_name", "User"),
+                                "user_email": email,
+                                "message": clean_reply,
+                                "timestamp": now
+                            })
+                            save_admin_reply({
+                                "user": email,
+                                "user_name": last.get("user_name", "User"),
+                                "admin_reply": clean_reply,
+                                "timestamp": now
+                            })
+                            send_gmail_notification(
+                                email,
+                                "💌 Reply from Apex AI Admin",
+                                f"Hi {last.get('user_name', 'User')},\n\nAdmin Reply:\n{clean_reply}\n\nBest regards,\nApex AI Team"
+                            )
+                            st.success("✅ Admin reply sent!")
+                            st.rerun()
+        else:
+            st.info("No admin conversations yet.")
+
     st.stop()
 
 # ============================================
@@ -891,6 +1046,8 @@ if "agent" not in st.session_state:
     }
 if "show_admin_chat" not in st.session_state:
     st.session_state.show_admin_chat = False
+if "pricing_table_country" not in st.session_state:
+    st.session_state.pricing_table_country = None
 
 st.markdown("""
 <div style="text-align: center; padding: 20px 0;">
@@ -937,7 +1094,7 @@ with col2:
 with col3:
     if st.button("📧 Notify Admin", use_container_width=True):
         send_gmail_notification(
-            GMAIL_EMAIL,
+            ADMIN_EMAIL,
             f"🔔 User Request: {user_name}",
             f"User {user_name} ({user_email}) wants to connect!"
         )
@@ -948,41 +1105,62 @@ if st.session_state.show_admin_chat:
     st.markdown("""
     <div class="admin-chat-box">
         <div style="display: flex; align-items: center; gap: 15px; margin-bottom: 15px;">
-            <div style="background: linear-gradient(135deg, #f472b6, #ec4899); 
-                        width: 50px; height: 50px; border-radius: 50%; 
-                        display: flex; align-items: center; justify-content: center; 
+            <div style="background: linear-gradient(135deg, #f472b6, #ec4899);
+                        width: 50px; height: 50px; border-radius: 50%;
+                        display: flex; align-items: center; justify-content: center;
                         font-size: 28px; color: white;">
                 💖
             </div>
             <div>
                 <h3 style="color: #be185d; margin: 0;">✨ Talk to Admin</h3>
-                <p style="color: #9d174d; margin: 0; font-size: 14px;">We're here to help! 💕</p>
+                <p style="color: #9d174d; margin: 0; font-size: 14px;">Private support chat • Admin replies appear here</p>
             </div>
         </div>
     </div>
     """, unsafe_allow_html=True)
-    
-    admin_message = st.text_area("💬 Type your message...", placeholder="Hi! I'd like to discuss my project...", key="admin_msg")
-    
-    if st.button("📤 Send to Admin", key="send_admin"):
-        if admin_message:
-            save_admin_chat_history({
-                "sender": "user",
-                "user_name": user_name,
-                "user_email": user_email,
-                "message": admin_message,
-                "timestamp": str(datetime.datetime.now())
-            })
-            
-            send_gmail_notification(
-                GMAIL_EMAIL,
-                f"💌 Admin Message: {user_name}",
-                f"💖 New Message from {user_name}!\n\n📧 Email: {user_email}\n💬 Message: {admin_message}"
-            )
-            st.success("✅ Message sent to Admin! They'll reply soon! 💕")
-            st.balloons()
-            st.session_state.show_admin_chat = False
+
+    if user_email == "Not Provided":
+        st.warning("Please sign in first to start a private chat with Admin.")
+    else:
+        user_admin_history = get_user_admin_chat_history(user_email)
+
+        if user_admin_history:
+            for chat in user_admin_history[-30:]:
+                if chat.get("sender") == "user":
+                    st.markdown(
+                        f'<div class="admin-user-msg"><b>👤 You:</b> {chat.get("message", "")}<br><small>{chat.get("timestamp", "")}</small></div>',
+                        unsafe_allow_html=True
+                    )
+                else:
+                    st.markdown(
+                        f'<div class="admin-reply-msg"><b>👑 Admin:</b> {chat.get("message", "")}<br><small>{chat.get("timestamp", "")}</small></div>',
+                        unsafe_allow_html=True
+                    )
+        else:
+            st.info("💬 Start a private conversation with the Apex AI Admin team.")
+
+        admin_message = st.chat_input("💌 Message Admin...", key="admin_chat_input")
+
+        if st.button("🗑️ Clear Admin Chat", key="clear_admin_chat"):
+            clear_user_admin_chat(user_email)
             st.rerun()
+
+        if admin_message:
+            clean_admin_message = admin_message.strip()
+            if clean_admin_message:
+                save_admin_chat_history({
+                    "sender": "user",
+                    "user_name": user_name,
+                    "user_email": user_email,
+                    "message": clean_admin_message,
+                    "timestamp": str(datetime.datetime.now())
+                })
+                send_gmail_notification(
+                    ADMIN_EMAIL,
+                    f"💌 New Admin Chat Message: {user_name}",
+                    f"New private message from {user_name}.\n\nEmail: {user_email}\n\nMessage:\n{clean_admin_message}"
+                )
+                st.rerun()
 
 st.markdown("---")
 
@@ -995,6 +1173,7 @@ with col2:
         if user_email != "Not Provided":
             clear_user_history(user_email)
         st.session_state.chat_history = []
+        st.session_state.pricing_table_country = None
         st.success("✅ Chat cleared permanently!")
         st.rerun()
 
@@ -1017,9 +1196,18 @@ with st.container():
     st.markdown('</div>', unsafe_allow_html=True)
     
     # ✅ CHAT INPUT
-    user_input = st.chat_input("💬 Type your message...")
+    user_input = st.chat_input("Message Apex AI…", key="agent_chat_input")
     
     st.markdown('</div>', unsafe_allow_html=True)
+
+# 💰 Pricing table
+if st.session_state.get("pricing_table_country"):
+    st.markdown("### 💰 Estimated Service Pricing")
+    st.dataframe(
+        pricing_dataframe(st.session_state.pricing_table_country),
+        use_container_width=True,
+        hide_index=True
+    )
 
 # ✅ Process message
 if user_input:
@@ -1031,6 +1219,7 @@ if user_input:
                 "user_query": user_input,
                 "bot_response": response['reply']
             })
+            st.session_state.pricing_table_country = response.get("pricing_table")
             
             save_message({
                 "user": user_email,
@@ -1093,7 +1282,7 @@ if user_input:
             
             if response.get('should_connect', False):
                 send_gmail_notification(
-                    GMAIL_EMAIL,
+                    ADMIN_EMAIL,
                     f"💬 User wants admin: {user_name}",
                     f"User: {user_name}\nEmail: {user_email}\nQuery: {user_input}"
                 )
@@ -1123,6 +1312,7 @@ for idx, col in enumerate(qcols):
                         "user_query": topic_text,
                         "bot_response": response['reply']
                     })
+                    st.session_state.pricing_table_country = response.get("pricing_table")
                     
                     save_message({
                         "user": user_email,
