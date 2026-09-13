@@ -814,8 +814,6 @@
 
         <div class="grid">
 
-            <!-- Web -->
-
             <div class="card">
 
                 <div class="card-image-wrap">
@@ -840,8 +838,6 @@
             </div>
 
 
-            <!-- Chatbot -->
-
             <div class="card">
 
                 <div class="card-image-wrap">
@@ -864,8 +860,6 @@
 
             </div>
 
-
-            <!-- Video -->
 
             <div class="card">
 
@@ -891,8 +885,6 @@
             </div>
 
 
-            <!-- Social -->
-
             <div class="card">
 
                 <div class="card-image-wrap">
@@ -917,8 +909,6 @@
             </div>
 
 
-            <!-- Cloud -->
-
             <div class="card">
 
                 <div class="card-image-wrap">
@@ -942,8 +932,6 @@
 
             </div>
 
-
-            <!-- Autonomous AI -->
 
             <div class="card">
 
@@ -1034,8 +1022,6 @@
             </p>
 
 
-            <!-- Tabs -->
-
             <div class="tabs">
 
                 <button
@@ -1055,8 +1041,6 @@
 
             </div>
 
-
-            <!-- Form -->
 
             <form id="authForm">
 
@@ -1236,15 +1220,15 @@
            ========================================== */
 
         const firebaseConfig = {
-  apiKey: "AIzaSyBac787OJTtg0lHHDCoxxZ92nkW1mF0Sbg",
-  authDomain: "apex-ai-7b594.firebaseapp.com",
-  databaseURL: "https://apex-ai-7b594-default-rtdb.firebaseio.com",
-  projectId: "apex-ai-7b594",
-  storageBucket: "apex-ai-7b594.firebasestorage.app",
-  messagingSenderId: "633820251935",
-  appId: "1:633820251935:web:0922ddb857d0b88275d22a",
-  measurementId: "G-DNBXDKL013"
-};
+            apiKey: "AIzaSyBac787OJTtg0lHHDCoxxZ92nkW1mF0Sbg",
+            authDomain: "apex-ai-7b594.firebaseapp.com",
+            databaseURL: "https://apex-ai-7b594-default-rtdb.firebaseio.com",
+            projectId: "apex-ai-7b594",
+            storageBucket: "apex-ai-7b594.firebasestorage.app",
+            messagingSenderId: "633820251935",
+            appId: "1:633820251935:web:0922ddb857d0b88275d22a",
+            measurementId: "G-DNBXDKL013"
+        };
 
 
         const app =
@@ -1259,14 +1243,21 @@
             getFirestore(app);
 
 
-        /*
-            Keep users signed in on the browser.
-        */
+        /* ==========================================
+           BROWSER PERSISTENCE
+           ========================================== */
 
         setPersistence(
             auth,
             browserLocalPersistence
-        );
+        ).catch(function (error) {
+
+            console.error(
+                "Persistence error:",
+                error
+            );
+
+        });
 
 
         /* ==========================================
@@ -1407,7 +1398,7 @@
 
 
         /* ==========================================
-           ERROR HANDLING
+           FIREBASE ERROR HANDLING
            ========================================== */
 
         function friendlyError(error) {
@@ -1432,6 +1423,15 @@
                 "auth/weak-password":
                     "Use a password with at least 6 characters.",
 
+                "auth/user-not-found":
+                    "No account was found with this email.",
+
+                "auth/wrong-password":
+                    "Email or password is incorrect.",
+
+                "auth/user-disabled":
+                    "This account has been disabled.",
+
                 "auth/popup-closed-by-user":
                     "Google login window was closed.",
 
@@ -1439,7 +1439,7 @@
                     "Your browser blocked the Google login window.",
 
                 "auth/operation-not-allowed":
-                    "Google Sign-In is not enabled in Firebase.",
+                    "This sign-in method is not enabled in Firebase.",
 
                 "auth/unauthorized-domain":
                     "This website domain is not authorized in Firebase.",
@@ -1454,7 +1454,19 @@
                     "The Google login request was cancelled.",
 
                 "auth/account-exists-with-different-credential":
-                    "An account already exists with this email using another sign-in method."
+                    "An account already exists with this email using another sign-in method.",
+
+                "auth/api-key-not-valid":
+                    "Firebase API key is not valid. Please check the Web App configuration in Firebase.",
+
+                "auth/invalid-api-key":
+                    "Firebase API key is invalid. Please check the Web App configuration.",
+
+                "auth/redirect-cancelled-by-user":
+                    "Google login was cancelled.",
+
+                "auth/redirect-operation-pending":
+                    "A Google login request is already in progress."
 
             };
 
@@ -1648,6 +1660,13 @@
                     errorBox.textContent = "";
 
 
+                    const submitBtn =
+                        document.getElementById("submitBtn");
+
+
+                    submitBtn.disabled = true;
+
+
                     try {
 
                         let user;
@@ -1716,40 +1735,63 @@
                                 credential.user;
 
 
-                            await setDoc(
-                                doc(
-                                    db,
-                                    "users",
-                                    user.uid
-                                ),
-                                {
-
-                                    user:
-                                        name,
-
-                                    email:
-                                        email,
-
-                                    age:
-                                        age,
-
-                                    country:
-                                        country,
-
-                                    createdAt:
-                                        new Date().toISOString()
-
-                                }
-                            );
-
+                            /*
+                                IMPORTANT:
+                                Send verification email FIRST.
+                                Firestore failure will not prevent
+                                the verification email from being sent.
+                            */
 
                             await sendEmailVerification(
                                 user
                             );
 
 
+                            /*
+                                Save profile AFTER verification
+                                email has been requested.
+                            */
+
+                            try {
+
+                                await setDoc(
+                                    doc(
+                                        db,
+                                        "users",
+                                        user.uid
+                                    ),
+                                    {
+
+                                        user:
+                                            name,
+
+                                        email:
+                                            email,
+
+                                        age:
+                                            age,
+
+                                        country:
+                                            country,
+
+                                        createdAt:
+                                            new Date().toISOString()
+
+                                    }
+                                );
+
+                            } catch (firestoreError) {
+
+                                console.warn(
+                                    "Profile save failed:",
+                                    firestoreError
+                                );
+
+                            }
+
+
                             alert(
-                                "Account created successfully. Please verify your email, then sign in. A verification link was sent to your inbox."
+                                "Account created successfully. Please check your inbox and verify your email before signing in."
                             );
 
 
@@ -1765,6 +1807,12 @@
                                 email;
 
 
+                            document
+                                .getElementById("password")
+                                .value =
+                                "";
+
+
                             return;
 
                         }
@@ -1772,18 +1820,24 @@
 
                         /* ================= SIGN IN ================= */
 
+                        const email =
+                            document
+                                .getElementById("email")
+                                .value
+                                .trim();
+
+
+                        const password =
+                            document
+                                .getElementById("password")
+                                .value;
+
+
                         const credential =
                             await signInWithEmailAndPassword(
                                 auth,
-
-                                document
-                                    .getElementById("email")
-                                    .value
-                                    .trim(),
-
-                                document
-                                    .getElementById("password")
-                                    .value
+                                email,
+                                password
                             );
 
 
@@ -1794,14 +1848,34 @@
                         await user.reload();
 
 
+                        /*
+                            Email/password users must verify
+                            their email before entering workspace.
+                        */
+
                         if (!user.emailVerified) {
 
-                            await sendEmailVerification(
-                                user
-                            );
+                            try {
+
+                                await sendEmailVerification(
+                                    user
+                                );
+
+                            } catch (verificationError) {
+
+                                console.warn(
+                                    "Verification email resend failed:",
+                                    verificationError
+                                );
+
+                            }
+
+
+                            await signOut(auth);
+
 
                             throw new Error(
-                                "Please verify your email first. A fresh verification email was sent."
+                                "Please verify your email first. A fresh verification email was requested."
                             );
 
                         }
@@ -1827,6 +1901,12 @@
 
                     }
 
+                    finally {
+
+                        submitBtn.disabled = false;
+
+                    }
+
                 }
             );
 
@@ -1849,9 +1929,8 @@
 
 
                     /*
-                        Forces Google to show the
-                        account selector so you can
-                        choose a NEW Gmail account.
+                        Always allow the user to choose
+                        which Google account to use.
                     */
 
                     provider.setCustomParameters({
@@ -1860,9 +1939,8 @@
 
 
                     /*
-                        Redirect instead of popup.
-                        This avoids popup cancellation
-                        problems.
+                        Redirect is used instead of popup.
+                        This is more reliable on GitHub Pages.
                     */
 
                     await signInWithRedirect(
@@ -1892,92 +1970,41 @@
            GOOGLE REDIRECT RESULT
            ========================================== */
 
+        /*
+            We read the redirect result mainly so Firebase
+            can surface redirect errors.
+
+            The actual UI login is handled by
+            onAuthStateChanged below. This prevents the
+            previous problem where Google login succeeded
+            but launchWorkspace() was never called.
+        */
+
         getRedirectResult(auth)
-            .then(
-                async function (result) {
+            .then(function (result) {
 
-                    /*
-                        If there is no redirect result,
-                        simply continue normally.
-                    */
+                if (result) {
 
-                    if (!result) {
-
-                        return;
-
-                    }
-
-
-                    const user =
-                        result.user;
-
-
-                    const profileRef =
-                        doc(
-                            db,
-                            "users",
-                            user.uid
-                        );
-
-
-                    const existing =
-                        await getDoc(
-                            profileRef
-                        );
-
-
-                    /*
-                        Create Firestore profile
-                        for a NEW Google account.
-                    */
-
-                    if (!existing.exists()) {
-
-                        await setDoc(
-                            profileRef,
-                            {
-
-                                user:
-                                    user.displayName ||
-                                    (
-                                        user.email
-                                            ? user.email.split("@")[0]
-                                            : "User"
-                                    ),
-
-                                email:
-                                    user.email || "",
-
-                                age:
-                                    "N/A",
-
-                                country:
-                                    "N/A",
-
-                                createdAt:
-                                    new Date().toISOString()
-
-                            }
-                        );
-
-                    }
-
-                }
-            )
-            .catch(
-                function (error) {
-
-                    console.error(
-                        "Google Redirect Error:",
-                        error
+                    console.log(
+                        "Google redirect login completed:",
+                        result.user.email
                     );
 
-
-                    errorBox.textContent =
-                        friendlyError(error);
-
                 }
-            );
+
+            })
+            .catch(function (error) {
+
+                console.error(
+                    "Google Redirect Error:",
+                    error
+                );
+
+
+                errorBox.textContent =
+                    friendlyError(error);
+
+            });
 
 
         /* ==========================================
@@ -1996,6 +2023,7 @@
                 catch (error) {
 
                     console.error(
+                        "Logout error:",
                         error
                     );
 
@@ -2036,8 +2064,43 @@
             auth,
             async function (user) {
 
+                if (!user) {
+
+                    return;
+
+                }
+
+
+                try {
+
+                    await user.reload();
+
+                }
+
+                catch (error) {
+
+                    console.warn(
+                        "Could not reload user:",
+                        error
+                    );
+
+                }
+
+
+                /*
+                    Google users are automatically considered
+                    email verified by Firebase.
+
+                    Email/password users must have
+                    emailVerified === true.
+                */
+
                 if (
-                    user &&
+                    user.providerData.some(
+                        function (provider) {
+                            return provider.providerId === "google.com";
+                        }
+                    ) ||
                     user.emailVerified
                 ) {
 
