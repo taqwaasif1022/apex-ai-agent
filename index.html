@@ -5,7 +5,10 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Apex AI & Software Solutions Enterprise</title>
 
-    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" rel="stylesheet">
+    <link
+        href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css"
+        rel="stylesheet"
+    >
 
     <style>
         * {
@@ -30,8 +33,16 @@
         body {
             font-family: "Segoe UI", Tahoma, Geneva, Verdana, sans-serif;
             background:
-                radial-gradient(circle at 20% 0%, rgba(56, 189, 248, 0.08), transparent 30%),
-                radial-gradient(circle at 80% 10%, rgba(124, 58, 237, 0.12), transparent 32%),
+                radial-gradient(
+                    circle at 20% 0%,
+                    rgba(56, 189, 248, 0.08),
+                    transparent 30%
+                ),
+                radial-gradient(
+                    circle at 80% 10%,
+                    rgba(124, 58, 237, 0.12),
+                    transparent 32%
+                ),
                 var(--bg);
             color: var(--text);
             line-height: 1.6;
@@ -44,10 +55,21 @@
             inset: 0;
             pointer-events: none;
             background:
-                linear-gradient(rgba(255,255,255,0.018) 1px, transparent 1px),
-                linear-gradient(90deg, rgba(255,255,255,0.018) 1px, transparent 1px);
+                linear-gradient(
+                    rgba(255,255,255,0.018) 1px,
+                    transparent 1px
+                ),
+                linear-gradient(
+                    90deg,
+                    rgba(255,255,255,0.018) 1px,
+                    transparent 1px
+                );
             background-size: 45px 45px;
-            mask-image: linear-gradient(to bottom, #000, transparent 85%);
+            mask-image: linear-gradient(
+                to bottom,
+                #000,
+                transparent 85%
+            );
             z-index: -1;
         }
 
@@ -86,7 +108,9 @@
         .logo i {
             color: #facc15;
             -webkit-text-fill-color: #facc15;
-            filter: drop-shadow(0 0 10px rgba(250, 204, 21, 0.5));
+            filter: drop-shadow(
+                0 0 10px rgba(250, 204, 21, 0.5)
+            );
         }
 
         /* ================= AUTH ================= */
@@ -98,7 +122,11 @@
         }
 
         .auth-btn {
-            background: linear-gradient(135deg, #0284c7, #2563eb);
+            background: linear-gradient(
+                135deg,
+                #0284c7,
+                #2563eb
+            );
             color: #fff;
             padding: 11px 22px;
             border-radius: 22px;
@@ -106,13 +134,15 @@
             font-weight: 700;
             cursor: pointer;
             font-size: 0.95rem;
-            box-shadow: 0 0 25px rgba(37, 99, 235, 0.25);
+            box-shadow:
+                0 0 25px rgba(37, 99, 235, 0.25);
             transition: 0.3s;
         }
 
         .auth-btn:hover {
             transform: translateY(-2px);
-            box-shadow: 0 0 35px rgba(56, 189, 248, 0.4);
+            box-shadow:
+                0 0 35px rgba(56, 189, 248, 0.4);
         }
 
         .user-profile-badge {
@@ -123,13 +153,18 @@
             border: 1px solid var(--cyan);
             padding: 6px 10px 6px 6px;
             border-radius: 30px;
-            box-shadow: 0 0 25px rgba(56, 189, 248, 0.12);
+            box-shadow:
+                0 0 25px rgba(56, 189, 248, 0.12);
         }
 
         .user-avatar {
             width: 38px;
             height: 38px;
-            background: linear-gradient(135deg, var(--cyan), var(--purple));
+            background: linear-gradient(
+                135deg,
+                var(--cyan),
+                var(--purple)
+            );
             border-radius: 50%;
             display: flex;
             justify-content: center;
@@ -251,7 +286,11 @@
             display: inline-flex;
             align-items: center;
             gap: 10px;
-            background: linear-gradient(135deg, #2563eb, #7c3aed);
+            background: linear-gradient(
+                135deg,
+                #2563eb,
+                #7c3aed
+            );
             color: #fff;
             padding: 15px 36px;
             font-size: 1.05rem;
@@ -323,7 +362,8 @@
             text-align: left;
             overflow: hidden;
             transition: all 0.35s ease;
-            box-shadow: 0 12px 35px rgba(0, 0, 0, 0.18);
+            box-shadow:
+                0 12px 35px rgba(0, 0, 0, 0.18);
         }
 
         .card:hover {
@@ -358,7 +398,9 @@
             height: 185px;
             object-fit: cover;
             display: block;
-            transition: transform 0.5s ease, filter 0.5s ease;
+            transition:
+                transform 0.5s ease,
+                filter 0.5s ease;
         }
 
         .card:hover img {
@@ -532,12 +574,17 @@
 
         .form-group input:focus {
             border-color: var(--cyan);
-            box-shadow: 0 0 0 3px rgba(56, 189, 248, 0.08);
+            box-shadow:
+                0 0 0 3px rgba(56, 189, 248, 0.08);
         }
 
         .btn-submit {
             width: 100%;
-            background: linear-gradient(135deg, #0284c7, #6366f1);
+            background: linear-gradient(
+                135deg,
+                #0284c7,
+                #6366f1
+            );
             color: #fff;
             padding: 12px;
             border-radius: 11px;
@@ -546,11 +593,13 @@
             font-weight: 800;
             cursor: pointer;
             margin-top: 5px;
-            box-shadow: 0 0 25px rgba(99, 102, 241, 0.2);
+            box-shadow:
+                0 0 25px rgba(99, 102, 241, 0.2);
         }
 
         .btn-submit:hover {
-            box-shadow: 0 0 35px rgba(99, 102, 241, 0.4);
+            box-shadow:
+                0 0 35px rgba(99, 102, 241, 0.4);
         }
 
         .google-btn {
@@ -645,6 +694,7 @@
     <!-- ================= NAVBAR ================= -->
 
     <nav>
+
         <div class="logo">
             <i class="fa-solid fa-bolt"></i>
             Apex AI Solutions
@@ -665,6 +715,7 @@
                 class="user-profile-badge"
                 id="profile-badge"
             >
+
                 <div
                     class="user-avatar"
                     id="avatar-initial"
@@ -673,6 +724,7 @@
                 </div>
 
                 <div class="user-details">
+
                     <span
                         class="user-name"
                         id="badge-username"
@@ -686,6 +738,7 @@
                     >
                         user@email.com
                     </span>
+
                 </div>
 
                 <button
@@ -694,9 +747,11 @@
                 >
                     Logout
                 </button>
+
             </div>
 
         </div>
+
     </nav>
 
 
@@ -707,12 +762,15 @@
         <div class="hero-content">
 
             <div class="hero-badge">
+
                 <i class="fa-solid fa-bolt"></i>
+
                 AI-powered business assistance
+
             </div>
 
             <h1>
-    Building Next-Gen Digital Products
+                Building Next-Gen Digital Products
             </h1>
 
             <p>
@@ -725,8 +783,11 @@
                 class="consult-btn"
                 onclick="openModal()"
             >
+
                 <i class="fa-solid fa-comments"></i>
+
                 Consult AI Agent Now
+
             </button>
 
         </div>
@@ -758,10 +819,12 @@
             <div class="card">
 
                 <div class="card-image-wrap">
+
                     <img
                         src="https://images.unsplash.com/photo-1498050108023-c5249f4df085?auto=format&fit=crop&w=600&q=80"
                         alt="Web Development"
                     >
+
                 </div>
 
                 <h3>
@@ -782,10 +845,12 @@
             <div class="card">
 
                 <div class="card-image-wrap">
+
                     <img
                         src="https://images.unsplash.com/photo-1531746020798-e6953c6e8e04?auto=format&fit=crop&w=600&q=80"
                         alt="Smart Chatbot Systems"
                     >
+
                 </div>
 
                 <h3>
@@ -805,10 +870,12 @@
             <div class="card">
 
                 <div class="card-image-wrap">
+
                     <img
                         src="https://images.unsplash.com/photo-1574717024653-61fd2cf4d44d?auto=format&fit=crop&w=600&q=80"
                         alt="AI Video Editing"
                     >
+
                 </div>
 
                 <h3>
@@ -829,10 +896,12 @@
             <div class="card">
 
                 <div class="card-image-wrap">
+
                     <img
                         src="https://images.unsplash.com/photo-1611162617213-7d7a39e9b1d7?auto=format&fit=crop&w=600&q=80"
                         alt="Social Media Automation"
                     >
+
                 </div>
 
                 <h3>
@@ -853,10 +922,12 @@
             <div class="card">
 
                 <div class="card-image-wrap">
+
                     <img
                         src="https://images.unsplash.com/photo-1451187580459-43490279c0fa?auto=format&fit=crop&w=600&q=80"
                         alt="Cloud Infrastructure"
                     >
+
                 </div>
 
                 <h3>
@@ -877,10 +948,12 @@
             <div class="card">
 
                 <div class="card-image-wrap">
+
                     <img
                         src="https://images.pexels.com/photos/8386440/pexels-photo-8386440.jpeg?auto=compress&cs=tinysrgb&w=600"
                         alt="Autonomous AI Agents"
                     >
+
                 </div>
 
                 <h3>
@@ -992,6 +1065,7 @@
                     id="nameWrap"
                     style="display:none"
                 >
+
                     <label>
                         Full name
                     </label>
@@ -1001,6 +1075,7 @@
                         autocomplete="name"
                         placeholder="Your name"
                     >
+
                 </div>
 
 
@@ -1009,6 +1084,7 @@
                     id="countryWrap"
                     style="display:none"
                 >
+
                     <label>
                         Country
                     </label>
@@ -1017,6 +1093,7 @@
                         id="country"
                         placeholder="Pakistan"
                     >
+
                 </div>
 
 
@@ -1025,6 +1102,7 @@
                     id="ageWrap"
                     style="display:none"
                 >
+
                     <label>
                         Age
                     </label>
@@ -1036,6 +1114,7 @@
                         max="120"
                         placeholder="18"
                     >
+
                 </div>
 
 
@@ -1103,8 +1182,11 @@
                     type="button"
                     onclick="googleLogin()"
                 >
+
                     <i class="fa-brands fa-google"></i>
+
                     Continue with Google
+
                 </button>
 
             </form>
@@ -1133,7 +1215,8 @@
             signInWithEmailAndPassword,
             sendEmailVerification,
             GoogleAuthProvider,
-            signInWithPopup,
+            signInWithRedirect,
+            getRedirectResult,
             signOut
         } from
         "https://www.gstatic.com/firebasejs/12.1.0/firebase-auth.js";
@@ -1155,7 +1238,7 @@
         const firebaseConfig = {
 
             apiKey:
-                "AIzaSyBac787OJTtg0lHHDCoxxZ92nkW1mF0Sbg",
+                "AIzaSyBac787OJTtg0lHHDCoxXx92nkW1mF0Sbg",
 
             authDomain:
                 "apex-ai-7b594.firebaseapp.com",
@@ -1174,14 +1257,17 @@
 
             measurementId:
                 "G-DNBXDKL013"
+
         };
 
 
         const app =
             initializeApp(firebaseConfig);
 
+
         const auth =
             getAuth(app);
+
 
         const db =
             getFirestore(app);
@@ -1203,8 +1289,10 @@
 
         let mode = "signin";
 
+
         const modal =
             document.getElementById("authModal");
+
 
         const errorBox =
             document.getElementById("error");
@@ -1229,8 +1317,6 @@
 
         };
 
-
-        /* Close when clicking outside */
 
         modal.addEventListener(
             "click",
@@ -1340,6 +1426,12 @@
 
         function friendlyError(error) {
 
+            console.error(
+                "Firebase error:",
+                error
+            );
+
+
             const messages = {
 
                 "auth/email-already-in-use":
@@ -1355,13 +1447,28 @@
                     "Use a password with at least 6 characters.",
 
                 "auth/popup-closed-by-user":
-                    "Google sign-in was cancelled.",
+                    "Google login window was closed.",
 
                 "auth/popup-blocked":
-                    "Your browser blocked the Google login popup. Please allow popups for this site.",
+                    "Your browser blocked the Google login window.",
+
+                "auth/operation-not-allowed":
+                    "Google Sign-In is not enabled in Firebase.",
+
+                "auth/unauthorized-domain":
+                    "This website domain is not authorized in Firebase.",
+
+                "auth/too-many-requests":
+                    "Too many login attempts. Please wait and try again later.",
 
                 "auth/network-request-failed":
-                    "Network error. Please check your internet connection."
+                    "Network error. Please check your internet connection.",
+
+                "auth/cancelled-popup-request":
+                    "The Google login request was cancelled.",
+
+                "auth/account-exists-with-different-credential":
+                    "An account already exists with this email using another sign-in method."
 
             };
 
@@ -1385,10 +1492,14 @@
 
                 user:
                     user.displayName ||
-                    user.email.split("@")[0],
+                    (
+                        user.email
+                            ? user.email.split("@")[0]
+                            : "User"
+                    ),
 
                 email:
-                    user.email,
+                    user.email || "",
 
                 age:
                     "N/A",
@@ -1466,15 +1577,11 @@
                 });
 
 
-            /* Hide Sign In button */
-
             document
                 .getElementById("signin-btn")
                 .style.display =
                 "none";
 
-
-            /* Show profile */
 
             document
                 .getElementById("profile-badge")
@@ -1507,8 +1614,6 @@
                 "";
 
 
-            /* Streamlit URL */
-
             const streamlitURL =
                 "https://apex-ai-agent-ta.streamlit.app/?" +
                 params.toString();
@@ -1520,15 +1625,11 @@
                 streamlitURL;
 
 
-            /* Show workspace */
-
             document
                 .getElementById("agent-workspace")
                 .style.display =
                 "block";
 
-
-            /* Scroll to workspace */
 
             setTimeout(
                 function () {
@@ -1629,8 +1730,6 @@
                                 credential.user;
 
 
-                            /* Save profile */
-
                             await setDoc(
                                 doc(
                                     db,
@@ -1657,8 +1756,6 @@
                                 }
                             );
 
-
-                            /* Email verification */
 
                             await sendEmailVerification(
                                 user
@@ -1711,8 +1808,6 @@
                         await user.reload();
 
 
-                        /* Require email verification */
-
                         if (!user.emailVerified) {
 
                             await sendEmailVerification(
@@ -1752,6 +1847,7 @@
 
         /* ==========================================
            GOOGLE LOGIN
+           REDIRECT METHOD
            ========================================== */
 
         window.googleLogin =
@@ -1766,11 +1862,64 @@
                         new GoogleAuthProvider();
 
 
-                    const result =
-                        await signInWithPopup(
-                            auth,
-                            provider
-                        );
+                    /*
+                        Forces Google to show the
+                        account selector so you can
+                        choose a NEW Gmail account.
+                    */
+
+                    provider.setCustomParameters({
+                        prompt: "select_account"
+                    });
+
+
+                    /*
+                        Redirect instead of popup.
+                        This avoids popup cancellation
+                        problems.
+                    */
+
+                    await signInWithRedirect(
+                        auth,
+                        provider
+                    );
+
+                }
+
+                catch (error) {
+
+                    console.error(
+                        "Google Sign-In Error:",
+                        error
+                    );
+
+
+                    errorBox.textContent =
+                        friendlyError(error);
+
+                }
+
+            };
+
+
+        /* ==========================================
+           GOOGLE REDIRECT RESULT
+           ========================================== */
+
+        getRedirectResult(auth)
+            .then(
+                async function (result) {
+
+                    /*
+                        If there is no redirect result,
+                        simply continue normally.
+                    */
+
+                    if (!result) {
+
+                        return;
+
+                    }
 
 
                     const user =
@@ -1791,6 +1940,11 @@
                         );
 
 
+                    /*
+                        Create Firestore profile
+                        for a NEW Google account.
+                    */
+
                     if (!existing.exists()) {
 
                         await setDoc(
@@ -1799,10 +1953,14 @@
 
                                 user:
                                     user.displayName ||
-                                    user.email.split("@")[0],
+                                    (
+                                        user.email
+                                            ? user.email.split("@")[0]
+                                            : "User"
+                                    ),
 
                                 email:
-                                    user.email,
+                                    user.email || "",
 
                                 age:
                                     "N/A",
@@ -1818,28 +1976,22 @@
 
                     }
 
+                }
+            )
+            .catch(
+                function (error) {
 
-                    const profile =
-                        await getProfile(user);
-
-
-                    launchWorkspace(
-                        profile
+                    console.error(
+                        "Google Redirect Error:",
+                        error
                     );
 
-
-                    closeModal();
-
-                }
-
-                catch (error) {
 
                     errorBox.textContent =
                         friendlyError(error);
 
                 }
-
-            };
+            );
 
 
         /* ==========================================
@@ -1857,7 +2009,9 @@
 
                 catch (error) {
 
-                    console.error(error);
+                    console.error(
+                        error
+                    );
 
                 }
 
@@ -1918,4 +2072,3 @@
 
 </body>
 </html>
-```
