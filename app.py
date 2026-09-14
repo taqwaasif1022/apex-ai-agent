@@ -1420,4 +1420,4 @@ st.markdown("""
 <div style="text-align: center; color: #64748b; padding: 10px;"> 
     🚀 Made with ❤️ by <b>TAQWA</b> | Apex AI Solutions 
 </div> 
-""", unsafe_allow_html=True)  y app.py h index bhi bhajti hu dono compare kro kia pta mistake ho isme bhi 
+""", unsafe_allow_html=True)
