@@ -1,3 +1,90 @@
+Haan yar, ab samajh aa gaya. Agar sirf ek email se sign-in ho raha hai aur baqi emails se nahi, aur verification email bhi kisi ko nahi mil rahi, to likely problem signup/auth flow ya Firebase configuration mein hai — ye normal behavior nahi hai.
+
+Do cheezen alag check karni hain:
+
+Firebase Console → Authentication → Sign-in method
+Email/Password = Enabled
+Google = Enabled (agar Google login chahiye)
+Verification email
+Firebase ka verification email tumhare GMAIL_EMAIL se nahi jaata.
+Ye Firebase Auth ke configured email template/sender se send hota hai.
+Spam/Promotions/All Mail bhi check karo.
+Agar Firebase sendEmailVerification() error nahi de raha lekin email nahi aa rahi, to delivery/template/domain side check karni hogi.
+
+Sabse important: agar tum mujhe Firebase Authentication → Users aur Authentication → Sign-in method ke screenshots bhej do, main dekh sakta hoon ke ek email hi kyun chal rahi hai aur verification ka issue kahan hai.
+
+Upload a photo
+Today 11:05 AM
+asa kro na k remove hi krdo google login bs direct login jo hota ya sign up vo rkho k bnda username or passcode s sign up kre or details dalay apnei like name country age or email bs dalde hoske to verify krde gmail ya email vrna github login bhi daldo mrzi h or google ab error derha to remove krdo 
+
+Haan yar, Google Login completely remove kar dete hain. 👍
+
+Tumhari auth flow simple rakhenge:
+
+🔐 Sign Up
+
+User ye details dale:
+
+Name
+Country
+Age
+Email
+Password
+
+Phir account Firebase mein create ho jaye.
+
+📧 Email verification
+
+Verification optional rakhenge:
+
+Agar verification email aa jaye → user verify kar sakta hai.
+Agar email delivery issue ho → account phir bhi create ho, user directly login kar sake.
+
+Yani verification ki wajah se login block nahi hoga.
+
+🔑 Sign In
+
+Sirf:
+
+Email
+Password
+
+Aur Google button/remove code completely hata denge.
+
+GitHub Login bhi abhi nahi dalunga, kyunki uske liye bhi separate OAuth configuration chahiye aur tumhara current goal simple, reliable login hai.
+
+Aur tumhara old Picture 2 wala design same rahega — sirf authentication functionality change hogi.
+
+Agar tumhari uploaded index.html wali file ko isi hisaab se modify karna hai, main usi file mein Google imports, Google button aur Google JS completely remove karke Email/Password-only version bana sakta hoon.
+
+Pasted text.txt
+Document
+y h file isko bdl do jis s bdlna or agar app.py chaheay tp dedeti or haa plz jo rules isme hain unko na bdlna sivaye google k jo kaha h mtlb bs vo ho krna
+
+Haan yar ❤️ maine tumhari isi file ko modify kar diya hai. Tumhare existing rules/design/Firebase config ko touch nahi kiya — sirf Google Login remove kiya hai.
+
+Changes:
+
+✅ Sign In / Sign Up same
+✅ Name, Country, Age, Email, Password same
+✅ Firebase Email/Password auth same
+✅ Firestore profile saving same
+✅ Persistent login same
+✅ Existing design/CSS/images same
+❌ Google button removed
+❌ Google imports removed
+❌ Google redirect code removed
+❌ Google-specific auth-state logic removed
+❌ Baqi existing rules change nahi kiye
+
+Modified HTML file:
+
+Download modified index.html
+
+app.py ki is change ke liye zaroorat nahi hai, kyunki Google login tumhari uploaded HTML/Firebase Auth side par tha. Tum is file ko rename karke index.html kar do aur GitHub mein purani index.html replace kar do.
+
+Important: maine verification requirement bhi intentionally nahi hatayi, kyunki tumne kaha tha “rules na badalna, sivaye Google”. Isliye abhi email/password account ke liye tumhara existing verification rule wahi hai. 
+
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -602,22 +689,6 @@
                 0 0 35px rgba(99, 102, 241, 0.4);
         }
 
-        .google-btn {
-            margin-top: 9px;
-            width: 100%;
-            padding: 11px;
-            border-radius: 11px;
-            border: 1px solid #475569;
-            background: #111827;
-            color: #fff;
-            font-weight: 700;
-            cursor: pointer;
-        }
-
-        .google-btn:hover {
-            background: #1e293b;
-        }
-
         .hint {
             color: #64748b;
             font-size: 0.77rem;
@@ -1161,17 +1232,6 @@
                 </button>
 
 
-                <button
-                    class="google-btn"
-                    type="button"
-                    onclick="googleLogin()"
-                >
-
-                    <i class="fa-brands fa-google"></i>
-
-                    Continue with Google
-
-                </button>
 
             </form>
 
@@ -1198,9 +1258,6 @@
             createUserWithEmailAndPassword,
             signInWithEmailAndPassword,
             sendEmailVerification,
-            GoogleAuthProvider,
-            signInWithRedirect,
-            getRedirectResult,
             signOut
         } from
         "https://www.gstatic.com/firebasejs/12.1.0/firebase-auth.js";
@@ -1432,12 +1489,6 @@
                 "auth/user-disabled":
                     "This account has been disabled.",
 
-                "auth/popup-closed-by-user":
-                    "Google login window was closed.",
-
-                "auth/popup-blocked":
-                    "Your browser blocked the Google login window.",
-
                 "auth/operation-not-allowed":
                     "This sign-in method is not enabled in Firebase.",
 
@@ -1450,9 +1501,6 @@
                 "auth/network-request-failed":
                     "Network error. Please check your internet connection.",
 
-                "auth/cancelled-popup-request":
-                    "The Google login request was cancelled.",
-
                 "auth/account-exists-with-different-credential":
                     "An account already exists with this email using another sign-in method.",
 
@@ -1462,11 +1510,6 @@
                 "auth/invalid-api-key":
                     "Firebase API key is invalid. Please check the Web App configuration.",
 
-                "auth/redirect-cancelled-by-user":
-                    "Google login was cancelled.",
-
-                "auth/redirect-operation-pending":
-                    "A Google login request is already in progress."
 
             };
 
@@ -1912,102 +1955,6 @@
 
 
         /* ==========================================
-           GOOGLE LOGIN
-           REDIRECT METHOD
-           ========================================== */
-
-        window.googleLogin =
-            async function () {
-
-                errorBox.textContent = "";
-
-
-                try {
-
-                    const provider =
-                        new GoogleAuthProvider();
-
-
-                    /*
-                        Always allow the user to choose
-                        which Google account to use.
-                    */
-
-                    provider.setCustomParameters({
-                        prompt: "select_account"
-                    });
-
-
-                    /*
-                        Redirect is used instead of popup.
-                        This is more reliable on GitHub Pages.
-                    */
-
-                    await signInWithRedirect(
-                        auth,
-                        provider
-                    );
-
-                }
-
-                catch (error) {
-
-                    console.error(
-                        "Google Sign-In Error:",
-                        error
-                    );
-
-
-                    errorBox.textContent =
-                        friendlyError(error);
-
-                }
-
-            };
-
-
-        /* ==========================================
-           GOOGLE REDIRECT RESULT
-           ========================================== */
-
-        /*
-            We read the redirect result mainly so Firebase
-            can surface redirect errors.
-
-            The actual UI login is handled by
-            onAuthStateChanged below. This prevents the
-            previous problem where Google login succeeded
-            but launchWorkspace() was never called.
-        */
-
-        getRedirectResult(auth)
-            .then(function (result) {
-
-                if (result) {
-
-                    console.log(
-                        "Google redirect login completed:",
-                        result.user.email
-                    );
-
-                }
-
-            })
-            .catch(function (error) {
-
-                console.error(
-                    "Google Redirect Error:",
-                    error
-                );
-
-
-                errorBox.textContent =
-                    friendlyError(error);
-
-            });
-
-
-        /* ==========================================
            LOGOUT
            ========================================== */
 
@@ -2088,21 +2035,11 @@
 
 
                 /*
-                    Google users are automatically considered
-                    email verified by Firebase.
-
                     Email/password users must have
                     emailVerified === true.
                 */
 
-                if (
-                    user.providerData.some(
-                        function (provider) {
-                            return provider.providerId === "google.com";
-                        }
-                    ) ||
-                    user.emailVerified
-                ) {
+                if (user.emailVerified) {
 
                     const profile =
                         await getProfile(user);
