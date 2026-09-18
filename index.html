@@ -602,6 +602,29 @@
                 0 0 35px rgba(99, 102, 241, 0.4);
         }
 
+        .auth-link {
+            display: block;
+            width: 100%;
+            margin-top: 10px;
+            background: transparent;
+            border: none;
+            color: #67e8f9;
+            font-size: 0.84rem;
+            font-weight: 700;
+            text-align: center;
+            cursor: pointer;
+            padding: 5px;
+        }
+
+        .auth-link:hover {
+            color: #c4b5fd;
+            text-decoration: underline;
+        }
+
+        .resend-link {
+            display: none;
+        }
+
         .hint {
             color: #64748b;
             font-size: 0.77rem;
@@ -1144,6 +1167,23 @@
                     Sign In
                 </button>
 
+                <button
+                    class="auth-link"
+                    id="forgotPasswordBtn"
+                    type="button"
+                    onclick="forgotPassword()"
+                >
+                    Forgot password?
+                </button>
+
+                <button
+                    class="auth-link resend-link"
+                    id="resendVerificationBtn"
+                    type="button"
+                    onclick="resendVerification()"
+                >
+                    Resend verification email
+                </button>
 
 
             </form>
@@ -1171,6 +1211,7 @@
             createUserWithEmailAndPassword,
             signInWithEmailAndPassword,
             sendEmailVerification,
+            sendPasswordResetEmail,
             signOut
         } from
         "https://www.gstatic.com/firebasejs/12.1.0/firebase-auth.js";
@@ -1358,8 +1399,18 @@
                 .getElementById("verifyHint")
                 .textContent =
                 mode === "signup"
-                    ? "We'll send a verification email after account creation."
+                    ? "We'll send a verification email after account creation. Check Inbox, Spam/Junk, and Promotions."
                     : "Use the same account — you won't need to fill your profile again.";
+
+            document
+                .getElementById("forgotPasswordBtn")
+                .style.display =
+                mode === "signin" ? "block" : "none";
+
+            document
+                .getElementById("resendVerificationBtn")
+                .style.display =
+                mode === "signin" ? "block" : "none";
 
 
             errorBox.textContent = "";
@@ -1599,6 +1650,90 @@
             );
 
         }
+
+
+        /* ==========================================
+           FORGOT PASSWORD
+           ========================================== */
+
+        window.forgotPassword = async function () {
+
+            errorBox.textContent = "";
+
+            const email =
+                document.getElementById("email").value.trim();
+
+            if (!email) {
+                errorBox.textContent =
+                    "Enter your email first, then click Forgot password.";
+                document.getElementById("email").focus();
+                return;
+            }
+
+            try {
+                await sendPasswordResetEmail(auth, email);
+
+                alert(
+                    "Password reset email sent. Please check your Inbox and Spam/Junk folders."
+                );
+            } catch (error) {
+                errorBox.textContent = friendlyError(error);
+            }
+        };
+
+
+        /* ==========================================
+           RESEND VERIFICATION EMAIL
+           ========================================== */
+
+        window.resendVerification = async function () {
+
+            errorBox.textContent = "";
+
+            const email =
+                document.getElementById("email").value.trim();
+
+            const password =
+                document.getElementById("password").value;
+
+            if (!email || !password) {
+                errorBox.textContent =
+                    "Enter your email and password first.";
+                return;
+            }
+
+            const resendBtn =
+                document.getElementById("resendVerificationBtn");
+
+            resendBtn.disabled = true;
+
+            try {
+                const credential =
+                    await signInWithEmailAndPassword(auth, email, password);
+
+                const user = credential.user;
+                await user.reload();
+
+                if (user.emailVerified) {
+                    await signOut(auth);
+                    errorBox.textContent =
+                        "Your email is already verified. You can sign in normally.";
+                    return;
+                }
+
+                await sendEmailVerification(user);
+                await signOut(auth);
+
+                alert(
+                    "A fresh verification email was sent. Check Inbox, Spam/Junk, and Promotions. Use the newest link."
+                );
+            } catch (error) {
+                try { await signOut(auth); } catch (_) {}
+                errorBox.textContent = friendlyError(error);
+            } finally {
+                resendBtn.disabled = false;
+            }
+        };
 
 
         /* ==========================================
